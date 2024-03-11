@@ -32,57 +32,57 @@ Compatibility tests for AWS S3 object-storage providers. A reboot of https://git
 | 027 | Bucket Permission|Create ACL in a batch for more than 2 ppl with option of R and R/W differents|
 | 028 | Bucket Permission|Access the Private with ACL bucket with and check the list of objects|
 | 029 | Bucket Permission|Access the Private with ACL bucket and check the access of objects|
-| 031 | Bucket Permission|Delete public bucket|
-| 032 | Bucket Permission|Delete private bucket|
-| 033 | Bucket Permission|Delete private with ACL bucket|
-| 034 | Bucket Sharing|Copy URL for public buckets|
-| 035 | Bucket Sharing|Validate the URL for public buckets|
-| 036 | Bucket Sharing|Set a presigned URL for a private bucket|
-| 037 | Bucket Sharing|Validate the URL of presigned|
-| 038 | Bucket Sharing|Set a presigned URL for a private with ACL bucket|
-| 039 | Bucket Sharing|Validate the URL of presigned for the ACL bucket|
-| 040 | Object Versioning|Set the versioning for a public bucket|
-| 041 | Object Versioning|Set the versioning for a private bucket|
-| 042 | Object Versioning|Set the versioning for a bucket with ACL|
-| 043 | Object Versioning|Upload object to versioning in the public bucket|
-| 044 | Object Versioning|Upload object to versioning in the private bucket|
-| 045 | Object Versioning|Upload object to versioning in the private ACL bucket|
-| 046 | Object Versioning|Download object to versioning in the public bucket|
-| 047 | Object Versioning|Donwload object to versioning in the private bucket|
-| 048 | Object Versioning|Download object to versioning in the private ACL bucket|
-| 049 | Object Versioning|Delete Bucket versioned|
-| 050 | Object Versioning|Delete object with versions|
-| 051 | Object Versioning|Delete bucket with objects with versions|
-| 052 | Object Versioning|Delete versions|
-| 053 | Object Versioning|Delete versions in batch|
-| 054 | Object Management|Upload Files|
-| 055 | Object Management|Upload Files of 1GB|
-| 056 | Object Management|Upload Files of 5GB|
-| 057 | Object Management|Upload Files of 10GB|
-| 058 | Object Management|Download Files|
-| 059 | Object Management|Download Files of 1GB|
-| 060 | Object Management|Download Files of 5GB|
-| 061 | Object Management|Download Files of 10GB|
+| 030 | Bucket Permission|Delete public bucket|
+| 031 | Bucket Permission|Delete private bucket|
+| 032 | Bucket Permission|Delete private with ACL bucket|
+| 033 | Bucket Sharing|Copy URL for public buckets|
+| 034 | Bucket Sharing|Validate the URL for public buckets|
+| 035 | Bucket Sharing|Set a presigned URL for a private bucket|
+| 036 | Bucket Sharing|Validate the URL of presigned|
+| 037 | Bucket Sharing|Set a presigned URL for a private with ACL bucket|
+| 038 | Bucket Sharing|Validate the URL of presigned for the ACL bucket|
+| 039 | Object Versioning|Set the versioning for a public bucket|
+| 040 | Object Versioning|Set the versioning for a private bucket|
+| 041 | Object Versioning|Set the versioning for a bucket with ACL|
+| 042 | Object Versioning|Upload object to versioning in the public bucket|
+| 043 | Object Versioning|Upload object to versioning in the private bucket|
+| 044 | Object Versioning|Upload object to versioning in the private ACL bucket|
+| 045 | Object Versioning|Download object to versioning in the public bucket|
+| 046 | Object Versioning|Donwload object to versioning in the private bucket|
+| 047 | Object Versioning|Download object to versioning in the private ACL bucket|
+| 048 | Object Versioning|Delete Bucket versioned|
+| 049 | Object Versioning|Delete object with versions|
+| 050 | Object Versioning|Delete bucket with objects with versions|
+| 051 | Object Versioning|Delete versions|
+| 052 | Object Versioning|Delete versions in batch|
+| 053 | Object Management|Upload Files|
+| 054 | Object Management|Upload Files of 1GB|
+| 055 | Object Management|Upload Files of 5GB|
+| 056 | Object Management|Upload Files of 10GB|
+| 057 | Object Management|Download Files|
+| 058 | Object Management|Download Files of 1GB|
+| 059 | Object Management|Download Files of 5GB|
+| 060 | Object Management|Download Files of 10GB|
 | 061 | Object Management|List Objects|
-| 063 | Object Management|Delete Objects|
-| 064 | Object Management|Delete objects in batch|
-| 065 | Object Management|Delete object veresioned|
-| 066 | Object Management|Pause upload of multiparts|
-| 067 | Object Management|Pause download of multiparts|
-| 068 | Object Management|Abort upload of multiparts|
-| 069 | Object Management|Abort download of multiparts|
-| 070 | Object Management|Resume upload of multiparts|
-| 071 | Object Management|Resume download of multiparts|
-| 072 | Object Management|Delete parts of incomplete objects|
-| 073 | Authorization|Create an API Key|
-| 074 | Authorization|Create an API Key in a delegated account|
-| 075 | Authorization|Validate authorization using API Key|
-| 076 | Authorization|Validate authorization by delegation|
-| 077 | Authorization|Revogate an API Key|
-| 078 | Authorization|Validate authorization using API Key|
-| 079 | Authorization|Create a new account and create a new api key|
-| 080 | Authorization|Validate authorization using API Key of new accounts|
-| 081 | Security and compliance|Validate criptography|
-| 082 | Security and compliance|Validate Takedown process|
-| 083 | Metering|Validate metering of storage in GB/h|
-| 084 | Metering|Validate metering of egress transfer in GB|
+| 061 | Object Management|Delete Objects|
+| 063 | Object Management|Delete objects in batch|
+| 064 | Object Management|Delete object veresioned|
+| 065 | Object Management|Pause upload of multiparts|
+| 066 | Object Management|Pause download of multiparts|
+| 067 | Object Management|Abort upload of multiparts|
+| 068 | Object Management|Abort download of multiparts|
+| 069 | Object Management|Resume upload of multiparts|
+| 070 | Object Management|Resume download of multiparts|
+| 071 | Object Management|Delete parts of incomplete objects|
+| 072 | Authorization|Create an API Key|
+| 073 | Authorization|Create an API Key in a delegated account|
+| 074 | Authorization|Validate authorization using API Key|
+| 075 | Authorization|Validate authorization by delegation|
+| 076 | Authorization|Revogate an API Key|
+| 077 | Authorization|Validate authorization using API Key|
+| 078 | Authorization|Create a new account and create a new api key|
+| 079 | Authorization|Validate authorization using API Key of new accounts|
+| 080 | Security and compliance|Validate criptography|
+| 081 | Security and compliance|Validate Takedown process|
+| 082 | Metering|Validate metering of storage in GB/h|
+| 083 | Metering|Validate metering of egress transfer in GB|
