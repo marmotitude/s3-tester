@@ -21,4 +21,5 @@ for num in $tests; do
     tag_args+=" --tag id:${padded_num}"
 done
 
-shellspec --env CLIENTS="$clients" --env PROFILES="$profiles" $tag_args
+# use the env var EXTRA_ARGS if you need to pass more options to shellspec
+shellspec --env CLIENTS="$clients" --env PROFILES="$profiles" $tag_args $EXTRA_ARGS
