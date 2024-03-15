@@ -1,12 +1,19 @@
-Describe 'Create bucket:' category:"Bucket Management"
+Describe 'Create bucket' category:"Bucket Management" id:"001"
+  setup(){
+    bucket_name="test-001-$(date +%s)"
+  }
+  teardown(){
+    aws --profile $profile s3api delete-bucket --bucket $bucket_name
+  }
+  Before setup
+  After teardown
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"001"
+  Example "with unique name on profile $1 using client $2"
     profile=$1
     client=$2
-    bucket_name="test-$(date +%s)"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api create-bucket --bucket $bucket_name
