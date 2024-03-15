@@ -12,23 +12,17 @@ Describe 'Create public bucket:' category:"Bucket Permission"
     client=$2
     file1_name="file1.txt"
     case "$client" in
-    "aws-s3api" | "aws")
-      When run aws --profile $profile s3api create-bucket --bucket $bucket_name --acl public-read | jq
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read
       The status should be success
-      The output should include "\"Location\": \"/$bucket_name\""
-      aws s3 rb s3://$bucket_name --profile $profile --force
-      ;;
-    "aws-s3")
-      When run aws --profile $profile s3api create-bucket --bucket $bucket_name --acl public-read | jq
-      The status should be success
-      The output should include "\"Location\": \"/$bucket_name\""
-      aws s3 rb s3://$bucket_name --profile $profile --force
+      The output should include "\"Location\": \"/$bucket_name-$client\""
+      aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;
     "rclone")
-      When run rclone mkdir $profile:$bucket_name --s3-acl=public-read -v
+      When run rclone mkdir $profile:$bucket_name-$client --s3-acl=public-read -v
       The status should be success
-      The error should include "Bucket \"$bucket_name\" created"
-      aws s3 rb s3://$bucket_name --profile $profile --force
+      The error should include "Bucket \"$bucket_name-$client\" created"
+      aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;
     esac
   End
