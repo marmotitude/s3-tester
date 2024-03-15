@@ -12,6 +12,8 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
     profile=$1
     client=$2
     id="fake-user"
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
