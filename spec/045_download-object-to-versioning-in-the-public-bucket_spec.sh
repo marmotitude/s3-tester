@@ -33,10 +33,3 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     esac
   End
 End
-
-    case "$client" in
-    "aws-s3api" | "aws" | "aws-s3")
-      ;;
-    "rclone")
-      ;;
-    esac
