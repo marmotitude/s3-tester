@@ -16,12 +16,14 @@ Describe 'Delete Bucket versioned:' category:"Object Versioning"
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client| jq
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
     When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+    The status should be success
     The output should include ""
       ;;
     "rclone")
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client| jq
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
     When run rclone delete $profile:$bucket_name-$client
+    The status should be success
     The output should include ""
       ;;
     esac

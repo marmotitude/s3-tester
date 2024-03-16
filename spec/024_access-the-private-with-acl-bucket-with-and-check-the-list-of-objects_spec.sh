@@ -18,6 +18,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id
     When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
+    The status should be success
     The output should include "$file1_name"
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;
@@ -26,6 +27,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id
     When run rclone ls $profile-second:$bucket_name-$client
+    The status should be success
     The output should include "$file1_name"
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;

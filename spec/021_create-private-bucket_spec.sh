@@ -1,6 +1,6 @@
 Describe 'Create private bucket:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-020-$(date +%s)"
+    bucket_name="test-021-$(date +%s)"
     file1_name="LICENSE"
   }
   Before 'setup' 
@@ -25,7 +25,7 @@ Describe 'Create private bucket:' category:"Bucket Permission"
       aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;
     "rclone")
-      When run rclone mkdir $profile:$bucket_name-$client --s3-acl=public-read -v
+      When run rclone mkdir $profile:$bucket_name-$client -v
       The status should be success
       The error should include "Bucket \"$bucket_name-$client\" created"
       aws s3 rb s3://$bucket_name-$client --profile $profile --force

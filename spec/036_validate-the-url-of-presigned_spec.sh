@@ -11,6 +11,8 @@ Describe 'get-presign:' category:"Bucket Sharing"
   Example "on profile $1 using client $2" id:"036"
     profile=$1
     client=$2
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     presign_url=$(aws --profile $profile s3 presign s3://$bucket_name-$client/$file1_name)
@@ -19,5 +21,10 @@ Describe 'get-presign:' category:"Bucket Sharing"
     The output should include Copyright
     The error should include Current
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
+      ;;
+    "rclone")
+      Skip 'Teste pulado para cliente rclone'
+      ;;
+    esac
   End
 End

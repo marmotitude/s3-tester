@@ -20,5 +20,10 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
     The status should be success
     The output should include ""
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      ;;
+    "rclone")
+      Skip 'Teste pulado para cliente rclone'
+      ;;
+    esac
   End
 End
