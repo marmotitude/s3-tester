@@ -13,13 +13,15 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
     client=$2
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3api create-bucket --bucket $bucket_name --acl public-read | jq
-    When run aws --profile $profile s3 rb s3://$bucket_name --force
-    The output should include "$bucket_name"
+    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read | jq
+    When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+    The status should be success
+    The output should include "$bucket_name-$client"
       ;;
     "rclone")
-    aws --profile $profile s3api create-bucket --bucket $bucket_name --acl public-read | jq
-    When run rclone delete $profile:$bucket_name
+    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read | jq
+    When run rclone delete $profile:$bucket_name-$client
+    The status should be success
     The output should include ""
       ;;
     esac

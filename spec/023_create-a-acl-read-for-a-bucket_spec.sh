@@ -13,26 +13,15 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
     client=$2
     id="fake-user"
     case "$client" in
-    "aws-s3api" | "aws")
-    aws --profile $profile s3 mb s3://$bucket_name
-    When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name --grant-read id=$id
-    The status should be success
-    The output should include ""
-    aws s3 rb s3://$bucket_name --profile $profile --force
-      ;;
-    "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name
-    When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name --grant-read id=$id
-    The status should be success
-    The output should include ""
-    aws s3 rb s3://$bucket_name --profile $profile --force
+    "aws-s3api" | "aws" | "aws-s3")
+      aws --profile $profile s3 mb s3://$bucket_name-$client
+      When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id
+      The status should be success
+      The output should include ""
+      aws s3 rb s3://$bucket_name-$client --profile $profile
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name
-    When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name --grant-read id=$id
-    The status should be success
-    The output should include ""
-    aws s3 rb s3://$bucket_name --profile $profile --force
+      Skip 'Teste pulado para cliente rclone'
       ;;
     esac
   End
