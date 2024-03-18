@@ -95,10 +95,10 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 051 | Object Versioning|Delete versions| |
 | 052 | Object Versioning|Delete versions in batch| |
 
-| 053 | Object Management|Upload Files| |
-| 054 | Object Management|Upload Files of 1GB| |
-| 055 | Object Management|Upload Files of 5GB| |
-| 056 | Object Management|Upload Files of 10GB| |
+| 053 | Object Management|Upload Files| aws-s3api, aws-s3, rclone |
+| 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone |
+| 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone |
+| 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone |
 | 057 | Object Management|Download Files| |
 | 058 | Object Management|Download Files of 1GB| |
 | 059 | Object Management|Download Files of 5GB| |

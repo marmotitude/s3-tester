@@ -1,3 +1,6 @@
+# constants
+% FILES: "LICENSE README.md main.Dockerfile"
+
 Include ./spec/053_utils.sh
 Describe 'Upload Files' category:"Object Management" id:"053"
   BeforeAll 'setup' # this cannot be filtered out and will run even if not in a --tag filter :(
@@ -5,7 +8,7 @@ Describe 'Upload Files' category:"Object Management" id:"053"
   Parameters:matrix
     $PROFILES
     $CLIENTS
-    LICENSE README.md main.Dockerfile
+    $FILES
   End
   After 'delete_file'
   Example "on profile $1, using client $2, upload local file $3 to bucket $BUCKET_NAME"

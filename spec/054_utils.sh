@@ -6,7 +6,7 @@ create_file_gb(){
     echo "File $local_file exists"
   else
     echo "creating $local_file..."
-    head -c ${size_gb}G /dev/zero > $local_file
+    fallocate -l ${size_gb}gb $local_file
     echo "...$local_file created."
   fi
 }
