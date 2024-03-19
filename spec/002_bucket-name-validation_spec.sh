@@ -7,6 +7,15 @@ delete_bucket() {
   aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name" > /dev/null
 }
 
+check_length() {
+    local str=$1
+    if [[ ${#str} -le 2 || ${#str} -eq 64 ]]; then
+        return 0  # True
+    else
+        return 1  # False
+    fi
+}
+
 Describe 'Create bucket' category:"Bucket Management"
   Parameters:matrix
     $PROFILES
@@ -27,6 +36,10 @@ Describe 'Create bucket' category:"Bucket Management"
       "aws-s3")
         When run aws --profile "$profile" s3 mb "s3://$bucket_name"
         The error should include "make_bucket failed: s3://foo bar Parameter validation failed"
+        ;;
+      "mgc")
+        When run mgc object-storage buckets create "$bucket_name"
+        The error should include "InvalidBucketName"
         ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v
@@ -51,6 +64,10 @@ Describe 'Create bucket' category:"Bucket Management"
       "aws-s3")
         When run aws --profile "$profile" s3 mb "s3://$bucket_name"
         The output should include "make_bucket: $bucket_name"
+        ;;
+      "mgc")
+        When run mgc object-storage buckets create "$bucket_name"
+        The output should include "Created bucket $bucket_name"
         ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v
@@ -77,6 +94,10 @@ Describe 'Create bucket' category:"Bucket Management"
         When run aws --profile "$profile" s3 mb "s3://$bucket_name"
         The output should include "make_bucket: $bucket_name"
         ;;
+      "mgc")
+        When run mgc object-storage buckets create "$bucket_name"
+        The output should include "Created bucket $bucket_name"
+        ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v
         The error should include "Bucket \"$bucket_name\" created"
@@ -102,6 +123,10 @@ Describe 'Create bucket' category:"Bucket Management"
       "aws-s3")
         When run aws --profile "$profile" s3 mb "s3://$bucket_name"
         The output should include "make_bucket: $bucket_name"
+        ;;
+      "mgc")
+        When run mgc object-storage buckets create "$bucket_name"
+        The output should include "Created bucket $bucket_name"
         ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v
@@ -136,6 +161,11 @@ Describe 'Create bucket with invalid names' category:"Bucket Management"
       When run aws --profile "$profile" s3 mb "s3://$bucket_name"
       The error should include "make_bucket failed: s3://$bucket_name An error occurred (InvalidBucketName)"
       ;;
+    "mgc")
+      Skip if "mgc cli está validando tamanho do nome" check_length "$bucket_name"
+      When run mgc object-storage buckets create "$bucket_name"
+      The error should include "InvalidBucketName"
+      ;;
     "rclone")
       When run rclone mkdir "$profile:$bucket_name" -v
       The error should include "Failed to mkdir"
@@ -167,6 +197,10 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
     "aws-s3")
       When run aws --profile "$profile" s3 mb "s3://$bucket_name"
       The error should include "Bucket name must match the regex"
+      ;;
+    "mgc")
+      When run mgc object-storage buckets create "$bucket_name"
+      The error should include "InvalidBucketName"
       ;;
     "rclone")
       When run rclone mkdir "$profile:$bucket_name" -v
