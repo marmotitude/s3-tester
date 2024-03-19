@@ -36,6 +36,9 @@ Describe 'Delete object with versions:' category:"Object Versioning"
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.DeleteMarkers[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" | jq
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
       ;;
+    "mgc")
+    Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

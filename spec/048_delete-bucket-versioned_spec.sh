@@ -26,6 +26,9 @@ Describe 'Delete Bucket versioned:' category:"Object Versioning"
     The status should be success
     The output should include ""
       ;;
+    "mgc")
+    Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End
