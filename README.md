@@ -47,15 +47,15 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 009 | Bucket Management|Try to create Bucket with low than 3 characters in the name|  aws-s3api, aws-s3, rclone |
 | 010 | Bucket Management|Try to create bucket with high than 64 characters in the name|  aws-s3api, aws-s3, rclone |
 
-| 011 | Bucket Management|List Buckets| |
+| 011 | Bucket Management|List Buckets|  aws-s3api, aws-s3, rclone |
 
-| 012 | Bucket Management|Verify the number of objects| |
-| 013 | Bucket Management|Verify the informations in the list| |
-| 014 | Bucket Management|Verify the size of buckets| |
+| 012 | Bucket Management|Verify the number of objects| REVIEW |
+| 013 | Bucket Management|Verify the informations in the list| REVIEW |
+| 014 | Bucket Management|Verify the size of buckets| REVIEW |
 
 | 015 | Bucket Management|Delete Buckets empty| |
 | 016 | Bucket Management|Delete Buckets with Objects| |
-| 017 | Bucket Management|Delete buckets in batch| |
+| 017 | Bucket Management|Delete buckets in batch| REVIEW |
 
 | 018 | Bucket Permission|Create public bucket| |
 | 019 | Bucket Permission|Access the public bucket and check the list of objects| |
