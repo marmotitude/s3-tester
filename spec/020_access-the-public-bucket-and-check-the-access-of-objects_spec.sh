@@ -28,6 +28,14 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     The stderr should include "ERROR"
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
     ;;
+    "mgc")
+      mgc object-storage buckets create $bucket_name-$client --public-read
+      aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
+      The status should be failure
+      The output should include "403"
+      mgc object-storage buckets delete $bucket_name-$client -f --force
+      ;;
     esac
   End
 End

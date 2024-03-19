@@ -33,6 +33,16 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     The stderr should include ERROR
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      # mgc object-storage buckets create $bucket_name-$client
+      # mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
+      # mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
+      # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name .
+      # The status should be failure
+      # The output should include "403"
+      # mgc object-storage buckets delete $bucket_name-$client -f --force
+      ;;
     esac
   End
 End

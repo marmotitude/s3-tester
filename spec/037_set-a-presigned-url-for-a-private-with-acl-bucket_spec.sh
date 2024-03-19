@@ -25,6 +25,9 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

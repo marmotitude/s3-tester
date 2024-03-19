@@ -32,6 +32,9 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
     rm -rf $file1_name-2
       ;;
+    "mgc")
+    Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

@@ -25,6 +25,9 @@ Describe 'get-presign:' category:"Bucket Sharing"
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

@@ -34,6 +34,13 @@ Describe 'Delete private with ACL bucket:' category:"Bucket Permission"
     The status should be success
     The output should include ""
       ;;
+    "mgc")
+      mgc object-storage buckets create $bucket_name-$client --public-read
+      mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
+      When run mgc object-storage buckets delete $bucket_name-$client -f
+      The status should be success
+      The output should include ""
+      ;;
     esac
   End
 End
