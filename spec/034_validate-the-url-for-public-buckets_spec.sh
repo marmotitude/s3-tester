@@ -24,6 +24,9 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

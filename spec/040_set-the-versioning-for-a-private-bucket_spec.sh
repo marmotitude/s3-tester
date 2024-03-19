@@ -22,6 +22,9 @@ Describe 'Set the versioning for a private bucket:' category:"Object Versioning"
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

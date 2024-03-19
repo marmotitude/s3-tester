@@ -23,6 +23,13 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
+      The status should be success
+      The output should include ""
+      mgc object-storage buckets delete $bucket_name-$client -f --force
+      ;;
     esac
   End
 End

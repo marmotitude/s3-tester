@@ -1,4 +1,4 @@
-Describe 'Donwload object to versioning in the private bucket:' category:"Object Versioning"
+Describe 'Download object to versioning in the private bucket:' category:"Object Versioning"
   setup(){
     bucket_name="test-046-$(date +%s)"
     file1_name="LICENSE"
@@ -32,6 +32,9 @@ Describe 'Donwload object to versioning in the private bucket:' category:"Object
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" | jq
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
     rm -rf $file1_name-2
+      ;;
+    "mgc")
+    Skip 'Teste pulado para cliente mgc'
       ;;
     esac
   End

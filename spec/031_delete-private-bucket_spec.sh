@@ -25,6 +25,12 @@ Describe 'Delete private bucket:' category:"Bucket Permission"
     The status should be success
     The output should include ""
       ;;
+    "mgc")
+      mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets delete $bucket_name-$client -f
+      The status should be success
+      The output should include ""
+      ;;
     esac
   End
 End

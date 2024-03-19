@@ -35,6 +35,9 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
     rm -rf $file1_name-2
       ;;
+    "mgc")
+    Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

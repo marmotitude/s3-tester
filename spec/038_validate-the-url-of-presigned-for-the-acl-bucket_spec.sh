@@ -27,6 +27,9 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End

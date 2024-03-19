@@ -23,6 +23,9 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
     "rclone")
       Skip 'Teste pulado para cliente rclone'
       ;;
+    "mgc")
+      Skip 'Teste pulado para cliente mgc'
+      ;;
     esac
   End
 End
