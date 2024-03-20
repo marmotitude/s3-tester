@@ -19,8 +19,7 @@ Describe 'Delete Bucket versioned:' category:"Object Versioning"
     The output should include ""
       ;;
     "rclone")
-    When run rclone delete $profile:$bucket_name-$client
-    The status should be success
+    When run rclone rmdir $profile:$bucket_name-$client
     The output should include ""
       ;;
     "mgc")

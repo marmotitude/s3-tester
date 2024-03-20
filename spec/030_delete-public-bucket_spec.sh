@@ -18,7 +18,7 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
     The output should include "$bucket_name-$client"
       ;;
     "rclone")
-    When run rclone delete $profile:$bucket_name-$client
+    When run rclone rmdir $profile:$bucket_name-$client
     The output should include ""
       ;;
     "mgc")
