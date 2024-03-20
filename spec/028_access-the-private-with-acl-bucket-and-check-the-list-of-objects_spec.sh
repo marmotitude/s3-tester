@@ -3,7 +3,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     bucket_name="test-028-$(date +%s)"
     file1_name="LICENSE"
     "fake-user"
-    id2="cloud_br-ne-1_prod_320b11ea-4281-4dc5-9c41-cc3808dc5c91:cloud_br-ne-1_prod_320b11ea-4281-4dc5-9c41-cc3808dc5c91"
+    id2="fake-user"
   }
   Before 'setup'
   Parameters:matrix
