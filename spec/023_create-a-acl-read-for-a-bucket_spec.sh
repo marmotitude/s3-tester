@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-023-$(date +%s)"
@@ -11,7 +15,8 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"023"
     profile=$1
     client=$2
-    id="fake-user"
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "A variável id é nula" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")

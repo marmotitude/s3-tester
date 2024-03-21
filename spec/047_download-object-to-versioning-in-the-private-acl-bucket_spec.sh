@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Download object to versioning in the private ACL bucket:' category:"Object Versioning"
   setup(){
     bucket_name="test-047-$(date +%s)"
@@ -10,8 +14,9 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
   End
   Example "on profile $1 using client $2" id:"047"
     profile=$1
-    client=$2    
-    id="fake-user"
+    client=$2
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "A variável id é nula" is_variable_null "$id"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client| jq

@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Upload object to versioning in the private acl bucket:' category:"Object Versioning"
   setup(){
     bucket_name="test-044-$(date +%s)"
@@ -10,8 +14,9 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
   End
   Example "on profile $1 using client $2" id:"044"
     profile=$1
-    client=$2    
-    "fake-user"
+    client=$2
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "A variável id é nula" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
