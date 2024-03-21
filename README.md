@@ -99,12 +99,12 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone |
 | 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone |
 | 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone |
-| 057 | Object Management|Download Files| |
-| 058 | Object Management|Download Files of 1GB| |
-| 059 | Object Management|Download Files of 5GB| |
-| 060 | Object Management|Download Files of 10GB| |
-| 061 | Object Management|List Objects| |
-| 062 | Object Management|Delete Objects| |
+| 057 | Object Management|Download Files| aws-s3api, aws-s3, rclone |
+| 058 | Object Management|Download Files of 1GB| aws-s3api, aws-s3, rclone |
+| 059 | Object Management|Download Files of 5GB| aws-s3api, aws-s3, rclone |
+| 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone |
+| 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone |
+| 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone |
 | 063 | Object Management|Delete objects in batch| |
 | 064 | Object Management|Delete object veresioned| |
 | 065 | Object Management|Pause upload of multiparts| |

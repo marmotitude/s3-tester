@@ -58,7 +58,7 @@ Describe 'Upload Files' category:"Object Management"
       The output should include "upload: ./$local_file to s3://$BUCKET_NAME/$key"
       ;;
     "rclone")
-      When run rclone copyto $local_file $profile:$BUCKET_NAME/$key -v
+      When run rclone copyto $local_file $profile:$BUCKET_NAME/$key -v --no-check-dest
       The status should be success
       The error should include "$local_file: Copied"
       The error should include "to: $key"
@@ -84,7 +84,7 @@ Describe 'Upload Files' category:"Object Management"
         The output should include "$out_file"
         ;;
       "rclone")
-        When run rclone copyto $profile:$BUCKET_NAME/$object_key $out_file -v
+        When run rclone copyto $profile:$BUCKET_NAME/$object_key $out_file -v --no-check-dest
         The error should include "$object_key: Copied"
         ;;
       esac
