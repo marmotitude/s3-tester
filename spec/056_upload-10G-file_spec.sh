@@ -1,18 +1,29 @@
+# import functions: get_test_bucket_name, create_test_bucket, remove_test_bucket
 Include ./spec/053_utils.sh
+# import function create_file
 Include ./spec/054_utils.sh
+
+# constants
+% UNIQUE_SUFIX: $(date +%s)
+
+setup(){
+  for profile in $PROFILES; do
+    create_test_bucket $profile
+  done
+  BUCKET_NAME=$(get_test_bucket_name)
+  create_file 10 mb
+}
+setup
+
 Describe 'Upload Files' category:"Object Management" id:"056"
-  BeforeAll 'setup_54 10' # this cannot be filtered out and will run even if not in a --tag filter :(
-  AfterAll 'teardown'
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  After 'delete_file'
   Example "on profile $1, using client $2, upload $local_file to bucket $BUCKET_NAME"
     profile=$1
     client=$2
     key="test-053-file-$(date +%s)"
-    BUCKET_NAME=$(get_bucket_name)
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -27,7 +38,7 @@ Describe 'Upload Files' category:"Object Management" id:"056"
       The output should include "$local_file to s3://$BUCKET_NAME/$key"
       ;;
     "rclone")
-      When run rclone copyto $local_file $profile:$BUCKET_NAME/$key -v
+      When run rclone copyto $local_file $profile:$BUCKET_NAME/$key --no-check-dest -v
       The status should be success
       The error should include " Copied"
       The error should include "to: $key"
@@ -35,4 +46,3 @@ Describe 'Upload Files' category:"Object Management" id:"056"
     esac
   End
 End
-
