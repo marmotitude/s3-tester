@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Access the Private with ACL bucket with and check the list of objects:' category:"Bucket Permission"
   setup(){
     bucket_name="test-024-$(date +%s)"
@@ -11,7 +15,8 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
   Example "on profile $1 using client $2" id:"024"
     profile=$1
     client=$2  
-    "fake-user"
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "A variável id é nula" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id

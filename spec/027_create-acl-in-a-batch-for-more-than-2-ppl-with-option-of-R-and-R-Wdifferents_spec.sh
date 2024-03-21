@@ -1,9 +1,12 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
+
 Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W differents:' category:"Bucket Permission"
   setup(){
     bucket_name="test-027-$(date +%s)"
     file1_name="LICENSE"
-    "fake-user"
-    id2="fake-user"
   }
   Before 'setup'
   Parameters:matrix
@@ -13,6 +16,9 @@ Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W dif
   Example "on profile $1 using client $2" id:"027"
     profile=$1
     client=$2
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    id2=$id
+    Skip if "A variável id é nula" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")

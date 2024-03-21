@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket Sharing"
   setup(){
     bucket_name="test-037-$(date +%s)"
@@ -9,9 +13,11 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"037"
-    profile=$1-second
+    profile=$1
     client=$2
-    id="fake-user"
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    echo $id
+    Skip if "A variável id é nula" is_variable_null "$id"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")    
     aws --profile $profile s3 mb s3://$bucket_name-$client

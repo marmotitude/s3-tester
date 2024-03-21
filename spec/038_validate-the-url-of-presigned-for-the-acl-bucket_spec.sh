@@ -1,3 +1,7 @@
+is_variable_null() {
+  [ -z "$1" ]
+}
+
 Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sharing"  
   setup(){
     bucket_name="test-038-$(date +%s)"
@@ -11,7 +15,8 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
   Example "on profile $1 using client $2" id:"038"
     profile=$1
     client=$2
-    id="fake-user"
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "A variável id é nula" is_variable_null "$id"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$bucket_name-$client
