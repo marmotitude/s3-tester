@@ -22,4 +22,5 @@ for num in $tests; do
 done
 
 # use the env var EXTRA_ARGS if you need to pass more options to shellspec
+set -x
 shellspec --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $EXTRA_ARGS
