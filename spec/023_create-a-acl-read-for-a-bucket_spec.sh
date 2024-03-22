@@ -1,19 +1,3 @@
-delete_bucket() {
-  profile=$1
-  client=$2
-  bucket_name="$3"
-
-  aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
-}
-
-create_bucket() {
-  profile=$1
-  client=$2
-  bucket_name="$3"
-
-  aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
-}
-
 is_variable_null() {
   [ -z "$1" ]
 }
