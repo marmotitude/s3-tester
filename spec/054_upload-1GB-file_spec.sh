@@ -103,7 +103,9 @@ Describe "of size ${file_size}${file_unit}"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
-        The error should include "$object_key: Copied"
+        The error should include "$object_key: "
+        The error should include "Copied"
+        The error should include ", 100%"
         ;;
       esac
       The status should be success
@@ -162,7 +164,9 @@ Describe "of size ${file_size}${file_unit}"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
-        The error should include "$object_key: Copied"
+        The error should include "$object_key: "
+        The error should include "Copied"
+        The error should include ", 100%"
         ;;
       esac
       The status should be success
@@ -221,7 +225,9 @@ Describe "of size ${file_size}${file_unit}"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
-        The error should include "$object_key: Copied"
+        The error should include "$object_key: "
+        The error should include "Copied"
+        The error should include ", 100%"
         ;;
       esac
       The status should be success
