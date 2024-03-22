@@ -1,17 +1,14 @@
 # creates a zero filled file of ${1} GB on the tmp dir and sets path to $local_file variable
-create_file_gb(){
-  size_gb=$1
-  local_file="/tmp/${size_gb}GB_file"
+create_file(){
+  size=$1
+  unit=$2
+  filename="${size}${unit}_file"
+  local_dir="/tmp"
+  local_file="${local_dir}/${filename}"
   if [ -f "$local_file" ]; then
-    echo "File $local_file exists"
+    # File $local_file exists
+    :;
   else
-    echo "creating $local_file..."
-    head -c ${size_gb}G /dev/zero > $local_file
-    echo "...$local_file created."
+    fallocate -l "${size}${unit}" "$local_file"
   fi
-}
-
-setup_54(){
-  create_file_gb $1
-  setup
 }

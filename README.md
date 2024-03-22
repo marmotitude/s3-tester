@@ -46,17 +46,17 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 008 | Bucket Management|Create Bucket with combination of letters and numbers|  aws-s3api, aws-s3, rclone |
 | 009 | Bucket Management|Try to create Bucket with low than 3 characters in the name|  aws-s3api, aws-s3, rclone |
 | 010 | Bucket Management|Try to create bucket with high than 64 characters in the name|  aws-s3api, aws-s3, rclone |
-
-| 011 | Bucket Management|List Buckets|  aws-s3api, aws-s3, rclone |
-
-| 012 | Bucket Management|Verify the number of objects| REVIEW |
-| 013 | Bucket Management|Verify the informations in the list| REVIEW |
-| 014 | Bucket Management|Verify the size of buckets| REVIEW |
-
+|||||
+| 011 | Bucket Management|List Buckets| |
+|||||
+| 012 | Bucket Management|Verify the number of objects| |
+| 013 | Bucket Management|Verify the informations in the list| |
+| 014 | Bucket Management|Verify the size of buckets| |
+|||||
 | 015 | Bucket Management|Delete Buckets empty| |
 | 016 | Bucket Management|Delete Buckets with Objects| |
-| 017 | Bucket Management|Delete buckets in batch| REVIEW |
-
+| 017 | Bucket Management|Delete buckets in batch| |
+|||||
 | 018 | Bucket Permission|Create public bucket| |
 | 019 | Bucket Permission|Access the public bucket and check the list of objects| |
 | 020 | Bucket Permission|Access the public bucket and check the access of objects| |
@@ -72,14 +72,14 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 030 | Bucket Permission|Delete public bucket| |
 | 031 | Bucket Permission|Delete private bucket| |
 | 032 | Bucket Permission|Delete private with ACL bucket| |
-
+|||||
 | 033 | Bucket Sharing|Copy URL for public buckets| |
 | 034 | Bucket Sharing|Validate the URL for public buckets| |
 | 035 | Bucket Sharing|Set a presigned URL for a private bucket| |
 | 036 | Bucket Sharing|Validate the URL of presigned| |
 | 037 | Bucket Sharing|Set a presigned URL for a private with ACL bucket| |
 | 038 | Bucket Sharing|Validate the URL of presigned for the ACL bucket| |
-
+|||||
 | 039 | Object Versioning|Set the versioning for a public bucket| |
 | 040 | Object Versioning|Set the versioning for a private bucket| |
 | 041 | Object Versioning|Set the versioning for a bucket with ACL| |
@@ -94,18 +94,18 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 050 | Object Versioning|Delete bucket with objects with versions| |
 | 051 | Object Versioning|Delete versions| |
 | 052 | Object Versioning|Delete versions in batch| |
-
-| 053 | Object Management|Upload Files| |
-| 054 | Object Management|Upload Files of 1GB| |
-| 055 | Object Management|Upload Files of 5GB| |
-| 056 | Object Management|Upload Files of 10GB| |
-| 057 | Object Management|Download Files| |
-| 058 | Object Management|Download Files of 1GB| |
-| 059 | Object Management|Download Files of 5GB| |
-| 060 | Object Management|Download Files of 10GB| |
-| 061 | Object Management|List Objects| |
-| 061 | Object Management|Delete Objects| |
-| 063 | Object Management|Delete objects in batch| |
+|||||
+| 053 | Object Management|Upload Files| aws-s3api, aws-s3, rclone |
+| 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone |
+| 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone |
+| 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone |
+| 057 | Object Management|Download Files| aws-s3api, aws-s3, rclone |
+| 058 | Object Management|Download Files of 1GB| aws-s3api, aws-s3, rclone |
+| 059 | Object Management|Download Files of 5GB| aws-s3api, aws-s3, rclone |
+| 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone |
+| 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone |
+| 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone |
+| 063 | Object Management|Delete objects in batch| aws-s3api, aws-s3, rclone |
 | 064 | Object Management|Delete object veresioned| |
 | 065 | Object Management|Pause upload of multiparts| |
 | 066 | Object Management|Pause download of multiparts| |
@@ -114,7 +114,7 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 069 | Object Management|Resume upload of multiparts| |
 | 070 | Object Management|Resume download of multiparts| |
 | 071 | Object Management|Delete parts of incomplete objects| |
-
+|||||
 | 072 | Authorization|Create an API Key| REVIEW |
 | 073 | Authorization|Create an API Key in a delegated account| REVIEW |
 | 074 | Authorization|Validate authorization using API Key| REVIEW |
@@ -123,10 +123,10 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 077 | Authorization|Validate authorization using API Key| REVIEW |
 | 078 | Authorization|Create a new account and create a new api key| REVIEW |
 | 079 | Authorization|Validate authorization using API Key of new accounts| REVIEW |
-
+|||||
 | 080 | Security and compliance|Validate criptography| REVIEW |
 | 081 | Security and compliance|Validate Takedown process| REVIEW |
-
+|||||
 | 082 | Metering|Validate metering of storage in GB/h| REVIEW |
 | 083 | Metering|Validate metering of egress transfer in GB| REVIEW |
 
