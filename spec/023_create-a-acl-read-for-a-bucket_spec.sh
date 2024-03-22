@@ -2,8 +2,6 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-
-
 Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-023-$(date +%s)"
