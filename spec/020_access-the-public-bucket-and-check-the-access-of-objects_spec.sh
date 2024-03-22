@@ -16,15 +16,11 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
-    The status should be failure
-    The stderr should include "An error occurred (403) when calling the GetObject operation: Forbidden"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
     ;;
     "rclone")
     When run rclone copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2
-    The status should be failure
     The stderr should include "ERROR"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
     ;;
     "mgc")
       Skip "Skipped test to $client"
@@ -34,6 +30,8 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
       # mgc object-storage buckets delete $bucket_name-$client -f --force
       ;;
     esac
+    The status should be failure
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force
   End
 End
 
