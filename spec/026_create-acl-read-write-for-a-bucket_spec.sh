@@ -16,7 +16,7 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
     profile=$1
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    Skip if "A variável id é nula" is_variable_null "$id"
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -24,10 +24,10 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
     The output should include ""
       ;;
     "rclone")
-    Skip 'Teste pulado para cliente rclone'
+    Skip "Skipped test to $client"
       ;;
     "mgc")
-      #Skip 'Teste pulado para cliente mgc'
+      #Skip "Skipped test to $client"
       When run mgc object-storage buckets acl set --grant-read id=$id --grant-write id=$id --bucket $bucket_name-$client
       The output should include ""
       ;;

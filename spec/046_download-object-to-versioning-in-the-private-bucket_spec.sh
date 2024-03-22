@@ -34,7 +34,7 @@ Describe 'Download object to versioning in the private bucket:' category:"Object
     rm -rf $file1_name-2
       ;;
     "mgc")
-    Skip 'Teste pulado para cliente mgc'
+    Skip "Skipped test to $client"
       ;;
     esac
   End

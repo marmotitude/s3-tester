@@ -17,7 +17,7 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     echo $id
-    Skip if "A variável id é nula" is_variable_null "$id"
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")    
     aws --profile $profile s3 mb s3://$bucket_name-$client
@@ -29,10 +29,10 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       ;;
     esac
   End

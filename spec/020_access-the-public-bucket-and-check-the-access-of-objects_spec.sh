@@ -27,7 +27,7 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
     ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
       # The status should be failure
       # The output should include "403"

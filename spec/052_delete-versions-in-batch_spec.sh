@@ -23,10 +23,10 @@ Describe 'Delete versions in batch:' category:"Object Versioning"
     aws --profile $profile s3 rb s3://$bucket_name-$client --force
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
-    Skip 'Teste pulado para cliente mgc'
+    Skip "Skipped test to $client"
       ;;
     esac
   End

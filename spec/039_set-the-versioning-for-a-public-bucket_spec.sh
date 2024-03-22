@@ -18,7 +18,7 @@ Describe 'Set the versioning for a public bucket:' category:"Object Versioning"
     The output should include ""
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
     When run mgc object-storage buckets versioning enable $bucket_name-$client

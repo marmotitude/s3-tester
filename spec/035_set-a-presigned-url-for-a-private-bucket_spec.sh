@@ -20,10 +20,10 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
     The output should include X-Amz-Algorithm
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       ;;
     esac
     aws s3 rb s3://$bucket_name-$client --profile $profile --force
