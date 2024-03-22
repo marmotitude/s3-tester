@@ -25,7 +25,7 @@ Describe 'Upload object to versioning in the private bucket:' category:"Object V
     The output should include ""
       ;;
     "mgc")
-    #Skip 'Teste pulado para cliente mgc'
+    #Skip "Skipped test to $client"
     When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
     The status should be success
     The output should include ""

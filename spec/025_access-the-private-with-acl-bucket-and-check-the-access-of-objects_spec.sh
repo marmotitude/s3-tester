@@ -16,7 +16,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     profile=$1
     client=$2    
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    Skip if "A variável id é nula" is_variable_null "$id"
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id --grant-write id=$id
@@ -32,7 +32,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     # todo: its true if where dont have access the status is success but dont make download? test in other providers
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       # mgc object-storage buckets create $bucket_name-$client
       # mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
       # mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client

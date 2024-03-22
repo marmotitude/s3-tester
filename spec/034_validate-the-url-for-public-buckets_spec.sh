@@ -20,10 +20,10 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
     The error should include Current
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       ;;
     esac
     The status should be success

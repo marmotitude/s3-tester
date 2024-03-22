@@ -33,7 +33,7 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     rm -rf $file1_name-2
       ;;
     "mgc")
-    Skip 'Teste pulado para cliente mgc'
+    Skip "Skipped test to $client"
       ;;
     esac
   End

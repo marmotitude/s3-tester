@@ -16,7 +16,7 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
     profile=$1
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    Skip if "A variável id é nula" is_variable_null "$id"
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
     case "$client" in
@@ -25,7 +25,7 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
     The output should include ""
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
       When run mgc object-storage buckets versioning enable $bucket_name-$client

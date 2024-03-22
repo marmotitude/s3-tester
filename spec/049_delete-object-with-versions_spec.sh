@@ -21,11 +21,11 @@ Describe 'Delete object with versions:' category:"Object Versioning"
     The output should include "delete"
       ;;
     "rclone")
-    When run rclone rmdir $profile:$bucket_name-$client/$file1_name
+    When run rclone delete $profile:$bucket_name-$client/$file1_name
     The output should include ""
       ;;
     "mgc")
-    Skip 'Teste pulado para cliente mgc'
+    Skip "Skipped test to $client"
       ;;
     esac
     The status should be success

@@ -23,7 +23,7 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     The stderr should include "403"
     ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       # mgc object-storage buckets create $bucket_name-$client
       # aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
       # When run mgc object-storage objects list --dst $bucket_name-$client
