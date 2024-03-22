@@ -1,5 +1,5 @@
 # Upload, List, Download and Delete objects
-# 
+#
 # The test 053 is required for test 057, 061, 062 and 063 so they are linked. Filtering by
 # the later will also run the former. 053 is the "setup" for the others.
 #
@@ -15,7 +15,7 @@
 #
 #------------------------------------------------------------------------------
 
-# import functions: get_test_bucket_name, create_test_bucket, remove_test_bucket
+# import functions: get_test_bucket_name, get_uploaded_key, create_test_bucket, remove_test_bucket
 Include ./spec/053_utils.sh
 
 # constants
@@ -29,10 +29,6 @@ setup(){
   BUCKET_NAME=$(get_test_bucket_name)
 }
 setup
-
-get_uploaded_key(){
-  echo "test--$profile--$client--$1--$UNIQUE_SUFIX"
-}
 
 Describe 'Upload Files' category:"Object Management"
   Parameters:matrix
@@ -109,7 +105,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       done
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 ls "s3://$BUCKET_NAME" 
+      When run aws --profile $profile s3 ls "s3://$BUCKET_NAME"
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
         The output should include " $object_key"
@@ -126,12 +122,84 @@ Describe 'List Objects' category:"Object Management" id:"061"
     The status should be success
   End
 End
-  Describe 'Delete Objects' category:"Object Management" id:"062"
-    Pending "foo"
+
+first_file="${FILES%% *}"
+remaining_files="${FILES#* }"
+
+Describe 'Delete' category:"Object Management"
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
   End
-  Describe 'Delete objects in batch' category:"Object Management" id:"063"
-    Pending "foo"
+  Describe "Objects"
+  Example "on profile $1, using client $2, delete file $first_file on bucket $BUCKET_NAME" id:"062"
+    profile=$1
+    client=$2
+    object_key=$(get_uploaded_key "$first_file")
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api delete-object --bucket "$BUCKET_NAME" --key "$object_key" --debug
+      The error should include "$object_key HTTP/1.1\" 204"
+      ;;
+    "aws-s3")
+      When run aws --profile $profile s3 rm "s3://$BUCKET_NAME/$object_key"
+      The output should include "delete: s3://$BUCKET_NAME/$object_key"
+      ;;
+    "rclone")
+      When run rclone deletefile "$profile:$BUCKET_NAME/$object_key" -v
+      The error should include "$object_key: Deleted"
+      ;;
+    esac
+    The status should be success
   End
+  End
+  Describe "Objects in batch"
+  Example "on profile $1, using client $2, batch delete files $remaining_files on bucket $BUCKET_NAME" id:"063"
+    profile=$1
+    client=$2
+    objects=""
+    for file in $remaining_files; do
+      object_key=$(get_uploaded_key "$file")
+      objects+="$object_key "
+    done
+    case "$client" in
+    "aws-s3api" | "aws")
+      s3api_objects="Objects=["
+      for object_key in $objects; do
+        s3api_objects+="{Key=$object_key},"
+      done
+      s3api_objects+="]"
+
+      When run aws --profile "$profile" s3api delete-objects --bucket "$BUCKET_NAME" --delete "$s3api_objects"
+      for object_key in $objects; do
+        The output should include "\"Key\": \"$object_key\""
+      done
+      ;;
+    "aws-s3")
+      s3_args=''
+      for object_key in $objects; do
+        s3_args+=" --include $object_key"
+      done
+
+      When run aws --profile $profile s3 rm "s3://$BUCKET_NAME/" --recursive --exclude "*" $s3_args
+      for object_key in $objects; do
+        The output should include "delete: s3://$BUCKET_NAME/$object_key"
+      done
+      ;;
+    "rclone")
+      # convert space separated list to comma separated
+      rclone_objects="${objects// /,}"
+
+      When run rclone delete "$profile:$BUCKET_NAME" --include "{$rclone_objects}" --dump headers
+      for object_key in $objects; do
+        The error should include "$object_key: Deleted"
+      done
+      ;;
+    esac
+    The status should be success
+  End
+  End
+End
 
 teardown(){
   for profile in $PROFILES; do
@@ -139,9 +207,3 @@ teardown(){
   done
 }
 teardown
-# 057 Download Files
-#
-# % KEYS: "obj_100k obj_1M obj_6M"
-# 
-# 
-
