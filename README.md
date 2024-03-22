@@ -105,7 +105,7 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone |
 | 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone |
 | 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone |
-| 063 | Object Management|Delete objects in batch| |
+| 063 | Object Management|Delete objects in batch| aws-s3api, aws-s3, rclone |
 | 064 | Object Management|Delete object veresioned| |
 | 065 | Object Management|Pause upload of multiparts| |
 | 066 | Object Management|Pause download of multiparts| |

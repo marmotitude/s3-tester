@@ -50,7 +50,7 @@ exists_var(){
 }
 
 file_size="1"
-file_unit="mb"
+file_unit="gb"
 Describe "of size ${file_size}${file_unit}"
   setup "$file_size" "$file_unit"
 
