@@ -20,7 +20,7 @@ Include ./spec/053_utils.sh
 
 # constants
 % UNIQUE_SUFIX: $(date +%s)
-% FILES: "LICENSE README.md main.Dockerfile"
+% FILES: "LICENSE README.md tools.Dockerfile"
 
 Describe 'Setup 53,57,61,62,63'
   Parameters:matrix
