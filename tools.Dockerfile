@@ -1,3 +1,8 @@
+# This OCI image contains the required tools to run the tests: awscli, rclone, mgc and shellspec
+# you can use it with distrobox to have a quick "all-in-one" environment for executing them
+# or as a basis for other images that want to include the compatibility tests
+
+# Build arguments, versions of the pieces
 ARG UBUNTU_VERSION="24.04"
 ARG SHELLSPEC_VERSION="0.28.1"
 ARG AWS_CLI_VERSION="2.15.27"
@@ -28,3 +33,10 @@ ARG RCLONE_VERSION
 RUN curl "https://downloads.rclone.org/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.zip" -o rclone.zip && \
     unzip -a rclone.zip -d "/tools"
 ENV PATH "/tools/rclone-v${RCLONE_VERSION}-linux-amd64:${PATH}"
+
+# mgc
+# TODO: download an specific version from a canonical distribution url
+#       like the Github releases page, when it becomes available
+#       for now, we are including the binary in the repo
+COPY vendor/mgc/mgc_latest /tools/mgc/mgc
+ENV PATH "/tools/mgc:${PATH}"
