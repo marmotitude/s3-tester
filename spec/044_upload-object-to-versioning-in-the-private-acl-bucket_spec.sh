@@ -25,11 +25,13 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     When run aws --profile $profile-second s3 cp $file1_name s3://$bucket_name-$client
     The status should be success
     The output should include "$file1_name"
+    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
       ;;
     "rclone")
     When run rclone copy $file1_name $profile-second:$bucket_name-$client
     The status should be success
     The output should include ""
+    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
       ;;
     "mgc")
     Skip "Skipped test to $client"
@@ -39,7 +41,6 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     # The output should include ""
     #   ;;
     esac
-    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
     aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
   End
 End
