@@ -11,7 +11,7 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"030"
     profile=$1
     client=$2
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read | jq
+    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile s3 rb s3://$bucket_name-$client --force

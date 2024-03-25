@@ -17,9 +17,9 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     client=$2  
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
-    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
@@ -38,6 +38,6 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
   End
 End

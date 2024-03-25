@@ -17,9 +17,9 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
-    aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id > /dev/null
+    aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3 cp $file1_name s3://$bucket_name-$client
@@ -39,7 +39,7 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     # The output should include ""
     #   ;;
     esac
-    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" | jq
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force
+    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
+    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
   End
 End

@@ -11,8 +11,8 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
   Example "on profile $1 using client $2" id:"022"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
@@ -32,6 +32,6 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     ;;
     esac
     The status should be failure
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
   End
 End
