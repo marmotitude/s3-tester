@@ -23,12 +23,10 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     The stderr should include "403"
     ;;
     "mgc")
-      Skip "Skipped test to $client"
-      # mgc object-storage buckets create $bucket_name-$client
-      # aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
-      # When run mgc object-storage objects list --dst $bucket_name-$client
-      # The status should be success
-      # The output should include "$file1_name"
+      mgc profile set-current $profile-second > /dev/null
+      #Skip "Skipped test to $client"
+      When run mgc object-storage objects list --dst $bucket_name-$client
+    The stderr should include "403"
     ;;
     esac
     The status should be failure

@@ -30,10 +30,10 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     The stderr should include "ERROR"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
-      # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
-      # The status should be failure
-      # The output should include "403"
+      mgc profile set-current $profile-second > /dev/null
+      #Skip "Skipped test to $client"
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2
+      The stderr should include "403"
       ;;
     esac
     The status should be failure

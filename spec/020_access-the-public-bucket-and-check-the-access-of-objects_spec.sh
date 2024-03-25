@@ -23,11 +23,11 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     The stderr should include "ERROR"
     ;;
     "mgc")
-      Skip "Skipped test to $client"
-      # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
-      # The status should be failure
-      # The output should include "403"
-      # mgc object-storage buckets delete $bucket_name-$client -f --force
+      mgc profile set-current $profile-second > /dev/null
+      #Skip "Skipped test to $client"
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
+      The status should be failure
+      The stderr should include "Access Denied"
       ;;
     esac
     The status should be failure
