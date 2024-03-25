@@ -13,13 +13,13 @@ Describe 'Copy URL for public buckets:' category:"Bucket Permission"
     client=$2
     case "$client" in
     "aws" | "aws-s3")
-    Skip 'Teste pulado para cliente aws'
+    Skip "Skipped test to $client"
       ;;
     "aws-s3api")
-    Skip 'Teste pulado para cliente aws-s3api'
+    Skip "Skipped test to $client"
       ;;
     "rclone")
-    Skip 'Teste pulado para cliente rclone'
+    Skip "Skipped test to $client"
       ;;
     "mgc")
       When run mgc object-storage buckets public-url --dst $bucket_name-$client

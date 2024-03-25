@@ -1,10 +1,11 @@
-
+is_variable_null() {
+  [ -z "$1" ]
+}
 
 Describe 'Access the Private with ACL bucket and check the access of objects:' category:"Bucket Permission"
   setup(){
     bucket_name="test-025-$(date +%s)"
     file1_name="LICENSE"
-    "fake-user"
   }
   Before 'setup'
   Parameters:matrix
@@ -13,10 +14,12 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
   End
   Example "on profile $1 using client $2" id:"025"
     profile=$1
-    client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
-    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id --grant-write id=$id
+    client=$2    
+    id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id --grant-write id=$id > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
@@ -29,7 +32,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     # todo: its true if where dont have access the status is success but dont make download? test in other providers
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       # mgc object-storage buckets create $bucket_name-$client
       # mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
       # mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
@@ -40,7 +43,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
       ;;
     esac
     The status should be failure
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
     Dump
   End
 End

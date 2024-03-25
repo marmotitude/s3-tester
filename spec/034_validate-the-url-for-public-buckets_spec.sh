@@ -12,7 +12,7 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
     profile=$1
     client=$2
     endpoint_url=$(aws configure get $profile.endpoint_url)
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read | jq
+    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read  > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run curl $endpoint_url/$bucket_name-$client
@@ -20,13 +20,13 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
     The error should include Current
       ;;
     "rclone")
-      Skip 'Teste pulado para cliente rclone'
+      Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip 'Teste pulado para cliente mgc'
+      Skip "Skipped test to $client"
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
   End
 End
