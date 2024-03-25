@@ -11,8 +11,8 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
   Example "on profile $1 using client $2" id:"035"
     profile=$1-second
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile s3 presign s3://$bucket_name-$client/$file1_name
@@ -26,6 +26,6 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
       Skip "Skipped test to $client"
       ;;
     esac
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
   End
 End

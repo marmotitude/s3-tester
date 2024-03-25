@@ -17,8 +17,8 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
-    aws --profile $profile s3 mb s3://$bucket_name-$client
-    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
@@ -33,6 +33,6 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
       ;;
     esac
     The status should be success
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force
+    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
   End
 End

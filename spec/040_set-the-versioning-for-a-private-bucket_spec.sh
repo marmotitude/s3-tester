@@ -11,7 +11,7 @@ Describe 'Set the versioning for a private bucket:' category:"Object Versioning"
   Example "on profile $1 using client $2" id:"040"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled
@@ -26,6 +26,6 @@ Describe 'Set the versioning for a private bucket:' category:"Object Versioning"
       ;;
     esac
     The status should be success
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force
+    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
   End
 End

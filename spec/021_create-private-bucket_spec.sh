@@ -30,6 +30,6 @@ Describe 'Create private bucket:' category:"Bucket Permission"
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force
+    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
   End
 End
