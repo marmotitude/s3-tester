@@ -27,7 +27,7 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
       #Skip "Skipped test to $client"
       When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst .
       The status should be failure
-      The stderr should include "Access Denied"
+      The stderr should include "Access Denied"ect-storage buckets delete $bucket_name-$client -f --force
       ;;
     esac
     The status should be failure

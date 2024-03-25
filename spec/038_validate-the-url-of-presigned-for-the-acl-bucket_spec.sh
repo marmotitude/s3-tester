@@ -36,5 +36,6 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
       Skip "Skipped test to $client"
       ;;
     esac
+    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
   End
 End
