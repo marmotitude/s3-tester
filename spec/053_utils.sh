@@ -8,14 +8,6 @@ get_test_bucket_name(){
 get_uploaded_key(){
   echo "test--$profile--$client--$1--$UNIQUE_SUFIX"
 }
-create_test_bucket(){
-  if [[ -z $TEST_BUCKET_NAME ]];then
-    profile=$1
-    bucket_name=$(get_test_bucket_name)
-    #echo "creating new bucket $bucket_name on profile $profile..."
-    aws --profile $profile s3api create-bucket --bucket $bucket_name > /dev/null
-  fi
-}
 remove_test_bucket(){
   profile=$1
   bucket_name=$(get_test_bucket_name)

@@ -15,20 +15,25 @@
 #
 #------------------------------------------------------------------------------
 
-# import functions: get_test_bucket_name, get_uploaded_key, create_test_bucket, remove_test_bucket
+# import functions: get_test_bucket_name, get_uploaded_key, remove_test_bucket
 Include ./spec/053_utils.sh
 
 # constants
 % UNIQUE_SUFIX: $(date +%s)
 % FILES: "LICENSE README.md main.Dockerfile"
 
-setup(){
-  for profile in $PROFILES; do
-    create_test_bucket $profile
-  done
-  BUCKET_NAME=$(get_test_bucket_name)
-}
-setup
+Describe 'Setup 53,57,61,62,63'
+  Parameters:matrix
+    $PROFILES
+  End
+  Example "create test bucket" id:"053" id:"057" id:"061" id:"062" id:"063"
+    profile=$1
+    bucket_name=$(get_test_bucket_name)
+    # rclone wont exit 1 even if the bucket exists, which makes this action indepotent
+    When run rclone mkdir "$profile:$bucket_name"
+    The status should be success
+  End
+End
 
 Describe 'Upload Files' category:"Object Management"
   Parameters:matrix
@@ -40,6 +45,7 @@ Describe 'Upload Files' category:"Object Management"
     profile=$1
     client=$2
     local_file=$3
+    BUCKET_NAME=$(get_test_bucket_name)
     key=$(get_uploaded_key "$local_file")
 
     case "$client" in
@@ -66,6 +72,7 @@ Describe 'Upload Files' category:"Object Management"
       profile=$1
       client=$2
       file=$3
+      BUCKET_NAME=$(get_test_bucket_name)
       object_key=$(get_uploaded_key "$file")
       out_file="/tmp/$object_key"
 
@@ -73,18 +80,20 @@ Describe 'Upload Files' category:"Object Management"
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api get-object --bucket $BUCKET_NAME --key $object_key $out_file
         The output should include "ETag"
+        The status should be success
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp "s3://$BUCKET_NAME/$object_key" $out_file
         The output should include "download: s3://$BUCKET_NAME/$object_key"
         The output should include "$out_file"
+        The status should be success
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$object_key $out_file -v --no-check-dest
         The error should include "$object_key: Copied"
+        The status should be success
         ;;
       esac
-      The status should be success
     End
   End
 End
@@ -93,15 +102,17 @@ Describe 'List Objects' category:"Object Management" id:"061"
     $PROFILES
     $CLIENTS
   End
-  Example "from bucket $BUCKET_NAME of profile $1, using client $2."
+  Example "from test bucket of profile $1, using client $2."
     profile=$1
     client=$2
+    BUCKET_NAME=$(get_test_bucket_name)
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api list-objects --bucket $BUCKET_NAME
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
         The output should include "\"Key\": \"$object_key\","
+        The status should be success
       done
       ;;
     "aws-s3")
@@ -109,6 +120,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
         The output should include " $object_key"
+        The status should be success
       done
       ;;
     "rclone")
@@ -116,10 +128,12 @@ Describe 'List Objects' category:"Object Management" id:"061"
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
         The output should include " $object_key"
+        The status should be success
       done
       ;;
+    "mgc")
+      ;;
     esac
-    The status should be success
   End
 End
 
@@ -135,28 +149,35 @@ Describe 'Delete' category:"Object Management"
   Example "on profile $1, using client $2, delete file $first_file on bucket $BUCKET_NAME" id:"062"
     profile=$1
     client=$2
+    BUCKET_NAME=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "$first_file")
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api delete-object --bucket "$BUCKET_NAME" --key "$object_key" --debug
       The error should include "$object_key HTTP/1.1\" 204"
+      The status should be success
       ;;
     "aws-s3")
       When run aws --profile $profile s3 rm "s3://$BUCKET_NAME/$object_key"
       The output should include "delete: s3://$BUCKET_NAME/$object_key"
+      The status should be success
       ;;
     "rclone")
       When run rclone deletefile "$profile:$BUCKET_NAME/$object_key" -v
       The error should include "$object_key: Deleted"
+      The status should be success
+      ;;
+    "mgc")
+      :;
       ;;
     esac
-    The status should be success
   End
   End
   Describe "Objects in batch"
   Example "on profile $1, using client $2, batch delete files $remaining_files on bucket $BUCKET_NAME" id:"063"
     profile=$1
     client=$2
+    BUCKET_NAME=$(get_test_bucket_name)
     objects=""
     for file in $remaining_files; do
       object_key=$(get_uploaded_key "$file")
@@ -172,6 +193,7 @@ Describe 'Delete' category:"Object Management"
 
       When run aws --profile "$profile" s3api delete-objects --bucket "$BUCKET_NAME" --delete "$s3api_objects"
       for object_key in $objects; do
+        The status should be success
         The output should include "\"Key\": \"$object_key\""
       done
       ;;
@@ -183,6 +205,7 @@ Describe 'Delete' category:"Object Management"
 
       When run aws --profile $profile s3 rm "s3://$BUCKET_NAME/" --recursive --exclude "*" $s3_args
       for object_key in $objects; do
+        The status should be success
         The output should include "delete: s3://$BUCKET_NAME/$object_key"
       done
       ;;
@@ -192,18 +215,28 @@ Describe 'Delete' category:"Object Management"
 
       When run rclone delete "$profile:$BUCKET_NAME" --include "{$rclone_objects}" --dump headers
       for object_key in $objects; do
+        The status should be success
         The error should include "$object_key: Deleted"
       done
       ;;
+    "mgc")
+      :;
+      ;;
     esac
-    The status should be success
   End
   End
 End
 
 teardown(){
-  for profile in $PROFILES; do
-    remove_test_bucket $profile $UNIQUE_SUFIX
-  done
+  remove_test_bucket $profile $UNIQUE_SUFIX
 }
-teardown
+Describe 'Teardown 53,57,61,62,63'
+  Parameters:matrix
+    $PROFILES
+  End
+  Example "remove test bucket if it was recently created" id:"053" id:"057" id:"061" id:"062" id:"063"
+    profile=$1
+    When call teardown
+    The status should be success
+  End
+End
