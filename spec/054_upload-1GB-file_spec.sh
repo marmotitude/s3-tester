@@ -32,13 +32,9 @@ Include ./spec/054_utils.sh
 % UNIQUE_SUFIX: $(date +%s)
 
 setup(){
+  # create local file if needed
   file_size=$1
   file_unit=$2
-  for profile in $PROFILES; do
-    create_test_bucket $profile
-  done
-  BUCKET_NAME=$(get_test_bucket_name)
-  create_file "$file_size" "$file_unit"
 }
 
 exists_var(){
@@ -48,11 +44,23 @@ exists_var(){
     return 1
   fi
 }
+Describe 'Setup 54,55,56,58,59,60'
+  Parameters:matrix
+    $PROFILES
+  End
+  Example "create test bucket" id:"054" id:"055" id:"056" id:"058" id:"059" id:"060"
+    profile=$1
+    bucket_name=$(get_test_bucket_name)
+    # rclone wont exit 1 even if the bucket exists, which makes this action indepotent
+    When run rclone mkdir "$profile:$bucket_name"
+    The status should be success
+  End
+End
+
 
 file_size="1"
 file_unit="gb"
 Describe "of size ${file_size}${file_unit}"
-  setup "$file_size" "$file_unit"
 
   Parameters:matrix
     $PROFILES
@@ -62,59 +70,73 @@ Describe "of size ${file_size}${file_unit}"
   Describe "Upload Files" category:"Object Management" id:"054" id:"058"
     #Skip if "Uploaded file exists" exists_1gb_file
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_1GB"
-    Example "on profile $1, using client $2, upload $local_file name $filename to bucket $BUCKET_NAME"
+    Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api put-object --bucket $BUCKET_NAME --body $local_file --key $key
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp $local_file "s3://$BUCKET_NAME/$key"
+        The status should be success
         The output should include "upload: "
         The output should include "$local_file to s3://$BUCKET_NAME/$key"
         ;;
       "rclone")
         When run rclone copyto $local_file $profile:$BUCKET_NAME/$key --no-check-dest -v
+        The status should be success
         The error should include " Copied"
         The error should include "to: $key"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
   End
   Describe "Download Files" category:"Object Management"
-    Example "on profile $1, using client $2, download $filename from bucket $BUCKET_NAME" id:"058"
+    Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"058"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       out_file="/tmp/$key"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api get-object --bucket $BUCKET_NAME --key $key $out_file
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp "s3://$BUCKET_NAME/$key" $out_file
+        The status should be success
         The output should include "download: s3://$BUCKET_NAME/$key"
         The output should include "$out_file"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
+        The status should be success
         The error should include "$object_key: "
         The error should include "Copied"
         The error should include ", 100%"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
   End
 End
+
 file_size="5"
 Describe "of size ${file_size}${file_unit}"
-  setup "$file_size" "$file_unit"
 
   Parameters:matrix
     $PROFILES
@@ -123,59 +145,72 @@ Describe "of size ${file_size}${file_unit}"
 
   Describe "Upload Files" category:"Object Management" id:"055" id:"059"
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_5GB"
-    Example "on profile $1, using client $2, upload $local_file name $filename to bucket $BUCKET_NAME"
+    Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api put-object --bucket $BUCKET_NAME --body $local_file --key $key
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp $local_file "s3://$BUCKET_NAME/$key"
+        The status should be success
         The output should include "upload: "
         The output should include "$local_file to s3://$BUCKET_NAME/$key"
         ;;
       "rclone")
         When run rclone copyto $local_file $profile:$BUCKET_NAME/$key --no-check-dest -v
+        The status should be success
         The error should include " Copied"
         The error should include "to: $key"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
   End
   Describe "Download Files" category:"Object Management"
-    Example "on profile $1, using client $2, download $filename from bucket $BUCKET_NAME" id:"059"
+    Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"059"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       out_file="/tmp/$key"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api get-object --bucket $BUCKET_NAME --key $key $out_file
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp "s3://$BUCKET_NAME/$key" $out_file
+        The status should be success
         The output should include "download: s3://$BUCKET_NAME/$key"
         The output should include "$out_file"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
+        The status should be success
         The error should include "$object_key: "
         The error should include "Copied"
         The error should include ", 100%"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
   End
 End
 file_size="10"
 Describe "of size ${file_size}${file_unit}"
-  setup "$file_size" "$file_unit"
 
   Parameters:matrix
     $PROFILES
@@ -184,53 +219,81 @@ Describe "of size ${file_size}${file_unit}"
 
   Describe "Upload Files" category:"Object Management" id:"056" id:"060"
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_10GB"
-    Example "on profile $1, using client $2, upload $local_file name $filename to bucket $BUCKET_NAME"
+    Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api put-object --bucket $BUCKET_NAME --body $local_file --key $key
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp $local_file "s3://$BUCKET_NAME/$key"
+        The status should be success
         The output should include "upload: "
         The output should include "$local_file to s3://$BUCKET_NAME/$key"
         ;;
       "rclone")
         When run rclone copyto $local_file $profile:$BUCKET_NAME/$key --no-check-dest -v
+        The status should be success
         The error should include " Copied"
         The error should include "to: $key"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
   End
   Describe "Download Files" category:"Object Management"
-    Example "on profile $1, using client $2, download $filename from bucket $BUCKET_NAME" id:"060"
+    Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"060"
+      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
+      BUCKET_NAME=$(get_test_bucket_name)
       key="test-${profile}__${client}__${filename}"
       out_file="/tmp/$key"
       case "$client" in
       "aws-s3api" | "aws")
         When run aws --profile $profile s3api get-object --bucket $BUCKET_NAME --key $key $out_file
+        The status should be success
         The output should include "ETag"
         ;;
       "aws-s3")
         When run aws --profile $profile s3 cp "s3://$BUCKET_NAME/$key" $out_file
+        The status should be success
         The output should include "download: s3://$BUCKET_NAME/$key"
         The output should include "$out_file"
         ;;
       "rclone")
         When run rclone copyto $profile:$BUCKET_NAME/$key $out_file -v --no-check-dest
+        The status should be success
         The error should include "$object_key: "
         The error should include "Copied"
         The error should include ", 100%"
         ;;
+      "mgc")
+        :;
+        ;;
       esac
-      The status should be success
     End
+  End
+End
+
+teardown(){
+  remove_test_bucket $profile $UNIQUE_SUFIX
+}
+Describe 'Teardown 54,55,56,58,59,60'
+  Parameters:matrix
+    $PROFILES
+  End
+  Example "remove test bucket if it was recently created" id:"054" id:"055" id:"056" id:"058" id:"059" id:"060"
+    profile=$1
+    When call teardown
+    The status should be success
   End
 End
