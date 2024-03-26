@@ -30,6 +30,11 @@ Describe 'Create bucket' category:"Bucket Management" id:"001"
       The status should be success
       The error should include "Bucket \"$bucket_name\" created"
       ;;
+    "mgc")
+      When run mgc object-storage buckets create "$bucket_name"
+      The status should be success
+      The output should include "Created bucket $bucket_name"
+      ;;
     esac
   End
 End
