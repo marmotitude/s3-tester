@@ -27,7 +27,6 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
     The status should be success
     The output should include Copyright
     The error should include Current
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
       ;;
     "rclone")
       Skip "Skipped test to $client"
