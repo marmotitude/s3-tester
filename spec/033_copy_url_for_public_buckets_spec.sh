@@ -22,6 +22,7 @@ Describe 'Copy URL for public buckets:' category:"Bucket Permission"
     Skip "Skipped test to $client"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage buckets public-url --dst $bucket_name-$client
       The output should include "$bucket_name-$client"
       ;;

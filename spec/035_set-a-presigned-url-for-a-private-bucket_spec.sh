@@ -9,7 +9,7 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"035"
-    profile=$1-second
+    profile=$1
     client=$2
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null

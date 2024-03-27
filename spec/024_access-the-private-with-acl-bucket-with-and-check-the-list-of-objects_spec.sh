@@ -30,11 +30,10 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     The output should include "$file1_name"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
-      # When run mgc object-storage objects list --dst $bucket_name-$client
-      # The status should be success
-      # The output should include $file1_name
-      # mgc object-storage buckets delete $bucket_name-$client -f --force
+      mgc profile set-current $profile-second > /dev/null
+      #Skip "Skipped test to $client"
+      When run mgc object-storage objects list --dst $bucket_name-$client
+      The output should include $file1_name
       ;;
     esac
     The status should be success
