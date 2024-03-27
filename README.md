@@ -95,17 +95,17 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 051 | Object Versioning|Delete versions| |
 | 052 | Object Versioning|Delete versions in batch| |
 |||||
-| 053 | Object Management|Upload Files| aws-s3api, aws-s3, rclone |
-| 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone |
-| 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone |
-| 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone |
-| 057 | Object Management|Download Files| aws-s3api, aws-s3, rclone |
-| 058 | Object Management|Download Files of 1GB| aws-s3api, aws-s3, rclone |
-| 059 | Object Management|Download Files of 5GB| aws-s3api, aws-s3, rclone |
-| 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone |
-| 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone |
-| 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone |
-| 063 | Object Management|Delete objects in batch| aws-s3api, aws-s3, rclone |
+| 053 | Object Management|Upload Files| aws-s3api, aws-s3, rclone, mgc |
+| 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
+| 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
+| 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
+| 057 | Object Management|Download Files| aws-s3api, aws-s3, rclone, mgc |
+| 058 | Object Management|Download Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
+| 059 | Object Management|Download Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
+| 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
+| 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone, mgc |
+| 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone, mgc |
+| 063 | Object Management|Delete objects in batch| aws-s3api, aws-s3, rclone, mgc(failing) |
 | 064 | Object Management|Delete object veresioned| |
 | 065 | Object Management|Pause upload of multiparts| |
 | 066 | Object Management|Pause download of multiparts| |
