@@ -7,6 +7,7 @@
 # The Download tests (058,059,060) also accepts an env var with `bucket/key`
 # names, if passed the upload part is skipped, see env var names below.
 #
+# You can also use an env var to test with smaller sizes, use mb as size unit instead of gb
 # Tests:
 #   - "054 Upload Files of  1GB" and "058 Download Files of  1GB"
 #   - "055 Upload Files of  5GB" and "059 Download Files of  5GB"
@@ -17,6 +18,7 @@
 #| Name               | Example                | Description                                 |
 #|--------------------|------------------------|---------------------------------------------|
 #| $TEST_BUCKET_NAME  | mybucketname           | an existing bucket to be reused             |
+#| $SIZE_UNIT         | mb                     | uses 1, 5, 10 Mb istead of Gb               |
 #| $OBJECT_URI_1GB    | mybucketname/my1GBkey  | an existing object of 1GB to be downloaded  |
 #| $OBJECT_URI_5GB    | mybucketname/my5GBkey  | an existing object of 5GB to be downloaded  |
 #| $OBJECT_URI_10GB   | mybucketname/my10Gkey  | an existing object of 10GB to be downloaded |
@@ -30,12 +32,6 @@ Include ./spec/054_utils.sh
 
 # constants
 % UNIQUE_SUFIX: $(date +%s)
-
-setup(){
-  # create local file if needed
-  file_size=$1
-  file_unit=$2
-}
 
 exists_var(){
   if [ -n "${!1}" ]; then
@@ -59,16 +55,13 @@ End
 
 
 file_size="1"
-file_unit="gb"
+file_unit=${SIZE_UNIT:-"gb"}
 Describe "of size ${file_size}${file_unit}"
-
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-
   Describe "Upload Files" category:"Object Management" id:"054" id:"058"
-    #Skip if "Uploaded file exists" exists_1gb_file
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_1GB"
     Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
       create_file "$file_size" "$file_unit"
@@ -95,7 +88,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -128,7 +123,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
         ;;
       esac
     End
@@ -170,7 +167,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -203,7 +202,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
         ;;
       esac
     End
@@ -244,7 +245,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -277,7 +280,9 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
-        :;
+        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
+        The status should be success
+        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
         ;;
       esac
     End
