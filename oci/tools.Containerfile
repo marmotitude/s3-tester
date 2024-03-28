@@ -12,7 +12,7 @@ ARG RCLONE_VERSION="1.66.0"
 FROM ubuntu:${UBUNTU_VERSION}
 RUN apt update && \
     apt install -y \
-      curl git unzip
+      curl git unzip dasel
 
 WORKDIR /downloads
 
