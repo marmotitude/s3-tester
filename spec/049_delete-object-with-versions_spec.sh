@@ -25,8 +25,9 @@ Describe 'Delete object with versions:' category:"Object Versioning"
     The output should include ""
       ;;
     "mgc")
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    Skip "Skipped test to $client"
+    mgc profile set-current $profile > /dev/null
+    When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name -f
+    The output should include ""
       ;;
     esac
     The status should be success
