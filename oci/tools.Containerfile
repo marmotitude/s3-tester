@@ -1,6 +1,6 @@
 # This OCI image contains the required tools to run the tests: awscli, rclone, mgc and shellspec
 # you can use it with distrobox to have a quick "all-in-one" environment for executing them
-# or as a basis for other images that want to include the compatibility tests
+# or as a basis for other images that uses this tools
 
 # Build arguments, versions of the pieces
 ARG UBUNTU_VERSION="24.04"
@@ -20,6 +20,11 @@ WORKDIR /downloads
 ARG SHELLSPEC_VERSION
 RUN curl -fsSL https://git.io/shellspec | sh -s ${SHELLSPEC_VERSION} -y -p "/tools/shellspec"
 ENV PATH "/tools/shellspec/bin:${PATH}"
+
+# gotpl
+RUN curl "https://github.com/belitre/gotpl/releases/download/v0.7/gotpl-v0.7-linux-amd64.zip" -Lo "gotpl.zip" && \
+    unzip gotpl.zip -d "/tools/gotpl"
+ENV PATH "/tools/gotpl/linux-amd64:${PATH}"
 
 # aws-cli
 ARG AWS_CLI_VERSION
