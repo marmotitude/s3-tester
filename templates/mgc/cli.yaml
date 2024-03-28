@@ -1,0 +1,1 @@
+serverurl: {{ .endpoint }}

@@ -1,0 +1,6 @@
+{{range $profile_name, $profile := .}}
+  [profile {{$profile_name }}]
+  endpoint_url = {{ $profile.endpoint }}
+  region = {{ $profile.region }}
+{{end}}
+
