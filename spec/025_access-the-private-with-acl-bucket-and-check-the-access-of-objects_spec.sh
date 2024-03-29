@@ -32,18 +32,13 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     # todo: its true if where dont have access the status is success but dont make download? test in other providers
       ;;
     "mgc")
-      Skip "Skipped test to $client"
-      # mgc object-storage buckets create $bucket_name-$client
-      # mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
-      # mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
-      # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name .
-      # The status should be failure
-      # The output should include "403"
-      # mgc object-storage buckets delete $bucket_name-$client -f --force
+      mgc profile set-current $profile-second > /dev/null
+      #Skip "Skipped test to $client"
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2
+      The stderr should include "403"
       ;;
     esac
     The status should be failure
     aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
-    Dump
   End
 End

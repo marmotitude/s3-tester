@@ -24,7 +24,11 @@ Describe 'get-presign:' category:"Bucket Sharing"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+    mgc profile set-current $profile > /dev/null
+    presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m")
+    When run curl $presign_url
+    The output should include Copyright
+    The error should include Current
       ;;
     esac
     The status should be success

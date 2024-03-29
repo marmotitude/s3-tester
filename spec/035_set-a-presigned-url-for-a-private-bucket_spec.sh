@@ -9,7 +9,7 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"035"
-    profile=$1-second
+    profile=$1
     client=$2
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
@@ -23,7 +23,10 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+    mgc profile set-current $profile > /dev/null
+    When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m"
+    The status should be success
+    The output should include X-Amz-Algorithm
       ;;
     esac
     aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null

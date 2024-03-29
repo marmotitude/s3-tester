@@ -22,6 +22,7 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
     The output should include ""
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage buckets delete $bucket_name-$client -f
       The output should include ""
       ;;

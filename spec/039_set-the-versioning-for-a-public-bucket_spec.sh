@@ -21,8 +21,9 @@ Describe 'Set the versioning for a public bucket:' category:"Object Versioning"
       Skip "Skipped test to $client"
       ;;
     "mgc")
+    mgc profile set-current $profile > /dev/null
     When run mgc object-storage buckets versioning enable $bucket_name-$client
-    The output should include ""
+    The output should include "Enabled versioning for $bucket_name-$client"
       ;;
     esac
     The status should be success

@@ -25,6 +25,7 @@ Describe 'Upload object to versioning in the public bucket:' category:"Object Ve
     The output should include ""
       ;;
     "mgc")
+    mgc profile set-current $profile > /dev/null
     When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
     The status should be success
     The output should include ""
