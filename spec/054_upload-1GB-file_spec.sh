@@ -88,6 +88,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
@@ -123,6 +124,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
@@ -167,6 +169,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
@@ -202,6 +205,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
@@ -245,6 +249,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include "to: $key"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
@@ -280,6 +285,7 @@ Describe "of size ${file_size}${file_unit}"
         The error should include ", 100%"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key"
         The status should be success
         The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
