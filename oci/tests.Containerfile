@@ -11,8 +11,9 @@ COPY README.md README.md
 COPY LICENSE LICENSE
 
 # scripts
-COPY test.sh test.sh
+COPY replace_configs.sh replace_configs.sh
 COPY vendor/yaacov/argparse.sh vendor/yaacov/argparse.sh
+COPY test.sh test.sh
 
 # config templates and entrypoint
 COPY templates /app/templates
