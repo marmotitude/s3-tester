@@ -1,3 +1,10 @@
+exists_var(){
+  if [ -n "${!1}" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
 # creates a zero filled file of ${1} GB on the tmp dir and sets path to $local_file variable
 create_file(){
   size=$1

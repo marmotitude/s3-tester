@@ -27,20 +27,13 @@
 
 # import functions: get_test_bucket_name, create_test_bucket, remove_test_bucket
 Include ./spec/053_utils.sh
-# import function create_file
+# import functions: exist_var create_file
 Include ./spec/054_utils.sh
 
 # constants
 % UNIQUE_SUFIX: $(date +%s)
 
-exists_var(){
-  if [ -n "${!1}" ]; then
-    return 0
-  else
-    return 1
-  fi
-}
-Describe 'Setup 54,55,56,58,59,60'
+Describe 'Setup 54,55,56,58,59,60' category:"Object Management"
   Parameters:matrix
     $PROFILES
   End
@@ -56,12 +49,12 @@ End
 
 file_size="1"
 file_unit=${SIZE_UNIT:-"gb"}
-Describe "of size ${file_size}${file_unit}"
+Describe "of size ${file_size}${file_unit}" category:"Object Management"
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Describe "Upload Files" category:"Object Management" id:"054" id:"058"
+  Describe "Upload Files" id:"054" id:"058"
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_1GB"
     Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
       create_file "$file_size" "$file_unit"
@@ -135,14 +128,14 @@ Describe "of size ${file_size}${file_unit}"
 End
 
 file_size="5"
-Describe "of size ${file_size}${file_unit}"
+Describe "of size ${file_size}${file_unit}" category:"Object Management"
 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
 
-  Describe "Upload Files" category:"Object Management" id:"055" id:"059"
+  Describe "Upload Files" id:"055" id:"059"
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_5GB"
     Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
       create_file "$file_size" "$file_unit"
@@ -215,14 +208,14 @@ Describe "of size ${file_size}${file_unit}"
   End
 End
 file_size="10"
-Describe "of size ${file_size}${file_unit}"
+Describe "of size ${file_size}${file_unit}" category:"Object Management"
 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
 
-  Describe "Upload Files" category:"Object Management" id:"056" id:"060"
+  Describe "Upload Files" id:"056" id:"060"
     Skip if "Uploaded file exists" exists_var "OBJECT_URI_10GB"
     Example "on profile $1, using client $2, upload $file_size$file_unit to bucket $BUCKET_NAME"
       create_file "$file_size" "$file_unit"
@@ -257,7 +250,7 @@ Describe "of size ${file_size}${file_unit}"
       esac
     End
   End
-  Describe "Download Files" category:"Object Management"
+  Describe "Download Files"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"060"
       create_file "$file_size" "$file_unit"
       profile=$1
@@ -296,9 +289,9 @@ Describe "of size ${file_size}${file_unit}"
 End
 
 teardown(){
-  remove_test_bucket $profile $UNIQUE_SUFIX
+  remove_test_bucket $profile
 }
-Describe 'Teardown 54,55,56,58,59,60'
+Describe 'Teardown 54,55,56,58,59,60' category:"Object Management"
   Parameters:matrix
     $PROFILES
   End
