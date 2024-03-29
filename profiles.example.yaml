@@ -3,14 +3,8 @@ profile1:
   region: ""
   access_key: ""
   secret_key: ""
-  # while mgc still requires an access token :(
-  access_token: ""
-  refresh_token: ""
 profile2:
   endpoint: ""
   region: ""
   access_key: ""
   secret_key: ""
-  # while mgc still requires an access token :(
-  access_token: ""
-  refresh_token: ""
