@@ -21,6 +21,19 @@ Example:
 ./test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61
 ```
 
+The tests assumes that you have configured all cli tools (aws-cli, rclone and mgc) with the same
+profile names. And tests like the ACL ones that needs 2 profiles uses a convention of the second
+one being named `<name-of-one-profile>-second`.
+
+### Profiles (optional)
+
+To make the process of setting multiple profiles on multiple tools less manual, 
+there is a shell script that replaces existing config files with new ones created using data
+from a single `profiles.yaml` generic config, use `profiles.example.yaml` as an example:
+
+```
+./replace_configs.sh
+```
 
 ## License
 
