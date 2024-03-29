@@ -6,7 +6,6 @@ A reboot of https://github.com/marmotitude/object-storage-tests
 
 ```
 # run multiple tests separated by comma, using the provided options
-# use --help to see options
 ./test.sh [OPTIONS] --tests [TEST_ID...]
 
 ```
