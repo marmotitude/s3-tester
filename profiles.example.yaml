@@ -1,0 +1,10 @@
+profile1:
+  endpoint: ""
+  region: ""
+  access_key: ""
+  secret_key: ""
+profile2:
+  endpoint: ""
+  region: ""
+  access_key: ""
+  secret_key: ""

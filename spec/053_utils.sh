@@ -1,9 +1,9 @@
 get_test_bucket_name(){
-    if [[ -n $TEST_BUCKET_NAME ]];then
-      echo "$TEST_BUCKET_NAME"
-    else
-      echo "test-$UNIQUE_SUFIX"
-    fi
+  if [[ -n $TEST_BUCKET_NAME ]];then
+    echo "$TEST_BUCKET_NAME"
+  else
+    echo "test-$profile-$UNIQUE_SUFIX"
+  fi
 }
 get_uploaded_key(){
   echo "test--$profile--$client--$1--$UNIQUE_SUFIX"
