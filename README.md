@@ -4,6 +4,8 @@ A reboot of https://github.com/marmotitude/object-storage-tests
 
 ## Usage
 
+(this project can be used from an all-in-one Docker image, if you preffer this approach see [oci/README.md](./oci/README.md))
+
 ```
 # run multiple tests separated by comma, using the provided options
 ./test.sh [OPTIONS] --tests [TEST_ID...]
