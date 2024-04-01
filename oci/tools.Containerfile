@@ -12,7 +12,7 @@ ARG RCLONE_VERSION="1.66.0"
 FROM ubuntu:${UBUNTU_VERSION}
 RUN apt update && \
     apt install -y \
-      curl git unzip dasel
+      curl git unzip
 
 WORKDIR /downloads
 
@@ -25,6 +25,10 @@ ENV PATH "/tools/shellspec/bin:${PATH}"
 RUN curl "https://github.com/belitre/gotpl/releases/download/v0.7/gotpl-v0.7-linux-amd64.zip" -Lo "gotpl.zip" && \
     unzip gotpl.zip -d "/tools/gotpl"
 ENV PATH "/tools/gotpl/linux-amd64:${PATH}"
+
+# dasel
+RUN curl -sSLf "$(curl -sSLf https://api.github.com/repos/tomwright/dasel/releases/latest | grep browser_download_url | grep linux_amd64 | grep -v .gz | cut -d\" -f 4)" -L -o dasel && chmod +x dasel
+RUN mv ./dasel /usr/local/bin/dasel
 
 # aws-cli
 ARG AWS_CLI_VERSION
