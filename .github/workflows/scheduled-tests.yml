@@ -1,0 +1,22 @@
+name: Scheduled test runs
+
+on:
+  schedule:
+    - cron:  '*/30 * * * *'
+
+env:
+  PROFILES: ${{ secrets.profiles }}
+
+jobs:
+  test_schedule:
+    runs-on: ubuntu-latest
+    container: ghcr.io/marmotitude/s3-tester:tests
+    steps:
+      - name: Every time
+        run: |
+          cd /app
+          mgc --version
+          sha256sum `which mgc`
+          # profile default is br-ne1
+          ./entrypoint.sh --profiles default,br-se1 --tests 53,57,61,62,63
+
