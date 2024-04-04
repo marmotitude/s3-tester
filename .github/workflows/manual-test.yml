@@ -7,7 +7,7 @@ on:
         description: "List of profiles from $PROFILES secret env var"
         type: string
         required: false
-        default: "default,br-se1"
+        default: "br-ne1,br-se1"
       tests:
         description: "List of test ids, see README for the table"
         type: string
