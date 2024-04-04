@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
-      - name: Every time
+      - name: "Upload, List, Download, Delete"
         run: |
           cd /app
           mgc --version
