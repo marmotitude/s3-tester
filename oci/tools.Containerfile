@@ -1,51 +1,66 @@
-# This OCI image contains the required tools to run the tests: awscli, rclone, mgc and shellspec
-# you can use it with distrobox to have a quick "all-in-one" environment for executing them
-# or as a basis for other images that uses this tools
+# Overview
+#
+# This OCI image contains the following tools used by the tests:
+# dasel, gotpl, shellspec, awscli, rclone, mgccli
 
-# Build arguments, versions of the pieces
+# Build args
+# version of the base image
+#ARG UBUNTU_VERSION="22.04" # LTS until 2027
 ARG UBUNTU_VERSION="24.04"
+# version of the tools
+ARG DASEL_VERSION="2.7.0"
+ARG GOTPL_VERSION="0.7"
 ARG SHELLSPEC_VERSION="0.28.1"
 ARG AWS_CLI_VERSION="2.15.27"
 ARG RCLONE_VERSION="1.66.0"
-
-# Main image
-FROM ubuntu:${UBUNTU_VERSION}
-RUN apt update && \
-    apt install -y \
-      curl git unzip jq
-
-WORKDIR /downloads
-
-# shellspec
-ARG SHELLSPEC_VERSION
-RUN curl -fsSL https://git.io/shellspec | sh -s ${SHELLSPEC_VERSION} -y -p "/tools/shellspec"
-ENV PATH "/tools/shellspec/bin:${PATH}"
-
-# gotpl
-RUN curl "https://github.com/belitre/gotpl/releases/download/v0.7/gotpl-v0.7-linux-amd64.zip" -Lo "gotpl.zip" && \
-    unzip gotpl.zip -d "/tools/gotpl"
-ENV PATH "/tools/gotpl/linux-amd64:${PATH}"
-
-# dasel
-RUN curl -sSLf "$(curl -sSLf https://api.github.com/repos/tomwright/dasel/releases/latest | grep browser_download_url | grep linux_amd64 | grep -v .gz | cut -d\" -f 4)" -L -o dasel && chmod +x dasel
-RUN mv ./dasel /usr/local/bin/dasel
+ARG MGC_VERSION="0.18.4-rc4"
 
 # aws-cli
-ARG AWS_CLI_VERSION
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install --bin-dir /tools/aws-cli/
-ENV PATH "/tools/aws-cli:${PATH}"
+FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
 
-# rlone
+# Tools downloader
+FROM alpine as downloader
+RUN apk add --no-cache curl unzip
+WORKDIR /tools
+# rclone
 ARG RCLONE_VERSION
-RUN curl "https://downloads.rclone.org/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.zip" -o rclone.zip && \
-    unzip -a rclone.zip -d "/tools"
-ENV PATH "/tools/rclone-v${RCLONE_VERSION}-linux-amd64:${PATH}"
-
+RUN curl -Lo rclone.zip "https://downloads.rclone.org/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-amd64.zip" && \
+    unzip -a rclone.zip && rm rclone.zip && \
+    ln -s "/tools/rclone-v${RCLONE_VERSION}-linux-amd64/rclone" /usr/local/bin/rclone
+# dasel
+ARG DASEL_VERSION
+RUN curl -Lo dasel -sSf "$(curl -sSLf https://api.github.com/repos/tomwright/dasel/releases/tags/v${DASEL_VERSION} | grep browser_download_url | grep linux_amd64 | grep -v .gz | cut -d\" -f 4)" && \
+    chmod +x dasel && \
+    ln -s "/tools/dasel" /usr/local/bin/dasel
+# gotpl
+ARG GOTPL_VERSION
+RUN curl -Lo gotpl.zip "https://github.com/belitre/gotpl/releases/download/v${GOTPL_VERSION}/gotpl-v${GOTPL_VERSION}-linux-amd64.zip" && \
+    unzip gotpl.zip -d "/tools/gotpl" && rm gotpl.zip && \
+    ln -s "/tools/gotpl/linux-amd64/gotpl" /usr/local/bin/gotpl
+# shellspec
+ARG SHELLSPEC_VERSION
+RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${SHELLSPEC_VERSION}.tar.gz" && \
+    tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
+    ln -s "/tools/shellspec-${SHELLSPEC_VERSION}/shellspec" /usr/local/bin/
 # mgc
 # TODO: download an specific version from a canonical distribution url
 #       like the Github releases page, when it becomes available
 #       for now, we are including the binary in the repo
-COPY vendor/mgc/mgc_latest /tools/mgc/mgc
-ENV PATH "/tools/mgc:${PATH}"
+ARG MGC_VERSION
+COPY "vendor/mgc/mgccli_${MGC_VERSION}_linux_amd64.tar.gz" /tools/mgc.tar.gz
+RUN tar xzvf mgc.tar.gz && rm mgc.tar.gz && \
+    ln -s "/tools/mgc" /usr/local/bin/mgc
+
+# Main image
+FROM ubuntu:${UBUNTU_VERSION} as main
+## aws
+ARG AWS_CLI_VERSION
+COPY --from=awscli /usr/local/aws-cli/ /tools/aws-cli/
+RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
+    ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws_completer" /usr/local/bin/aws_completer
+# jq
+RUN apt update && apt install -y jq
+# rclone, dasel, gotpl, shellspec, mgc
+COPY --from=downloader /tools/ /tools/
+COPY --from=downloader /usr/local/bin/ /usr/local/bin/
+
