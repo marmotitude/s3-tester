@@ -17,5 +17,5 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles "${{ vars.CRON_TEST_PROFILES }}" --tests "${{ vars.CRON_TEST_TESTS}}" --clients "${{ vars.CRON_TEST_CLIENTS }}
+          ./entrypoint.sh --profiles "${{ vars.CRON_TEST_PROFILES }}" --tests "${{ vars.CRON_TEST_TESTS}}" --clients "${{ vars.CRON_TEST_CLIENTS }}"
 
