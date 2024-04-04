@@ -17,6 +17,5 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          # profile default is br-ne1
-          ./entrypoint.sh --profiles default,br-se1 --tests 53,57,61,62,63
+          ./entrypoint.sh --profiles "${{ vars.CRON_TEST_PROFILES }}" --tests "${{ vars.CRON_TEST_TESTS}}" --clients "${{ vars.CRON_TEST_CLIENTS }}
 
