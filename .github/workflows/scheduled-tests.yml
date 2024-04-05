@@ -9,7 +9,7 @@ env:
   PROFILES: ${{ secrets.profiles }}
 
 jobs:
-  "Tests: ${{ vars.CRON_TESTS_1}}":
+  "CRON_TESTS_1":
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
