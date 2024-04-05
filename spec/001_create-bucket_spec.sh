@@ -31,6 +31,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001"
       The error should include "Bucket \"$bucket_name\" created"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage buckets create "$bucket_name"
       The status should be success
       The output should include "Created bucket $bucket_name"
