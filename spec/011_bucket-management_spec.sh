@@ -7,7 +7,7 @@ delete_bucket() {
   aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
 }
 
-Describe 'List buckets' category:"Bucket Management"
+Describe 'List buckets' category:"Bucket Management" id:"011"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -55,7 +55,7 @@ Describe 'Delete buckets' category:"Bucket Management"
 
   PREFIX="s3-tester-$(openssl rand -hex 10 | tr -dc 'a-z0-9' | head -c 10)"
   bucket_name="$PREFIX-foo"
-  Example "delete empty bucket $bucket_name on profile $1 using client $2"
+  Example "delete empty bucket $bucket_name on profile $1 using client $2" id:"015"
     profile=$1
     client=$2
 
@@ -85,7 +85,7 @@ Describe 'Delete buckets' category:"Bucket Management"
     The status should be success
   End
 
-  Example "delete bucket with data $bucket_name on profile $1 using client $2"
+  Example "delete bucket with data $bucket_name on profile $1 using client $2" id:"016"
     profile=$1
     client=$2
 

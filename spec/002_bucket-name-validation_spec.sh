@@ -38,12 +38,13 @@ Describe 'Create bucket' category:"Bucket Management"
         The error should include "make_bucket failed: s3://foo bar Parameter validation failed"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name"
-        The error should include "InvalidBucketName"
+        The error should include "Error: (InvalidBucketName) 400 Bad Request - The specified bucket is not valid."
         ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v
-        The error should include "Failed to mkdir"
+        The error should include "Failed to mkdir: InvalidBucketName: The specified bucket is not valid."
         ;;
       esac
       The status should be failure
