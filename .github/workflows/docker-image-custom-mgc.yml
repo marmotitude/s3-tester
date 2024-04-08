@@ -1,0 +1,71 @@
+name: "Builds tests.Containerfile using a custom build for mgccli"
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: "Where to fetch MGCCLI's source code"
+        type: string
+        required: false
+        default: "MagaluCloud/magalu"
+      ref:
+        description: "The branch name, tag or commit hash to use"
+        type: string
+        required: false
+        default: "main"
+  push:
+    branches:
+      - custom-mgc-from-source
+
+env:
+  DESIRED_DIST_REGEXP: "^linux/\amd64"
+  #MGC_REPOSITORY: "${{ inputs.repository }}"
+  MGC_REPOSITORY: "MagaluCloud/magalu"
+  #MGC_REF: "${{ inputs.ref }}"
+  MGC_REF: "main"
+
+jobs:
+  fooobuild:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ inputs.repository }}"
+      - name: Checkout mgccli source Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MGC_REPOSITORY }}
+          ref: ${{ env.MGC_REF }}
+          token: ${{ secrets.MGCCLI_SOURCE_GH_PAT }}
+#      - name: Setup Go
+#        uses: actions/setup-go@v4
+#        with:
+#          go-version: '>=1.17.0'
+#          cache-dependency-path: "**/go.sum"
+#      - run: go version
+#      - name: Build CLI
+#        env:
+#          VERSION: CI
+#          CHECK_RELEASE: 0
+#        run: |
+#          ./scripts/build_release.sh
+#          pwd
+#          ls
+#          ls build
+#          ls build/mgc-cli-linux-amd64
+#    - name: Checkout s3-tester Repository
+#      uses: actions/checkout@v4
+#
+#    - name: Login to Github Container Registry
+#      uses: docker/login-action@v3
+#      with:
+#        registry: ${{ env.REGISTRY }}
+#        username: ${{ github.repository_owner }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
+#
+#    - name: "Build and push OCI image, tag: tests"
+#      uses: docker/build-push-action@v5.3.0
+#      with:
+#        context: .
+#        push: true
+#        file: oci/tests.Containerfile
+#        tags: |
+#          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests-custom-mgc
+#          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests-custom-mgc-${{inputs.ref}}
