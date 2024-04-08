@@ -13,7 +13,7 @@ ARG GOTPL_VERSION="0.7"
 ARG SHELLSPEC_VERSION="0.28.1"
 ARG AWS_CLI_VERSION="2.15.27"
 ARG RCLONE_VERSION="1.66.0"
-ARG MGC_VERSION="0.18.4-rc6"
+ARG MGC_VERSION="0.18.4"
 
 # aws-cli
 FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
@@ -43,12 +43,9 @@ RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${
     tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
     ln -s "/tools/shellspec-${SHELLSPEC_VERSION}/shellspec" /usr/local/bin/
 # mgc
-# TODO: download an specific version from a canonical distribution url
-#       like the Github releases page, when it becomes available
-#       for now, we are including the binary in the repo
 ARG MGC_VERSION
-COPY "vendor/mgc/mgccli_${MGC_VERSION}_linux_amd64.tar.gz" /tools/mgc.tar.gz
-RUN tar xzvf mgc.tar.gz && rm mgc.tar.gz && \
+RUN curl -Lo mgc.tar.gz "https://github.com/MagaluCloud/mgccli/releases/download/v${MGC_VERSION}/mgccli_${MGC_VERSION}_linux_amd64.tar.gz" && \
+    tar xzvf mgc.tar.gz && rm mgc.tar.gz && \
     ln -s "/tools/mgc" /usr/local/bin/mgc
 
 # Main image
