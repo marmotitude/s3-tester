@@ -17,9 +17,9 @@ Example:
 ```
 # use profiles: do-nyc and aws-east
 # to run tests: 011 (List Buckets), 053 (Upload Files) and 061 (List Objects)
-# with only the aws-cli client
+# with only the aws-cli client and passing --fail-fast to shellspec
 
-./test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61
+./test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61 -- --fail-fast
 ```
 
 The tests assumes that you have configured all cli tools (aws-cli, rclone and mgc) with the same
