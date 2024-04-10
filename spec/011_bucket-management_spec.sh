@@ -33,6 +33,7 @@ Describe 'List buckets' category:"Bucket Management" id:"011"
       The output should include "$bucket_name"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage buckets list
       The output should include "$bucket_name"
       ;;
