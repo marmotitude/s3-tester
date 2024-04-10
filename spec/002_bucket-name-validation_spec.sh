@@ -69,6 +69,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name"
         The output should include "Created bucket $bucket_name"
         ;;
@@ -98,6 +99,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name"
         The output should include "Created bucket $bucket_name"
         ;;
@@ -128,6 +130,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
+        mgc profile set-current $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name"
         The output should include "Created bucket $bucket_name"
         ;;
@@ -202,6 +205,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       The error should include "Bucket name must match the regex"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage buckets create "$bucket_name"
       The error should include "InvalidBucketName"
       ;;
