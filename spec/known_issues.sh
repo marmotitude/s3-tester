@@ -9,6 +9,9 @@ skip_known_issues(){
     if [[ "$issue" == "894" && ( "$client" == "rclone" || "$client" == "mgc" ) ]]; then
       return 0  # Issue should be skipped
     fi
+    if [[ "$issue" == "897" && "$client" == "mgc" && "$4" == "%" ]]; then
+      return 0  # Issue should be skipped
+    fi
   fi
 
   return 1  # Issue should not be skipped

@@ -53,7 +53,7 @@ Describe 'Create bucket' category:"Bucket Management"
     End
   End
 
-  bucket_name="$(openssl rand -hex 40 | tr -dc '[:lower:]' | head -c 40)"
+  bucket_name="testeee$(openssl rand -hex 40 | tr -dc '[:lower:]' | head -c 40)"
   Describe "with VALID name with only lowercase letters $bucket_name"  id:005
     Example "on profile $1 using client $2"
       profile=$1
@@ -83,7 +83,7 @@ Describe 'Create bucket' category:"Bucket Management"
     End
   End
 
-  bucket_name="$(openssl rand -hex 40 | tr -dc '0-9' | head -c 40)"
+  bucket_name="212121$(openssl rand -hex 40 | tr -dc '0-9' | head -c 40)"
   Describe "with VALID name with only numbers $bucket_name"  id:006
     Example "on profile $1 using client $2"
       profile=$1
@@ -193,7 +193,9 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
   Example "on profile $1 using client $2 with invalid character $3"
     profile=$1
     client=$2
-    bucket_name="foo$3bar"
+    char=$3
+    bucket_name="test-foo${char}bar"
+    Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -211,7 +213,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       ;;
     "rclone")
       When run rclone mkdir "$profile:$bucket_name" -v
-      The error should include "Failed to mkdir"
+      The error should include "InvalidBucketName: The specified bucket is not valid."
       ;;
     esac
     The status should be failure
