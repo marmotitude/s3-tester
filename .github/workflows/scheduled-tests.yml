@@ -4,6 +4,9 @@ on:
   schedule:
     - cron:  '30 * * * *'
     - cron:  '35 * * * *'
+  push:
+    branches:
+      - run-all-adjusts
 
 env:
   PROFILES: ${{ secrets.profiles }}
@@ -14,17 +17,18 @@ jobs:
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
       - name: "Profiles: ${{ vars.CRON_PROFILES_1 }}; Clients: ${{ vars.CRON_CLIENTS_1}}; Tests: ${{ vars.CRON_TESTS_1 }};"
-        if: github.event.schedule == '30 * * * *'
+        #if: github.event.schedule == '30 * * * *'
         run: |
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}"
+          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}" -- --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }}
       - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_1 }};"
-        if: github.event.schedule == '35 * * * *'
+        #if: github.event.schedule == '35 * * * *'
         run: |
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_2 }}"
+          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }}
+
 

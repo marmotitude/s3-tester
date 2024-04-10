@@ -1,3 +1,4 @@
+Include ./spec/known_issues.sh
 
 delete_bucket() {
   profile=$1
@@ -27,6 +28,7 @@ Describe 'Create bucket' category:"Bucket Management"
     Example "on profile $1 using client $2"
       profile=$1
       client=$2
+      Skip if "GL issue #894" skip_known_issues "894" $1 $2
 
       case "$client" in
       "aws-s3api" | "aws")
