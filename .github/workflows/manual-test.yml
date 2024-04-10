@@ -22,7 +22,7 @@ on:
         description: "Skip known issues"
         type: string
         required: false
-        default: "yes"
+        default: "no"
 
 env:
   PROFILES: ${{ secrets.profiles }}
