@@ -37,4 +37,4 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }}
+          ./entrypoint.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
