@@ -28,7 +28,7 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets acl set --grant-read id=$id --bucket $bucket_name-$client
+      When run mgc object-storage buckets acl set --grant-read id=$id --dst $bucket_name-$client
       The output should include ""
       ;;
     esac
