@@ -2,5 +2,7 @@
   [profile {{$profile_name }}]
   endpoint_url = {{ $profile.endpoint }}
   region = {{ $profile.region }}
+  s3 =
+      addressing_style = {{$remote.s3.host}}
 {{end}}
 

@@ -3,8 +3,10 @@ profile1:
   region: ""
   access_key: ""
   secret_key: ""
+  host: "virtual" 
 profile2:
   endpoint: ""
   region: ""
   access_key: ""
   secret_key: ""
+  host: "path" 
