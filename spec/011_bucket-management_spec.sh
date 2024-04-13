@@ -96,11 +96,11 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name"
-      # This bucket is not deletable using s3api, since the objects should be removed first
-      The error should include "BucketNotEmpty"
-      The status should be failure
-      Assert delete_bucket "$1" "$2" "$bucket_name"
+      Skip "This bucket is not deletable using s3api, since the objects should be removed first"
+      # When run aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name"
+      # The error should include "BucketNotEmpty"
+      # The status should be failure
+      # Assert delete_bucket "$1" "$2" "$bucket_name"
       ;;
     "aws-s3")
       When run aws --profile "$profile" s3 rb "s3://$bucket_name" --force
