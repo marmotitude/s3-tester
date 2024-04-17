@@ -1,3 +1,7 @@
+is_variable_null() {
+  [[ $1 != *"-takedown"* ]]
+}
+
 Describe 'Takedown Create bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-097-$(date +%s)"
@@ -8,8 +12,9 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"097"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-takedown")
+    Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api create-bucket --bucket $bucket_name-$client
@@ -43,8 +48,9 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"097"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-takedown")
+    Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api list-buckets
@@ -78,8 +84,9 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"097"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-takedown")
+    Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api list-objects-v2 --bucket $bucket_name-$client
@@ -114,8 +121,9 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"097"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-takedown")
+    Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api delete-object --bucket $bucket_name-$client --key $file1_name
@@ -149,8 +157,9 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"097"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-takedown")
+    Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client 

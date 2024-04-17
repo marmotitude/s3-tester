@@ -1,3 +1,7 @@
+is_variable_null() {
+  [[ $1 != *"-readonlys"* ]]
+}
+
 Describe 'Read-only Create bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-098-$(date +%s)"
@@ -8,8 +12,9 @@ Describe 'Read-only Create bucket:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"098"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-readonly")
+    Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api create-bucket --bucket $bucket_name-$client
@@ -43,8 +48,9 @@ Describe 'Read-only List buckets:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"098"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-readonly")
+    Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api list-buckets
@@ -78,8 +84,9 @@ Describe 'Read-only List objects:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"098"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-readonly")
+    Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api list-objects-v2 --bucket test-test #$bucket_name-$client
@@ -112,8 +119,9 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"098"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-readonly")
+    Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api delete-object --bucket $bucket_name-$client --key $file1_name
@@ -150,8 +158,9 @@ Describe 'Read-only Delete bucket:' category:"Bucket Permission"
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"098"
-    profile=$1
     client=$2
+    profile=$(aws configure list-profiles | grep "$1-readonly")
+    Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client 
