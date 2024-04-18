@@ -1,17 +1,17 @@
 is_variable_null() {
-  [[ $1 != *"-readonlys"* ]]
+  [[ $1 != *"-readonly"* ]]
 }
 
 Describe 'Read-only Create bucket:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-098-$(date +%s)"
+    bucket_name="test-096-$(date +%s)"
   }
   Before 'setup' 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"098"
+  Example "on profile $1 using client $2" id:"096"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
@@ -40,14 +40,14 @@ End
 
 Describe 'Read-only List buckets:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-098-$(date +%s)"
+    bucket_name="test-096-$(date +%s)"
   }
   Before 'setup' 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"098"
+  Example "on profile $1 using client $2" id:"096"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
@@ -76,14 +76,14 @@ End
 
 Describe 'Read-only List objects:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-098-$(date +%s)"
+    bucket_name="test-096-$(date +%s)"
   }
   Before 'setup' 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"098"
+  Example "on profile $1 using client $2" id:"096"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
@@ -110,7 +110,7 @@ End
 
 Describe 'Read-only Delete object:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-098-$(date +%s)"
+    bucket_name="test-096-$(date +%s)"
     file1_name="LICENSE"
   }
   Before 'setup' 
@@ -118,7 +118,7 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"098"
+  Example "on profile $1 using client $2" id:"096"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
@@ -150,14 +150,14 @@ End
 
 Describe 'Read-only Delete bucket:' category:"Bucket Permission"
   setup(){
-    bucket_name="test-098-$(date +%s)"
+    bucket_name="test-096-$(date +%s)"
   }
   Before 'setup' 
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"098"
+  Example "on profile $1 using client $2" id:"096"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
