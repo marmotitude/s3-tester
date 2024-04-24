@@ -56,7 +56,7 @@ COPY --from=awscli /usr/local/aws-cli/ /tools/aws-cli/
 RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
     ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws_completer" /usr/local/bin/aws_completer
 # additional ubuntu packages
-RUN apt update && apt install -y ca-certificates jq openssl
+RUN apt update && apt install -y ca-certificates jq openssl curl
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
