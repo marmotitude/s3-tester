@@ -28,7 +28,7 @@ def send_notification(webhook_url, not_ok_string, git_run_url):
                                 'buttonList': {
                                     'buttons': [
                                         {
-                                            'text': 'Github run link',
+                                            'text': 'View results',
                                             'onClick': {
                                                 'openLink': {
                                                     'url': git_run_url
