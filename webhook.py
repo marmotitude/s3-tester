@@ -57,7 +57,7 @@ def main():
     webhook_url = sys.argv[1]
     github_repository = sys.argv[2]
     github_run_id = sys.argv[3]
-    git_run_url = f"https://github.com/marmotitude/{github_repository}/actions/runs/{github_run_id}"
+    git_run_url = f"https://github.com/{github_repository}/actions/runs/{github_run_id}"
 
 
     # open .tap and read all lines
