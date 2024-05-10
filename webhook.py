@@ -1,64 +1,54 @@
 import os
-from json import dumps
-from httplib2 import Http
+import requests
 
 def send_notification(webhook_url, not_ok_string, git_run_url):
-    app_message ={
-        'cardsV2': [{
-            'cardId': 'createCardMessage',
-            'card': {
-                'header': {
-                    'title': 'Error',
-                    'subtitle': '',
-                    'imageUrl': 'https://avatars.githubusercontent.com/u/146738539?s=200&v=4',
-                    'imageType': 'CIRCLE'
-                },
-                'sections': [
-                    {
-                        "header": "",
-                        "collapsible": True,
-                        "uncollapsibleWidgetsCount": 0,
-                        "widgets": [
-                            {
-                                "textParagraph": {
-                                    "text": not_ok_string
-                                }
-                            },
-                            {
-                                'buttonList': {
-                                    'buttons': [
-                                        {
-                                            'text': 'View results',
-                                            'onClick': {
-                                                'openLink': {
-                                                    'url': git_run_url
+    if not_ok_string:
+        app_message ={
+            'cardsV2': [{
+                'cardId': 'createCardMessage',
+                'card': {
+                    'header': {
+                        'title': 'Error',
+                        'subtitle': '',
+                        'imageUrl': 'https://avatars.githubusercontent.com/u/146738539?s=200&v=4',
+                        'imageType': 'CIRCLE'
+                    },
+                    'sections': [
+                        {
+                            "header": '%d tests failed' % len(not_ok_string.split('\n')),
+                            "collapsible": True,
+                            "uncollapsibleWidgetsCount": 0,
+                            "widgets": [
+                                {
+                                    "textParagraph": {
+                                        "text": not_ok_string
+                                    }
+                                },
+                                {
+                                    'buttonList': {
+                                        'buttons': [
+                                            {
+                                                'text': 'View results',
+                                                'onClick': {
+                                                    'openLink': {
+                                                        'url': git_run_url
+                                                    }
                                                 }
                                             }
-                                        }
-                                    ]
+                                        ]
+                                    }
                                 }
-                            }
-                        ]
-                    }
-                ]
-            }
-        }]
-    }
+                            ]
+                        }
+                    ]
+                }
+            }]
+        }
 
-    message_headers = {"Content-Type": "application/json; charset=UTF-8"}
-    http_obj = Http()
-    if not not_ok_string:
-        return
-    else:
-        response = http_obj.request(
-            uri=webhook_url,
-            method="POST",
-            headers=message_headers,
-            body=dumps(app_message),
-        )
+        message_headers = {"Content-Type": "application/json; charset=UTF-8"}
+        requests.post(webhook_url, json=app_message, headers= message_headers)
 
 def main():
-
     webhook_url = os.environ['WEBHOOK_URL']
     git_run_url = f"https://github.com/marmotitude/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
 
@@ -67,16 +57,15 @@ def main():
         lines = file.readlines()
 
     # filter all lines if starts with "not ok"
-    not_ok_line = [line.strip().replace("not ok ", "") for line in lines if line.startswith("not ok")]
+    not_ok_line = [line.strip()[7:] for line in lines if line.startswith("not ok")]
 
     # List of lines in string
     not_ok_string = "\n".join(not_ok_line)
 
-    # send notification to gchat webhook
+    # only send notifications to gchat on failures
     if not_ok_string:
       send_notification(webhook_url, not_ok_string, git_run_url)
-    else:
-      return
 
 if __name__ == "__main__":
     main()
+    
