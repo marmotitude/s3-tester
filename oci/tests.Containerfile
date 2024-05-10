@@ -16,8 +16,10 @@ COPY vendor/yaacov/argparse.sh vendor/yaacov/argparse.sh
 COPY test.sh test.sh
 
 # config templates and entrypoint
+COPY webhook.py /app/webhook.py
 COPY templates /app/templates
 COPY oci/tests.entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/webhook.py
 RUN chmod +x /app/entrypoint.sh
 
 ENV PROFILES=$PROFILES
