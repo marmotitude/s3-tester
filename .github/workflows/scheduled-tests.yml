@@ -37,5 +37,5 @@ jobs:
         if: always()
         run: |
           cd /app
-          ./webhook.py ${{ vars.WEBHOOK_URL }} ${{ github.GITHUB_REPOSITORY }} ${{ github.GITHUB_RUN_ID }}
+          ./webhook.py "${{ vars.WEBHOOK_URL }}" "${{ github.repository }}" "${{ github.run_id }}"
 
