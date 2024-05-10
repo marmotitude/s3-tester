@@ -36,5 +36,6 @@ jobs:
       - name: webhook send
         if: always()
         run: |
+          cd /app
           python3 webhook.py
 
