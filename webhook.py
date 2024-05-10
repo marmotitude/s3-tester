@@ -1,5 +1,6 @@
-import os
+#!/usr/bin/env python3
 import requests
+import sys
 
 def send_notification(webhook_url, not_ok_string, git_run_url):
     if not_ok_string:
@@ -49,8 +50,15 @@ def send_notification(webhook_url, not_ok_string, git_run_url):
         requests.post(webhook_url, json=app_message, headers= message_headers)
 
 def main():
-    webhook_url = os.environ['WEBHOOK_URL']
-    git_run_url = f"https://github.com/marmotitude/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+    if len(sys.argv) != 4:
+        print("Please, send WEBHOOK_URL, GITHUB_REPOSITORY and GITHUB_RUN_ID with arguments.")
+        return
+
+    webhook_url = sys.argv[1]
+    github_repository = sys.argv[2]
+    github_run_id = sys.argv[3]
+    git_run_url = f"https://github.com/marmotitude/{github_repository}/actions/runs/{github_run_id}"
+
 
     # open .tap and read all lines
     with open("/app/report/results.tap", "r") as file:
@@ -68,4 +76,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
