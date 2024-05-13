@@ -38,8 +38,8 @@ jobs:
           ./webhook.py "${{ vars.WEBHOOK_URL }}" "${{ github.repository }}" "${{ github.run_id }}"
       - name: CLEAN_BUCKETS
         run: |
-          for profile in ${{ vars.CRON_PROFILES_1 }}; do
-            aws s3 ls --profile $profile | grep "^test-" | awk '{print $3}' | while read -r bucket; do
+          for profile in ${{ vars.PROFILES_TO_CLEAN }}; do
+            aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
               aws s3 rb s3://$bucket --profile $profile --force
             done
           done
