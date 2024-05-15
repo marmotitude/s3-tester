@@ -5,7 +5,7 @@ get_test_bucket_name(){
   echo "test-001-$profile-$client-$UNIQUE_SUFIX"
 }
 #001 is also used as setup for 015
-Describe 'Create bucket' category:"Bucket Management" id:"001" id"015"
+Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -67,7 +67,7 @@ Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete "$bucket_name" -f
+      When run mgc object-storage buckets delete "$bucket_name" --no-confirm
       The status should be success
       ;;
     esac
