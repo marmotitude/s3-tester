@@ -252,7 +252,7 @@ Describe 'Delete' category:"Object Management"
         done
         mgc_objects+="]"
         # TODO: mgc is not properly supporting --include lists, see https://chat.google.com/room/AAAATfofxEQ/HiM7LN_4CUw/HiM7LN_4CUw?cls=10
-        When run mgc object-storage objects delete-all "$BUCKET_NAME" --cli.bypass-confirmation --filter="$mgc_objects"
+        When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects"
         The status should be success
         The output should include "Deleting objects from \"$BUCKET_NAME\""
         ;;
