@@ -92,7 +92,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --cli.bypass-confirmation
+      When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm
       The status should be success
       The error should include "$bucket_name?delete="
       The error should include "200 OK"
