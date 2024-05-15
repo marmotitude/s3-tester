@@ -188,7 +188,7 @@ Describe 'Delete' category:"Object Management"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --cli.bypass-confirmation
+      When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm
       The status should be success
       The error should include "$BUCKET_NAME?delete="
       The error should include "200 OK"
