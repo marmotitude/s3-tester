@@ -37,7 +37,7 @@ jobs:
         if: always()
         run: |
           cd /app
-          ./webhook.py "${{ vars.WEBHOOK_URL }}" "${{ github.repository }}" "${{ github.run_id }}"
+          ./webhook.py "${{ vars.WEBHOOK_URL }}" "${{ vars.WEBHOOK_CLEAN_URL }}" "${{ github.repository }}" "${{ github.run_id }}" "${{ vars.TOKEN }}"
       - name: CLEAN_BUCKETS
         if: always()
         continue-on-error: true
