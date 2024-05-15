@@ -139,7 +139,7 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name -f
+      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm
       The stderr should include "Blocked account"
       ;;
     esac
@@ -175,7 +175,7 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client -f
+      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
       The stderr should include "Blocked account"
       ;;
     esac

@@ -23,7 +23,7 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client -f
+      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
       The output should include ""
       ;;
     esac
