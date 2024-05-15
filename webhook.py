@@ -147,20 +147,20 @@ def get_old_artifact(github_repository, github_token):
     artifact_url = url + '/' + str(artifact_id) + '/zip'
     response = requests.get(artifact_url, headers=headers)
     if response.status_code == 200:
-        # Caminho completo do arquivo
+        # Full file path
         caminho_arquivo = os.path.join('/app/report', 'results-old.zip')
         pasta_destino = '/app/report'
-        # Salvar o conteúdo do artefato em um arquivo local
+        # Save artifact contents to a local file
         with open(caminho_arquivo, 'wb') as f:
             f.write(response.content)
-        # Extrair o conteúdo do arquivo ZIP
+        # Extract contents from ZIP
         with zipfile.ZipFile(caminho_arquivo, 'r') as zip_ref:
             zip_ref.extractall()
 
-        # Definir o novo caminho do arquivo
+        # Set the new path
         novo_caminho_arquivo = os.path.join(pasta_destino, "results-old.tap")
 
-        # Renomear o arquivo extraído para results-old.tap
+        # Rename the extracted file to results-old.tap
         os.rename('/app/results.tap', novo_caminho_arquivo)
     else:
         print("Erro ao baixar o artefato:", response.status_code)
