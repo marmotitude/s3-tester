@@ -22,6 +22,7 @@ Describe 'List buckets' category:"Bucket Management" id:"011"
 
     # Create sample bucket to validate listing
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name"> /dev/null
+    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -62,6 +63,7 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     # Create sample bucket to validate deleting
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name" > /dev/null
+    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -92,7 +94,9 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     # Create sample bucket to validate deleting
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name" > /dev/null
+    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
     aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key foo --body README.md> /dev/null
+    aws --profile "$profile" s3api wait object-exists --bucket "$bucket_name" --key foo
 
     case "$client" in
     "aws-s3api" | "aws")
