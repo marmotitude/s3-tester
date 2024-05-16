@@ -142,9 +142,9 @@ def get_old_artifact(github_repository, github_token):
     response = requests.get(url, headers=headers)
     # Convert the response to JSON
     data = response.json()
-    # Get the ID of the second artifact
-    artifact_id = data['artifacts'][1]['id']
-    artifact_url = url + '/' + str(artifact_id) + '/zip'
+    # Get the URL of the second artifact
+    artifact_url = data['artifacts'][1]['archive_download_url']
+    print(artifact_url) # debug
     response = requests.get(artifact_url, headers=headers)
     if response.status_code == 200:
         # Full file path
