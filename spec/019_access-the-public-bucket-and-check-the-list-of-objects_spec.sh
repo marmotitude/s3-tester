@@ -12,7 +12,10 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     profile=$1
     client=$2
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
+    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
+    aws --profile $profile-second s3api wait bucket-exists --bucket $bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3api wait object-exists --bucket $bucket_name-$client --key $file1_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
@@ -29,6 +32,6 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
