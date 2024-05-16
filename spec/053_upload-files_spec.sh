@@ -72,6 +72,8 @@ Describe 'Upload Files' category:"Object Management"
       The output should include "Uploaded file $local_file to $BUCKET_NAME/$keys3"
       ;;
     esac
+    # Assert that the file was uploaded by waiting for object-exists
+    aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
   End
   Describe 'Download Files' category:"Object Management" id:"057"
     Example "from test bucket of profile $1, The file $3, using client $2"
@@ -194,6 +196,8 @@ Describe 'Delete' category:"Object Management"
       The error should include "200 OK"
       ;;
     esac
+    # Assert that the file have finished deleting by waiting for the object-not-exists
+    aws s3api --profile $profile wait object-not-exists --bucket $BUCKET_NAME --key $object_key
   End
   End
   Describe "Objects in batch"
@@ -251,22 +255,15 @@ Describe 'Delete' category:"Object Management"
           mgc_objects+='"}'
         done
         mgc_objects+="]"
-        # TODO: mgc is not properly supporting --include lists, see https://chat.google.com/room/AAAATfofxEQ/HiM7LN_4CUw/HiM7LN_4CUw?cls=10
         When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects"
         The status should be success
         The output should include "Deleting objects from \"$BUCKET_NAME\""
         ;;
       esac
-    End
-    Example "on profile $1, list objects on bucket $BUCKET_NAME DONT include files:$remaining_files" id:"063"
-      profile=$1
-      client=$2
-      BUCKET_NAME=$(get_test_bucket_name)
-      When run aws --profile $profile s3api list-objects --bucket $BUCKET_NAME
-      The status should be success
+      # Assert that the 2 remaining objects have been deleted by waiting for object-not-exists
       for file in $remaining_files;do
         object_key=$(get_uploaded_key "$file")
-        The output should not include "\"Key\": \"$object_key\","
+        aws s3api --profile $profile wait object-not-exists --bucket $BUCKET_NAME --key $object_key
       done
     End
   End
