@@ -43,6 +43,8 @@ jobs:
         if: github.event.schedule == '50 * * * *'
         continue-on-error: true
         run: |
+          echo "$PROFILES" > profiles.yaml
+            ./replace_configs.sh
           for profile in ${{ vars.PROFILES_TO_CLEAN }}; do
             aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
               rclone purge "$profile:$bucket"
