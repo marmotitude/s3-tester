@@ -179,11 +179,14 @@ def main():
 
     not_ok_string_not_equals, not_ok_string_equals = filter_equals(github_repository, github_token)
 
-    if not_ok_string_not_equals or not_ok_string_equals:
-        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
+    try:
+        if not_ok_string_not_equals or not_ok_string_equals:
+            send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
 
-    if not_ok_string_equals:
-        send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
+        if not_ok_string_equals:
+            send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
