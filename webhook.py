@@ -109,7 +109,7 @@ def filter_equals(github_repository, github_token):
     # open .tap and read all lines
     with open("/app/report/results.tap", "r") as file:
         lines = file.readlines()
-
+        
     with open("/app/report/results-old.tap", "r") as file_old:
         lines_old = file_old.readlines()
 
@@ -169,7 +169,11 @@ def main():
     if len(sys.argv) != 6:
         print("Please, send WEBHOOK_URL, WEBHOOK_CLEAN_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID and github_token with arguments.")
         return
-
+    
+    if not os.path.exists('/app/report/results.tap'):
+        print("Error: The file '/app/report/results.tap' does not exist.")
+        return
+    
     webhook_url = sys.argv[1]
     webhook_clean_url = sys.argv[2]
     github_repository = sys.argv[3]
@@ -178,15 +182,12 @@ def main():
     git_run_url = f"https://github.com/{github_repository}/actions/runs/{github_run_id}"
 
     not_ok_string_not_equals, not_ok_string_equals = filter_equals(github_repository, github_token)
+    
+    if not_ok_string_not_equals or not_ok_string_equals:
+        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
 
-    try:
-        if not_ok_string_not_equals or not_ok_string_equals:
-            send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
-
-        if not_ok_string_equals:
-            send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    if not_ok_string_equals:
+        send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
 
 if __name__ == "__main__":
     main()
