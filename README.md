@@ -8,7 +8,7 @@ A reboot of https://github.com/marmotitude/object-storage-tests
 
 ```
 # run multiple tests separated by comma, using the provided options
-./test.sh [OPTIONS] --tests [TEST_ID...]
+./bin/test.sh [OPTIONS] --tests [TEST_ID...]
 
 ```
 
@@ -19,7 +19,7 @@ Example:
 # to run tests: 011 (List Buckets), 053 (Upload Files) and 061 (List Objects)
 # with only the aws-cli client and passing --fail-fast to shellspec
 
-./test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61 -- --fail-fast
+./bin/test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61 -- --fail-fast
 ```
 
 The tests assumes that you have configured all cli tools (aws-cli, rclone and mgc) with the same
@@ -33,7 +33,7 @@ there is a shell script that replaces existing config files with new ones create
 from a single `profiles.yaml` generic config, use `profiles.example.yaml` as an example:
 
 ```
-./replace_configs.sh
+./bin/replace_configs.sh
 ```
 
 ## License
