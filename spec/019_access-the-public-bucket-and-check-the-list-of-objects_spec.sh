@@ -33,5 +33,6 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     esac
     The status should be success
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
+    aws --profile $profile s3api wait bucket-not-exists --bucket $bucket_name-$client
   End
 End
