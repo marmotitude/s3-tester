@@ -20,7 +20,7 @@ FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
 
 # Tools downloader
 FROM alpine as downloader
-RUN apk add --no-cache curl unzip
+RUN apk add --no-cache curl unzip bash;
 WORKDIR /tools
 # rclone
 ARG RCLONE_VERSION
@@ -46,7 +46,11 @@ RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${
 ARG MGC_VERSION
 RUN curl -Lo mgc.tar.gz "https://github.com/MagaluCloud/mgccli/releases/download/v${MGC_VERSION}/mgccli_${MGC_VERSION}_linux_amd64.tar.gz" && \
     tar xzvf mgc.tar.gz && rm mgc.tar.gz && \
-    ln -s "/tools/mgc" /usr/local/bin/mgc
+    ln -s "/tools/mgc" /usr/local/bin/mgc;
+# bun (javascript runtime)
+ENV BUN_INSTALL="/tools/bun"
+RUN curl -fsSL https://bun.sh/install | bash && \
+  ln -s /tools/bun/bin/bun /usr/local/bin/bun;
 
 # Main image
 FROM ubuntu:${UBUNTU_VERSION} as main
