@@ -37,6 +37,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
       The output should include "Created bucket $bucket_name"
       ;;
     esac
+    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
   End
 End
 
@@ -71,5 +72,6 @@ Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
       The status should be success
       ;;
     esac
+    aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
   End
 End

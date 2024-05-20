@@ -5,6 +5,7 @@ delete_bucket() {
   bucket_name="$3"
 
   aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
+  aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
 }
 
 Describe 'List buckets' category:"Bucket Management" id:"011"
@@ -75,17 +76,17 @@ Describe 'Delete buckets' category:"Bucket Management"
       The output should equal "remove_bucket: $bucket_name"
       ;;
     "mgc")
-      Skip "Dificil testar por precisar fazer input com o nome do bucket"
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage buckets delete "$bucket_name" --no-confirm
+      The status should be success
       ;;
-      # When run mgc object-storage buckets delete
-      # The output should include "$bucket_name"
-      # ;;
     "rclone")
       When run rclone rmdir "$profile:$bucket_name" -v
       The error should include "Bucket \"$bucket_name\" deleted"
       ;;
     esac
     The status should be success
+    aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
   End
 
   Example "delete bucket with data $bucket_name on profile $1 using client $2" id:"016"
@@ -100,27 +101,29 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     case "$client" in
     "aws-s3api" | "aws")
-      Skip "This bucket is not deletable using s3api, since the objects should be removed first"
-      # When run aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name"
-      # The error should include "BucketNotEmpty"
-      # The status should be failure
-      # Assert delete_bucket "$1" "$2" "$bucket_name"
+      When run aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name"
+      The error should include "BucketNotEmpty"
+      The status should be failure
+      Assert delete_bucket "$1" "$2" "$bucket_name"
       ;;
-    "aws-s3")
+    "aws-s3" | "aws-s3api" | "aws")
       When run aws --profile "$profile" s3 rb "s3://$bucket_name" --force
       The output should include "remove_bucket: $bucket_name"
       The status should be success
+      aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
       ;;
     "mgc")
-      Skip "Dificil testar por precisar fazer input com o nome do bucket"
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage buckets delete "$bucket_name" --recursive --no-confirm
+      The status should be success
+      The output should include "Deleting objects from \"$bucket_name\""
+      aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
       ;;
-      # When run mgc object-storage buckets delete
-      # The output should include "$bucket_name"
-      # ;;
     "rclone")
       When run rclone purge "$profile:$bucket_name" -v
       The error should include "Bucket \"$bucket_name\" deleted"
       The status should be success
+      aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
       ;;
     esac
   End

@@ -13,6 +13,7 @@ Describe 'Delete private bucket:' category:"Bucket Permission"
     profile=$1
     client=$2
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client > /dev/null
+    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
@@ -28,6 +29,7 @@ Describe 'Delete private bucket:' category:"Bucket Permission"
       The output should include ""
       ;;
     esac
-      The status should be success
+    The status should be success
+    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End

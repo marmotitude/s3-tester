@@ -31,6 +31,8 @@ Describe 'Create private bucket:' category:"Bucket Permission"
       ;;
     esac
     The status should be success
+    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
     aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End
