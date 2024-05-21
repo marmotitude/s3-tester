@@ -16,6 +16,7 @@ on:
 
 env:
   PROFILES: ${{ secrets.profiles }}
+  FORCE_COLOR: 1
 
 jobs:
   run_tests:
