@@ -11,17 +11,20 @@ COPY README.md README.md
 COPY LICENSE LICENSE
 
 # scripts
-COPY replace_configs.sh replace_configs.sh
+COPY bin bin
 COPY vendor/yaacov/argparse.sh vendor/yaacov/argparse.sh
-COPY test.sh test.sh
 
 # config templates and entrypoint
-COPY webhook.py /app/webhook.py
 COPY templates /app/templates
-COPY oci/tests.entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/webhook.py
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/bin/webhook.py
+
+#js bun dependencies
+COPY package.json bun.lockb /app/
+RUN bun install --frozen-lockfile --production
 
 ENV PROFILES=$PROFILES
-ENV PATH "/app:${PATH}"
+ENV PATH "/app/bin:${PATH}"
+
+COPY oci/tests.entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]

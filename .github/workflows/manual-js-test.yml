@@ -1,4 +1,4 @@
-name: "Manually-triggered tests"
+name: "Manually-triggered Javascript tests"
 
 on:
   workflow_dispatch:
@@ -8,21 +8,11 @@ on:
         type: string
         required: false
         default: "br-ne1,br-se1"
-      tests:
-        description: "List of test ids, see README for the table, leave empty for ALL"
+      bun_test_args:
+        description: "arguments for the bun test command"
         type: string
         required: false
         default: ""
-      clients:
-        description: "List of clients"
-        type: string
-        required: false
-        default: "mgc,aws-s3api,rclone,aws-s3"
-      skip_known_issues:
-        description: "Skip known issues"
-        type: string
-        required: false
-        default: "no"
 
 env:
   PROFILES: ${{ secrets.profiles }}
@@ -35,9 +25,8 @@ jobs:
       - name: "Run with tests, clients and profiles from user input"
         run: |
           cd /app
-          mgc --version
-          sha256sum `which mgc`
-          ./entrypoint.sh test.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
+          bun --version
+          ./entrypoint.sh js-test.sh --profiles ${{ inputs.profiles }} -- ${{ inputs.bun_test_args }}
       - name: CLEAN_BUCKETS
         run: |
           for profile in ${{ vars.PROFILES_TO_CLEAN }}; do
