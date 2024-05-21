@@ -9,6 +9,7 @@ COPY .shellspec .shellspec
 # test files
 COPY README.md README.md
 COPY LICENSE LICENSE
+COPY profiles.example.yaml profiles.example.yaml
 
 # scripts
 COPY bin bin
