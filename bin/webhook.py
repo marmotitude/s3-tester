@@ -4,7 +4,7 @@ import sys
 import os
 import zipfile
 
-def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url):
+def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more, git_run_url):
     app_message ={
         'cardsV2': [{
             'cardId': 'createCardMessage',
@@ -18,8 +18,8 @@ def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equal
                 'sections': [
                     {
                         "header": '%d previous failed, %d new failed' % (len(not_ok_string_equals.split('\n')) if not_ok_string_equals else 0, len(not_ok_string_not_equals.split('\n')) if not_ok_string_not_equals else 0),
-                        "collapsible": False,
-                        "uncollapsibleWidgetsCount": 0,
+                        "collapsible": True,
+                        "uncollapsibleWidgetsCount": 2,
                         "widgets": [
                             {
                                 "textParagraph": {
@@ -29,6 +29,11 @@ def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equal
                             {
                                 "textParagraph": {
                                     "text": not_ok_string_not_equals
+                                }
+                            },
+                            {
+                                "textParagraph": {
+                                    "text": not_ok_string_see_more
                                 }
                             },
                             {
@@ -107,10 +112,12 @@ def filter_equals(github_repository, github_token):
 
     get_old_artifact(github_repository, github_token)
     # open .tap and read all lines
-    with open("/app/report/results.tap", "r") as file:
+    with open("/home/folkz/projetos/s3-tester/report/results.tap", "r") as file:
+    #with open("/app/report/results.tap", "r") as file:
         lines = file.readlines()
-        
-    with open("/app/report/results-old.tap", "r") as file_old:
+    
+    with open("/home/folkz/projetos/s3-tester/report/results.tap", "r") as file_old:    
+    #with open("/app/report/results-old.tap", "r") as file_old:
         lines_old = file_old.readlines()
 
     # Iterate over the elements of both lists simultaneously
@@ -122,15 +129,16 @@ def filter_equals(github_repository, github_token):
             not_equals.append(string1)
 
     # filter all lines of equals if starts with "not ok" and save in list
+    not_ok_line_see_more = [line.strip()[7:] for line in equals if line.startswith("not ok") or line.startswith("#")]
+    not_ok_string_see_more = "\n".join(not_ok_line_see_more)
     not_ok_line_equals = [line.strip()[7:] for line in equals if line.startswith("not ok")]
     not_ok_string_equals = "\n".join(not_ok_line_equals)
 
     # filter all lines of not_equals if starts with "not ok" and save in list
-    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")]
+    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok") or line.startswith('#')]
     not_ok_string_not_equals = "\n".join(not_ok_line_not_equals)
 
-
-    return not_ok_string_not_equals, not_ok_string_equals
+    return not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more
 
 def get_old_artifact(github_repository, github_token):
     headers = {
@@ -148,8 +156,10 @@ def get_old_artifact(github_repository, github_token):
     response = requests.get(artifact_url, headers=headers)
     if response.status_code == 200:
         # Full file path
-        caminho_arquivo = os.path.join('/app/report', 'results-old.zip')
-        pasta_destino = '/app/report'
+        caminho_arquivo = os.path.join('/home/folkz/projetos/s3-tester/report', 'results-old.zip')
+        #caminho_arquivo = os.path.join('/app/report', 'results-old.zip')
+        pasta_destino = '/home/folkz/projetos/s3-tester/report'
+        #pasta_destino = '/app/report'
         # Save artifact contents to a local file
         with open(caminho_arquivo, 'wb') as f:
             f.write(response.content)
@@ -161,7 +171,8 @@ def get_old_artifact(github_repository, github_token):
         novo_caminho_arquivo = os.path.join(pasta_destino, "results-old.tap")
 
         # Rename the extracted file to results-old.tap
-        os.rename('/app/results.tap', novo_caminho_arquivo)
+        os.rename('/home/folkz/projetos/s3-tester/results.tap', novo_caminho_arquivo)
+        #os.rename('/app/results.tap', novo_caminho_arquivo)
     else:
         print("Erro ao baixar o artefato:", response.status_code)
 
@@ -170,7 +181,8 @@ def main():
         print("Please, send WEBHOOK_URL, WEBHOOK_CLEAN_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID and github_token with arguments.")
         return
     
-    if not os.path.exists('/app/report/results.tap'):
+    if not os.path.exists('/home/folkz/projetos/s3-tester/report/results.tap'):
+    #if not os.path.exists('/app/report/results.tap'):
         print("Error: The file '/app/report/results.tap' does not exist.")
         return
     
@@ -181,10 +193,10 @@ def main():
     github_token = sys.argv[5]
     git_run_url = f"https://github.com/{github_repository}/actions/runs/{github_run_id}"
 
-    not_ok_string_not_equals, not_ok_string_equals = filter_equals(github_repository, github_token)
+    not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more = filter_equals(github_repository, github_token)
     
     if not_ok_string_not_equals or not_ok_string_equals:
-        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
+        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more, git_run_url)
 
     if not_ok_string_equals:
         send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
