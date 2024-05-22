@@ -4,7 +4,7 @@ import sys
 import os
 import zipfile
 
-def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url):
+def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more, git_run_url):
     app_message ={
         'cardsV2': [{
             'cardId': 'createCardMessage',
@@ -18,8 +18,8 @@ def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equal
                 'sections': [
                     {
                         "header": '%d previous failed, %d new failed' % (len(not_ok_string_equals.split('\n')) if not_ok_string_equals else 0, len(not_ok_string_not_equals.split('\n')) if not_ok_string_not_equals else 0),
-                        "collapsible": False,
-                        "uncollapsibleWidgetsCount": 0,
+                        "collapsible": True,
+                        "uncollapsibleWidgetsCount": 2,
                         "widgets": [
                             {
                                 "textParagraph": {
@@ -29,6 +29,11 @@ def send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equal
                             {
                                 "textParagraph": {
                                     "text": not_ok_string_not_equals
+                                }
+                            },
+                            {
+                                "textParagraph": {
+                                    "text": not_ok_string_see_more
                                 }
                             },
                             {
@@ -109,7 +114,7 @@ def filter_equals(github_repository, github_token):
     # open .tap and read all lines
     with open("/app/report/results.tap", "r") as file:
         lines = file.readlines()
-        
+    
     with open("/app/report/results-old.tap", "r") as file_old:
         lines_old = file_old.readlines()
 
@@ -122,6 +127,8 @@ def filter_equals(github_repository, github_token):
             not_equals.append(string1)
 
     # filter all lines of equals if starts with "not ok" and save in list
+    not_ok_line_see_more = [line.strip()[7:] for line in equals if line.startswith("not ok") or line.startswith("#")]
+    not_ok_string_see_more = "\n".join(not_ok_line_see_more)
     not_ok_line_equals = [line.strip()[7:] for line in equals if line.startswith("not ok")]
     not_ok_string_equals = "\n".join(not_ok_line_equals)
 
@@ -129,8 +136,7 @@ def filter_equals(github_repository, github_token):
     not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")]
     not_ok_string_not_equals = "\n".join(not_ok_line_not_equals)
 
-
-    return not_ok_string_not_equals, not_ok_string_equals
+    return not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more
 
 def get_old_artifact(github_repository, github_token):
     headers = {
@@ -181,10 +187,10 @@ def main():
     github_token = sys.argv[5]
     git_run_url = f"https://github.com/{github_repository}/actions/runs/{github_run_id}"
 
-    not_ok_string_not_equals, not_ok_string_equals = filter_equals(github_repository, github_token)
+    not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more = filter_equals(github_repository, github_token)
     
     if not_ok_string_not_equals or not_ok_string_equals:
-        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, git_run_url)
+        send_notification(webhook_url, not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more, git_run_url)
 
     if not_ok_string_equals:
         send_clean_notification(webhook_clean_url, not_ok_string_equals, git_run_url)
