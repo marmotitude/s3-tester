@@ -133,7 +133,7 @@ def filter_equals(github_repository, github_token):
     not_ok_string_equals = "\n".join(not_ok_line_equals)
 
     # filter all lines of not_equals if starts with "not ok" and save in list
-    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok") or line.startswith('#')]
+    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")]
     not_ok_string_not_equals = "\n".join(not_ok_line_not_equals)
 
     return not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more
