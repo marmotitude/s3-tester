@@ -83,6 +83,7 @@ Describe 'Create bucket' category:"Bucket Management"
       The status should be success
       aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
       Assert delete_bucket "$1" "$2" "$bucket_name"
+      aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
     End
   End
 
