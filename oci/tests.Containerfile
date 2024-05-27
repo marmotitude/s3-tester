@@ -1,4 +1,4 @@
-FROM ghcr.io/marmotitude/s3-tester:tools-tf
+FROM ghcr.io/marmotitude/s3-tester:tools
 
 WORKDIR /app
 
