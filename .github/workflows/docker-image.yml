@@ -36,16 +36,6 @@ jobs:
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools-${{github.sha}}
 
-    - name: "Build and push OCI image, tag: tf-tools"
-      uses: docker/build-push-action@v5.3.0
-      with:
-        context: .
-        push: true
-        file: oci/tools.Containerfile
-        tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools-tf
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools-tf-${{github.sha}}
-
     - name: "Build and push OCI image, tag: tests"
       uses: docker/build-push-action@v5.3.0
       with:
