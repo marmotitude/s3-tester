@@ -14,6 +14,7 @@ ARG SHELLSPEC_VERSION="0.28.1"
 ARG AWS_CLI_VERSION="2.15.27"
 ARG RCLONE_VERSION="1.66.0"
 ARG MGC_VERSION="0.18.10"
+ARG OPENTOFU_VERSION="1.7.1"
 
 # aws-cli
 FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
@@ -51,6 +52,13 @@ RUN curl -Lo mgc.tar.gz "https://github.com/MagaluCloud/mgccli/releases/download
 ENV BUN_INSTALL="/tools/bun"
 RUN curl -fsSL https://bun.sh/install | bash && \
   ln -s /tools/bun/bin/bun /usr/local/bin/bun;
+# OpenTofu
+ARG OPENTOFU_VERSION
+ENV OPENTOFU_VERSION=${OPENTOFU_VERSION}
+RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh;
+RUN chmod +x install-opentofu.sh && \
+  ./install-opentofu.sh --install-method standalone --install-path /tools/tofu --symlink-path - --skip-verify && \
+  rm install-opentofu.sh;
 
 # Main image
 FROM ubuntu:${UBUNTU_VERSION} as main
@@ -65,4 +73,5 @@ RUN pip3 install requests --break-system-packages
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
+RUN ln -s "/tools/tofu/tofu" /usr/local/bin/tofu
 
