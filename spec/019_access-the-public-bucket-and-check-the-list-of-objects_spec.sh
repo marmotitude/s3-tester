@@ -1,3 +1,20 @@
+wait_command() {
+  profile_to_wait=$1
+  bucket_name_to_wait=$2
+  number_of_waits=$3
+  command=$4
+
+  # aws s3api wait does not allow a custom timeout, so we repeat several waits if we need more than
+  # the default of 20 attempts, or 100 seconds
+  for ((i=1; i<=number_of_waits; i++))
+  do
+    echo "wait $command for profile $profile_to_wait attempt number: $i, $(date)"
+    aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait || echo falhou $i
+  done
+  echo "last wait $command for profile $profile_to_wait, $(date)"
+  aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait
+}
+
 Describe 'Access the public bucket and check the list of objects:' category:"Bucket Permission"
   setup(){
     bucket_name="test-019-$(date +%s)"
@@ -12,8 +29,10 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     profile=$1
     client=$2
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
-    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
-    aws --profile $profile-second s3api wait bucket-exists --bucket $bucket_name-$client
+    wait_command $profile "$bucket_name-$client" $NUMBER_OF_WAITS bucket-exists
+    #aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
+    wait_command "$profile-second" "$bucket_name-$client" $NUMBER_OF_WAITS bucket-exists
+    #aws --profile $profile-second s3api wait bucket-exists --bucket $bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3api wait object-exists --bucket $bucket_name-$client --key $file1_name
     case "$client" in
@@ -33,6 +52,6 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     esac
     The status should be success
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    aws --profile $profile s3api wait bucket-not-exists --bucket $bucket_name-$client
+    wait_command $profile "$bucket_name-$client" $NUMBER_OF_WAITS bucket-not-exists
   End
 End
