@@ -11,7 +11,7 @@ wait_command() {
     echo "wait $command for profile $profile_to_wait attempt number: $i, $(date)"
     aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait || echo falhou $i
   done
-  echo "last wait $command for profile $profile_to_wait, $(date)"
+  echo ".last wait $command for profile $profile_to_wait, $(date)"
   aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait
 }
 

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - js-lib-tests
+      - more-waits
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
