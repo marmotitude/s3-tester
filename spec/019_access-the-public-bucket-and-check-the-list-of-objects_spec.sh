@@ -9,7 +9,7 @@ wait_command() {
   for ((i=1; i<=number_of_waits; i++))
   do
     echo "wait $command for profile $profile_to_wait attempt number: $i, $(date)"
-    aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait || echo falhou $i
+    aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait 2>&1 || echo falhou $i
   done
   echo ".last wait $command for profile $profile_to_wait, $(date)"
   aws --profile $profile_to_wait s3api wait $command --bucket $bucket_name_to_wait
