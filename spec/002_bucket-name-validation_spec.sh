@@ -1,12 +1,16 @@
 Include ./spec/known_issues.sh
 
+# import functions: wait_command
+Include ./spec/019_utils.sh
+
+
 delete_bucket() {
   profile=$1
   client=$2
   bucket_name="$3"
 
   aws --profile "$profile" s3api delete-bucket --bucket "$bucket_name" > /dev/null
-  aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
+  wait_command bucket-not-exists "$profile" "$bucket_name"
 }
 
 check_length() {
@@ -50,7 +54,7 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       esac
       The status should be success
-      aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+      wait_command bucket-exists "$profile" "$bucket_name"
       Assert delete_bucket "$1" "$2" "$bucket_name"
     End
   End
@@ -81,9 +85,9 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       esac
       The status should be success
-      aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+      wait_command bucket-exists "$profile" "$bucket_name"
       Assert delete_bucket "$1" "$2" "$bucket_name"
-      aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
+      wait_command bucket-not-exists "$profile" "$bucket_name"
     End
   End
 
@@ -114,7 +118,7 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       esac
       The status should be success
-      aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+      wait_command bucket-exists "$profile" "$bucket_name"
       Assert delete_bucket "$1" "$2" "$bucket_name"
     End
   End
