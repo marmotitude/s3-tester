@@ -1,3 +1,6 @@
+# import functions: wait_command
+Include ./spec/019_utils.sh
+
 Describe 'Create private bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-021-$(date +%s)"
@@ -31,8 +34,8 @@ Describe 'Create private bucket:' category:"Bucket Permission"
       ;;
     esac
     The status should be success
-    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
     aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End
