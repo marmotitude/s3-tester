@@ -2,8 +2,8 @@ name: Scheduled test runs
 
 on:
   schedule:
-    - cron:  '30 * * * *'
-    - cron:  '35 * * * *'
+    - cron: '30 * * * *'
+    - cron: '35 * * * *'
 
 env:
   PROFILES: ${{ secrets.profiles }}
@@ -19,13 +19,37 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}" -- --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
       - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_1 }};"
         if: github.event.schedule == '35 * * * *'
         run: |
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
-
+          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+      - name: webhook send
+        if: always()
+        run: |
+          cd /app
+          ./bin/webhook.py "${{ vars.WEBHOOK_URL }}" "${{ vars.WEBHOOK_CLEAN_URL }}" "${{ github.repository }}" "${{ github.run_id }}" "${{ vars.TOKEN }}"
+      - name: Upload results.tap artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-tap
+          path: /app/report/results.tap
+      - name: Clean buckets
+        if: github.event.schedule == '50 * * * *'
+        continue-on-error: true
+        env:
+          PROFILES: ${{ secrets.PROFILES }}
+        run: |
+          cd /app
+          echo "$PROFILES" > profiles.yaml
+          ./replace_configs.sh
+          for profile in ${{ vars.PROFILES_TO_CLEAN }}; do
+            aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
+              rclone purge "$profile:$bucket"
+            done
+          done
 

@@ -12,8 +12,9 @@ remove_test_bucket(){
   profile=$1
   bucket_name=$(get_test_bucket_name)
   if [[ -z $TEST_BUCKET_NAME ]];then
-    #echo "removing bucket $bucket_name..."
-    aws --profile "$profile" s3 rb "s3://${bucket_name}" --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name" > /dev/null
+    # always return success, dont stop because of leftovers
+    return 0
   else
     rclone_objects=""
     for file in $FILES; do

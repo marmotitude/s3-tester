@@ -18,6 +18,7 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id
@@ -34,5 +35,6 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
     esac
     The status should be success
     aws s3 rb s3://$bucket_name-$client --profile $profile > /dev/null
+    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End

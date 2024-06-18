@@ -6,34 +6,39 @@ A reboot of https://github.com/marmotitude/object-storage-tests
 
 > :warning: **See allso:** [Github Workflown Usage](.github/workflows/README.md) and [Docker Image Usage](./oci/README.md).
 
-```
-# run multiple tests separated by comma, using the provided options
-./test.sh [OPTIONS] --tests [TEST_ID...]
 
-```
-
-Example:
+### Shellspec (cli tools)
 
 ```
 # use profiles: do-nyc and aws-east
 # to run tests: 011 (List Buckets), 053 (Upload Files) and 061 (List Objects)
 # with only the aws-cli client and passing --fail-fast to shellspec
 
-./test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61 -- --fail-fast
+./bin/test.sh --profiles do-nyc,aws-east --clients aws --tests 11,53,61 -- --fail-fast
 ```
 
 The tests assumes that you have configured all cli tools (aws-cli, rclone and mgc) with the same
 profile names. And tests like the ACL ones that needs 2 profiles uses a convention of the second
 one being named `<name-of-one-profile>-second`.
 
-### Profiles (optional)
+### Bun Test (aws-sdk-js)
+
+```
+# use profiles: br-ne1 and br-se1
+# to run all tests from spec/js/*.test.ts
+# passing additional bun test arguments after -- (double dash)
+
+./bin/js-test.sh --profiles br-ne1,br-se1 -- --bail
+```
+
+#### Profiles (optional)
 
 To make the process of setting multiple profiles on multiple tools less manual, 
 there is a shell script that replaces existing config files with new ones created using data
 from a single `profiles.yaml` generic config, use `profiles.example.yaml` as an example:
 
 ```
-./replace_configs.sh
+./bin/replace_configs.sh
 ```
 
 ## License

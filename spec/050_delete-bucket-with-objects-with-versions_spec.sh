@@ -33,7 +33,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
       ;;
     "mgc")
     mgc profile set-current $profile > /dev/null
-    When run mgc object-storage buckets delete $bucket_name-$client -f --force
+    When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --recursive
     The status should be failure
     The stderr should include BucketNotEmpty
     The output should include "Deleting"

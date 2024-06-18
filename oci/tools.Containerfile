@@ -13,14 +13,15 @@ ARG GOTPL_VERSION="0.7"
 ARG SHELLSPEC_VERSION="0.28.1"
 ARG AWS_CLI_VERSION="2.15.27"
 ARG RCLONE_VERSION="1.66.0"
-ARG MGC_VERSION="0.18.6"
+ARG MGC_VERSION="0.18.10"
+ARG OPENTOFU_VERSION="1.7.1"
 
 # aws-cli
 FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
 
 # Tools downloader
 FROM alpine as downloader
-RUN apk add --no-cache curl unzip
+RUN apk add --no-cache curl unzip bash;
 WORKDIR /tools
 # rclone
 ARG RCLONE_VERSION
@@ -46,7 +47,18 @@ RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${
 ARG MGC_VERSION
 RUN curl -Lo mgc.tar.gz "https://github.com/MagaluCloud/mgccli/releases/download/v${MGC_VERSION}/mgccli_${MGC_VERSION}_linux_amd64.tar.gz" && \
     tar xzvf mgc.tar.gz && rm mgc.tar.gz && \
-    ln -s "/tools/mgc" /usr/local/bin/mgc
+    ln -s "/tools/mgc" /usr/local/bin/mgc;
+# bun (javascript runtime)
+ENV BUN_INSTALL="/tools/bun"
+RUN curl -fsSL https://bun.sh/install | bash && \
+  ln -s /tools/bun/bin/bun /usr/local/bin/bun;
+# OpenTofu
+ARG OPENTOFU_VERSION
+ENV OPENTOFU_VERSION=${OPENTOFU_VERSION}
+RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh;
+RUN chmod +x install-opentofu.sh && \
+  ./install-opentofu.sh --install-method standalone --install-path /tools/tofu --symlink-path - --skip-verify && \
+  rm install-opentofu.sh;
 
 # Main image
 FROM ubuntu:${UBUNTU_VERSION} as main
@@ -56,8 +68,10 @@ COPY --from=awscli /usr/local/aws-cli/ /tools/aws-cli/
 RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
     ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws_completer" /usr/local/bin/aws_completer
 # additional ubuntu packages
-RUN apt update && apt install -y ca-certificates jq openssl
+RUN apt update && apt install -y ca-certificates jq openssl curl python3 python3-pip
+RUN pip3 install requests --break-system-packages
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
+RUN ln -s "/tools/tofu/tofu" /usr/local/bin/tofu
 

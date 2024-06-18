@@ -20,6 +20,7 @@ Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W dif
     id2=$id
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id2
@@ -36,5 +37,6 @@ Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W dif
     esac
     The status should be success
     aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End

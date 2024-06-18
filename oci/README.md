@@ -20,10 +20,18 @@ docker pull ghcr.io/marmotitude/s3-tester:tests #get latest "tests" image
 
 The image will use a `PROFILES` env var to set the profiles inside the container
 
+(shellspec)
+
 ```sh
 # podman run if you use podman
-docker run -t -e PROFILES="$(cat profiles.yaml)" ghcr.io/marmotitude/s3-tester:tests --profiles default --clients aws,mgc --tests 1,2,53,64
+docker run -t -e PROFILES="$(cat profiles.yaml)" ghcr.io/marmotitude/s3-tester:tests test.sh --profiles default --clients aws,mgc --tests 1,2,53,64
 ```
 
+(bun test)
+
+```sh
+# podman run if you use podman
+docker run -t -e PROFILES="$(cat profiles.yaml)" ghcr.io/marmotitude/s3-tester:tests js-test.sh --profiles br-ne1
+```
 
 
