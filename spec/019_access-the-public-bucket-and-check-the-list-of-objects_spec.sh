@@ -6,7 +6,7 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     bucket_name="test-019-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -20,6 +20,13 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3api wait object-exists --bucket $bucket_name-$client --key $file1_name
     wait_command object-exists $profile "$bucket_name-$client" "$file1_name"
+    # aws wait only checks existence, not access, so there is still more time that can be necessary
+    # before a second user can list the contents of a bucket, the time for the access on the
+    # acl rule to be propagated, so we are using a sleep of 5 seconds to give the system some time
+    # after the object is there but maybe the permission still not.
+    echo "waiting 5 seconds before testing the acl access..."
+    sleep 5
+    echo "try listing objects"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
