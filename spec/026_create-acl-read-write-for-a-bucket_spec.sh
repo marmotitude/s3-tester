@@ -34,7 +34,7 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
       The output should include ""
       ;;
     esac
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
     The status should be success
   End
@@ -75,7 +75,7 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
       The output should include "Uploaded file $file1_name to $bucket_name-$client/$file1_name"
       ;;
     esac
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
     The status should be success
   End
