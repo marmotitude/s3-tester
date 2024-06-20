@@ -57,7 +57,6 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-
     wait_command bucket-exists $profile "$bucket_name-$client"
     aws --profile $profile s3api put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id
     case "$client" in
