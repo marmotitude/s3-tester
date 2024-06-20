@@ -1,3 +1,4 @@
+Include ./spec/019_utils.sh
 is_variable_null() {
   [ -z "$1" ]
 }
@@ -18,7 +19,7 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
+    wait_command bucket-exists $profile "$bucket_name-$client"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id --grant-read id=$id
@@ -35,7 +36,7 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    wait_command bucket-not-exists $profile "$bucket_name-$client"
     The status should be success
   End
 End
@@ -56,7 +57,8 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
+
+    wait_command bucket-exists $profile "$bucket_name-$client"
     aws --profile $profile s3api put-bucket-acl --bucket $bucket_name-$client --grant-write id=$id
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -76,7 +78,7 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    wait_command bucket-not-exists $profile "$bucket_name-$client"
     The status should be success
   End
 End
