@@ -26,6 +26,7 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     # after the object is there but maybe the permission still not.
     echo "waiting 5 seconds before testing the acl access..."
     sleep 5
+    aws --profile $profile-second s3api wait object-exists --bucket $bucket_name-$client --key $file1_name
     echo "try listing objects"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
