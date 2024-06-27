@@ -5,11 +5,11 @@ Include ./spec/053_utils.sh
 # import functions: exist_var create_file
 Include ./spec/054_utils.sh
 
-Describe 'Setup 84, 85, 86, 87, 88'
+Describe 'Setup 84, 85, 86, 87'
   Parameters:matrix
     $PROFILES
   End
-  Example "create test bucket using rclone" id:"084" id:"085" id:"087" id:"088"
+  Example "create test bucket using rclone" id:"084" id:"085" id:"086" id:"087"
     profile=$1
     bucket_name=$(get_test_bucket_name)
     When run rclone mkdir "$profile:$bucket_name"
@@ -17,7 +17,7 @@ Describe 'Setup 84, 85, 86, 87, 88'
   End
 End
 
-Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"085" id:"088"
+Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"085" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -169,7 +169,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
   End
 End
 
-Describe 'Multipart upload with storage class' category:"Cold Storage" id:"087"
+Describe 'Multipart upload with storage class' category:"Cold Storage" id:"086"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -266,7 +266,7 @@ Describe 'Multipart upload with storage class' category:"Cold Storage" id:"087"
   End
 End
 
-Describe 'List multipart object with storage class' category:"Cold Storage" id:"087"
+Describe 'List multipart object with storage class' category:"Cold Storage" id:"086"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -333,7 +333,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
   End
 End
 
-Describe 'Change the storage class of an existing…' category:"Cold Storage" id:"088"
+Describe 'Change the storage class of an existing…' category:"Cold Storage" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -393,7 +393,7 @@ Describe 'Change the storage class of an existing…' category:"Cold Storage" id
   End
 End
 
-Describe 'List object with changed storage class' category:"Cold Storage" id:"088"
+Describe 'List object with changed storage class' category:"Cold Storage" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -447,7 +447,7 @@ Describe 'Teardown 84, 85, 86, 87, 88'
   Parameters:matrix
     $PROFILES
   End
-  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"087" id:"088"
+  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"086" id:"087"
     profile=$1
     When call teardown
     The status should be success
