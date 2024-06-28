@@ -148,6 +148,11 @@ make it easy to reference specific human-readable descriptions to a test number.
 |||||
 | 082 | Metering|Validate metering of storage in GB/h| REVIEW |
 | 083 | Metering|Validate metering of egress transfer in GB| REVIEW |
+|||||
+| 084 | Cold Storage | Upload object using storage class | NEW |
+| 085 | Cold Storage | List object includes storage class | NEW |
+| 086 | Cold Storage | Multipart upload with storage class | PENDING |
+| 087 | Cold Storage | Change the storage class of an object (copy to same bucket with same key, but different storage class) | PENDING |
 
 ## Acknowledgements
 
