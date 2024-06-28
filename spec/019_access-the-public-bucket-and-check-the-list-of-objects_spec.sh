@@ -24,9 +24,8 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
     # before a second user can list the contents of a bucket, the time for the access on the
     # acl rule to be propagated, so we are using a sleep of 5 seconds to give the system some time
     # after the object is there but maybe the permission still not.
-    echo "waiting 5 seconds before testing the acl access..."
-    sleep 5
-    aws --profile $profile-second s3api wait object-exists --bucket $bucket_name-$client --key $file1_name
+    echo "waiting 10 seconds before testing the acl access..."
+    sleep 10
     echo "try listing objects"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
