@@ -66,6 +66,14 @@ describe("Small tests", async () => {
     expect(Contents[0].Size).toBe(OBJECT_CONTENT.length)
   });
 
+  test(`get object for profile ${AWS_PROFILE}`, async () => {
+    const { ETag } = await client.send(new GetObjectCommand({
+      "Bucket": BUCKET_NAME,
+      "Key": OBJECT_KEY,
+    }));
+    expect(ETag).toBeDefined()
+  });
+
   describe("Presign URLs", async() => {
 
     beforeAll(async () => {
