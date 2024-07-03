@@ -5,11 +5,11 @@ Include ./spec/053_utils.sh
 # import functions: exist_var create_file
 Include ./spec/054_utils.sh
 
-Describe 'Setup 84, 85, 86, 87, 88'
+Describe 'Setup 84, 85, 86, 87, 88, 89'
   Parameters:matrix
     $PROFILES
   End
-  Example "create test bucket using rclone" id:"084" id:"085" id:"086" id:"087" id:"088"
+  Example "create test bucket using rclone" id:"084" id:"085" id:"086" id:"087" id:"088" id:"089"
     profile=$1
     bucket_name=$(get_test_bucket_name)
     When run rclone mkdir "$profile:$bucket_name"
@@ -760,14 +760,159 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
   End
 End
 
+Describe 'Put object with ACL and storage class' category:"Cold Storage" id:"089"
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "default, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "default-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read
+      The status should be success
+      The output should include "\"ETag\":"
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "standard-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read --storage-class "STANDARD"
+      The status should be success
+      The output should include "\"ETag\":"
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "glacier-ir-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read --storage-class "GLACIER_IR"
+      The status should be success
+      The output should include "\"ETag\":"
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+End
+Describe 'Head object with ACL and storage class' category:"Cold Storage" id:"089"
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  # asserts that the storage class is the expected, if grep fails the test fails
+  wrong_storage_class() {
+    echo "ERROR: Unexpected storage class"
+    exit 1
+  }
+  Example "default, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "default-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      trap wrong_storage_class ERR
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD
+      When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
+      The status should be success
+      The output should include "\"Permission\": \"READ\""
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "standard-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      trap wrong_storage_class ERR
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD
+      When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
+      The status should be success
+      The output should include "\"Permission\": \"READ\""
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "glacier-ir-class-with-acl")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      # asserts that the storage class is the expected, if grep fails the test fails
+      trap wrong_storage_class ERR
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep GLACIER_IR
+      When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
+      The status should be success
+      The output should include "\"Permission\": \"READ\""
+      ;;
+    "aws-s3")
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+End
+
 teardown(){
   remove_test_bucket $profile $UNIQUE_SUFIX
 }
-Describe 'Teardown 84, 85, 86, 87, 88'
+Describe 'Teardown 84, 85, 86, 87, 88, 89'
   Parameters:matrix
     $PROFILES
   End
-  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"086" id:"087" id:"088"
+  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"086" id:"087" id:"088" id:"089"
     profile=$1
     When call teardown
     The status should be success

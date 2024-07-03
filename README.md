@@ -154,6 +154,7 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 086 | Cold Storage | Multipart upload with storage class | |
 | 087 | Cold Storage | Change the storage class of an object (copy to same bucket with same key, but different storage class) | |
 | 088 | Cold Storage | Upload object with storage class and metadata | |
+| 089 | Cold Storage | Upload object with storage class and ACL | |
 
 ## Acknowledgements
 
