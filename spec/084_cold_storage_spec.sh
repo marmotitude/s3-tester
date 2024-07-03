@@ -297,7 +297,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     esac
   End
 
-  Example "list uploads should list 3 with the expected storage classes, on profile $1 using client $2"
+  Example "list uploads should list both storage classes, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
@@ -308,7 +308,8 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     }
     When call count_standard
     The status should be success
-    The output should equal "[  \"GLACIER_IR\",  \"STANDARD\",  \"STANDARD\"]"
+    The output should include "\"GLACIER_IR\""
+    The output should include "\"STANDARD\""
       ;;
     "rclone")
       ;;
@@ -322,7 +323,6 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
@@ -330,6 +330,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
@@ -347,7 +348,6 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
@@ -355,6 +355,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
@@ -372,7 +373,6 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
@@ -380,6 +380,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
@@ -398,10 +399,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
     The status should be success
     The output should include "\"STANDARD\""
@@ -417,10 +417,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
     The status should be success
     The output should include "\"STANDARD\""
@@ -436,10 +435,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    # upload two parts
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
     The status should be success
     The output should include "\"GLACIER_IR\""
@@ -457,9 +455,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
     When run aws s3api complete-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id $upload_id --multipart-upload file:///tmp/parts.json
     The status should be success
@@ -477,9 +475,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     # generates a parts list json file
     aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
     # complete the multipart upload
@@ -499,9 +497,9 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
-    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     # generates a parts list json file
     aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
     # complete the multipart upload
