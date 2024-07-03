@@ -590,6 +590,32 @@ Describe 'Change the storage class of an existing…' category:"Cold Storage" id
     $CLIENTS
   End
 
+  Example "default object to GLACIER_IR on $1 using $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "default-class")
+    new_object_key=$(get_uploaded_key "default-class")
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --storage-class "GLACIER_IR" --copy-source "$bucket_name/$object_key"
+      The status should be success
+      The output should include "\"ETag\":"
+      ;;
+    "aws-s3")
+      When run aws --profile "$profile" s3 cp "s3://$bucket_name/$object_key" "s3://$bucket_name/$new_object_key" --storage-class "GLACIER_IR"
+      The status should be success
+      The output should include "copy: s3://$bucket_name/$object_key to s3://$bucket_name/$new_object_key"
+      ;;
+    "rclone")
+      When run rclone settier "GLACIER_IR" "$profile:$bucket_name/$object_key" --dump headers
+      The status should be success
+      The error should include "X-Amz-Storage-Class: GLACIER_IR"
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
   Example "STANDARD object to GLACIER_IR on $1 using $2"
     profile=$1
     client=$2
@@ -611,6 +637,29 @@ Describe 'Change the storage class of an existing…' category:"Cold Storage" id
       When run rclone settier "GLACIER_IR" "$profile:$bucket_name/$object_key" --dump headers
       The status should be success
       The error should include "X-Amz-Storage-Class: GLACIER_IR"
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "GLACIER_IR object to default (no storage class) on $1 using $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "glacier-ir-class")
+    new_object_key=$(get_uploaded_key "glacier-ir-class")
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --copy-source "$bucket_name/$object_key"
+      The status should not be success
+      The error should include "(InvalidRequest)"
+      ;;
+    "aws-s3")
+      When run aws --profile "$profile" s3 cp "s3://$bucket_name/$object_key" "s3://$bucket_name/$new_object_key"
+      The status should not be success
+      The error should include "(InvalidRequest)"
+      ;;
+    "rclone")
       ;;
     "mgc")
       ;;
@@ -648,6 +697,26 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
   Parameters:matrix
     $PROFILES
     $CLIENTS
+  End
+  Example "old default, now GLACIER_IR on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "default-class")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
+      The status should be success
+      The output should include "\"GLACIER_IR\""
+      ;;
+    "rclone")
+      When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
+      The status should be success
+      The output should include "GLACIER_IR"
+      ;;
+    "mgc")
+      ;;
+    esac
   End
   Example "old STANDARD, now GLACIER_IR on profile $1 using client $2"
     profile=$1
