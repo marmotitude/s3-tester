@@ -187,12 +187,12 @@ Describe 'Object custom metadata with storage class' category:"Cold Storage" id:
       The output should include "\"ETag\":"
       ;;
     "aws-s3")
-      When run aws --profile "$profile" s3 cp "$file" "s3://$bucket_name/$object_key" --storage-class "GLACIER_IR"
+      When run aws --profile "$profile" s3 cp "$file" "s3://$bucket_name/$object_key" --storage-class "GLACIER_IR" --metadata "metadata1=foo,metadata2=bar"
       The status should be success
       The output should include "upload: ./$file to s3://$bucket_name/$object_key"
       ;;
     "rclone")
-      When run rclone copyto "$file" "$profile:$bucket_name/$object_key" --s3-storage-class "GLACIER_IR" -v
+      When run rclone copyto "$file" "$profile:$bucket_name/$object_key" --s3-storage-class "GLACIER_IR" --header-upload "X-Amz-Meta-Metadata1: foo" --header-upload "X-Amz-Meta-Metadata2: bar" -v
       The status should be success
       The error should include "INFO  : $file: Copied"
       ;;
@@ -826,7 +826,7 @@ Describe 'Put object with ACL and storage class' category:"Cold Storage" id:"089
     esac
   End
 End
-Describe 'Head object with ACL and storage class' category:"Cold Storage" id:"089"
+Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
   Parameters:matrix
     $PROFILES
     $CLIENTS
