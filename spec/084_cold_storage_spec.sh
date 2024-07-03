@@ -5,11 +5,11 @@ Include ./spec/053_utils.sh
 # import functions: exist_var create_file
 Include ./spec/054_utils.sh
 
-Describe 'Setup 84, 85, 86, 87'
+Describe 'Setup 84, 85, 86, 87, 88'
   Parameters:matrix
     $PROFILES
   End
-  Example "create test bucket using rclone" id:"084" id:"085" id:"086" id:"087"
+  Example "create test bucket using rclone" id:"084" id:"085" id:"086" id:"087" id:"088"
     profile=$1
     bucket_name=$(get_test_bucket_name)
     When run rclone mkdir "$profile:$bucket_name"
@@ -157,6 +157,61 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
       The output should include "\"GLACIER_IR\""
+      ;;
+    "rclone")
+      When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
+      The status should be success
+      The output should include "GLACIER_IR"
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+End
+
+Describe 'Object custom metadata with storage class' category:"Cold Storage" id:"088"
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "PUT GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "glacier-ir-class-with-metadata")
+    file="LICENSE"
+    case "$client" in
+    "aws-s3api" | "aws")
+      When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --storage-class "GLACIER_IR" --body "$file" --metadata "metadata1=foo,metadata2=bar"
+      The status should be success
+      The output should include "\"ETag\":"
+      ;;
+    "aws-s3")
+      When run aws --profile "$profile" s3 cp "$file" "s3://$bucket_name/$object_key" --storage-class "GLACIER_IR"
+      The status should be success
+      The output should include "upload: ./$file to s3://$bucket_name/$object_key"
+      ;;
+    "rclone")
+      When run rclone copyto "$file" "$profile:$bucket_name/$object_key" --s3-storage-class "GLACIER_IR" -v
+      The status should be success
+      The error should include "INFO  : $file: Copied"
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "HEAD GLACIER_IR with metadata, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "glacier-ir-class-with-metadata")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws s3api head-object --profile "$profile" --bucket "$bucket_name" --key "$object_key"
+      The status should be success
+      The output should include "\"StorageClass\": \"GLACIER_IR\""
+      The output should include "\"metadata1\": \"foo\""
+      The output should include "\"metadata2\": \"bar\""
       ;;
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
@@ -639,11 +694,11 @@ End
 teardown(){
   remove_test_bucket $profile $UNIQUE_SUFIX
 }
-Describe 'Teardown 84, 85, 86, 87'
+Describe 'Teardown 84, 85, 86, 87, 88'
   Parameters:matrix
     $PROFILES
   End
-  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"086" id:"087"
+  Example "remove test bucket or test bucket contents" id:"085" id:"085" id:"086" id:"087" id:"088"
     profile=$1
     When call teardown
     The status should be success
