@@ -169,34 +169,27 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
   End
 End
 
-Describe 'Multipart upload with storage class' category:"Cold Storage" id:"086"
+Describe 'Multipart upload' category:"Cold Storage" id:"086"
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
-  Example "default, on profile $1 using client $2"
+
+  Example "create with storage class default, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
-    local_file="" # will be overwritten by the function below
-    file_size=6
-    file_unit="mb"
-    create_file "$file_size" "$file_unit"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
 
     # initiates a multipart upload without passing a storage class argument
-    upload_id=$(aws s3api create-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" | jq .UploadId -r)
-    # upload two parts
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
-    # generates a parts list json file
-    aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
-    # complete the multipart upload
-    When run aws s3api complete-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id $upload_id --multipart-upload file:///tmp/parts.json
+    create_multipart() {
+      aws s3api create-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" | jq .UploadId -r | tee "/tmp/$object_key.upload_id"
+    }
+    When call create_multipart
     The status should be success
-    The output should include "\"Key\": \"$object_key\""
+    The output should not equal ""
       ;;
     "rclone")
       ;;
@@ -204,23 +197,234 @@ Describe 'Multipart upload with storage class' category:"Cold Storage" id:"086"
       ;;
     esac
   End
-  Example "STANDARD, on profile $1 using client $2"
+
+  Example "create with storage class STANDARD, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # initiates a multipart upload passing a standard storage class argument
+    create_standard_multipart() {
+      aws s3api create-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --storage-class "STANDARD" | jq .UploadId -r | tee "/tmp/$object_key.upload_id"
+    }
+    When call create_standard_multipart
+    The status should be success
+    The output should not equal ""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "create with storage class GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # initiates a multipart upload passing a cold storage class argument
+    create_cold_multipart() {
+      aws s3api create-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --storage-class "GLACIER_IR" | jq .UploadId -r | tee "/tmp/$object_key.upload_id"
+    }
+    When call create_cold_multipart
+    The status should be success
+    The output should not equal ""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "list uploads should list 3 with the expected storage classes, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    count_standard() {
+      aws s3api list-multipart-uploads --profile $profile --bucket $bucket_name | jq '[.Uploads[].StorageClass] | sort' | tr -d "\n"
+    }
+    When call count_standard
+    The status should be success
+    The output should equal "[  \"GLACIER_IR\",  \"STANDARD\",  \"STANDARD\"]"
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "upload parts with storage class default, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-
-    # initiates a multipart upload without passing a storage class argument
-    upload_id=$(aws s3api create-multipart-upload --storage-class STANDARD --profile "$profile" --bucket "$bucket_name" --key "$object_key" | jq .UploadId -r)
     # upload two parts
     aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
+    When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
+    The status should be success
+    The output should include "\"ETag\":"
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "upload parts with storage class STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-standard-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # upload two parts
+    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
+    When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
+    The status should be success
+    The output should include "\"ETag\":"
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "upload parts with storage class GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # upload two parts
+    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
+    When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
+    The status should be success
+    The output should include "\"ETag\":"
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+
+  Example "list parts with default storage, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # upload two parts
+    When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
+    The status should be success
+    The output should include "\"STANDARD\""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "list parts with storage class STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-standard-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # upload two parts
+    When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
+    The status should be success
+    The output should include "\"STANDARD\""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+  Example "list parts with storage class GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    # upload two parts
+    When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
+    The status should be success
+    The output should include "\"GLACIER_IR\""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+
+  Example "complete with storage class default, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+    aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
+    When run aws s3api complete-multipart-upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id $upload_id --multipart-upload file:///tmp/parts.json
+    The status should be success
+    The output should include "\"Key\": \"$object_key\""
+      ;;
+    "rclone")
+      ;;
+    "mgc")
+      ;;
+    esac
+  End
+
+  Example "complete with storage class STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-standard-class")
+    upload_id=$(cat "/tmp/$object_key.upload_id")
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
     # generates a parts list json file
     aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
     # complete the multipart upload
@@ -234,23 +438,15 @@ Describe 'Multipart upload with storage class' category:"Cold Storage" id:"086"
       ;;
     esac
   End
-  Example "GLACIER_IR, on profile $1 using client $2"
+
+  Example "complete with storage class GLACIER_IR, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
-    local_file="" # will be overwritten by the function below
-    file_size=6
-    file_unit="mb"
-    create_file "$file_size" "$file_unit"
+    upload_id=$(cat "/tmp/$object_key.upload_id")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-
-    # initiates a multipart upload without passing a storage class argument
-    upload_id=$(aws s3api create-multipart-upload --storage-class GLACIER_IR --profile "$profile" --bucket "$bucket_name" --key "$object_key" | jq .UploadId -r)
-    # upload two parts
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     # generates a parts list json file
     aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" | jq '{"Parts": [.Parts[] | {"PartNumber": .PartNumber, "ETag": .ETag}]}' > /tmp/parts.json
     # complete the multipart upload
@@ -443,7 +639,7 @@ End
 teardown(){
   remove_test_bucket $profile $UNIQUE_SUFIX
 }
-Describe 'Teardown 84, 85, 86, 87, 88'
+Describe 'Teardown 84, 85, 86, 87'
   Parameters:matrix
     $PROFILES
   End
