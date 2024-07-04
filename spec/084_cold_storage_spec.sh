@@ -5,6 +5,19 @@ Include ./spec/053_utils.sh
 # import functions: exist_var create_file
 Include ./spec/054_utils.sh
 
+# aws dont allow setting public-read canned acl without unblocking access to it first
+remove_acl_block() {
+  profile=$1
+  bucket=$2
+  # openstack swift dont block acl setting, early return
+  if (aws s3api --profile $profile get-bucket-ownership-controls --bucket $bucket | jq .OwnershipControls |grep '{}' > /dev/null); then
+    return
+  fi
+  # AWS needs unblocking
+  aws s3api --profile $profile put-bucket-ownership-controls --bucket $bucket --ownership-controls Rules=[{ObjectOwnership=BucketOwnerPreferred}]
+  aws s3api --profile $profile put-public-access-block --bucket $bucket --public-access-block-configuration BlockPublicAcls=false,BlockPublicPolicy=false
+}
+
 Describe 'Setup 84, 85, 86, 87, 88, 89'
   Parameters:matrix
     $PROFILES
@@ -14,6 +27,7 @@ Describe 'Setup 84, 85, 86, 87, 88, 89'
     bucket_name=$(get_test_bucket_name)
     When run rclone mkdir "$profile:$bucket_name"
     The status should be success
+    remove_acl_block $profile $bucket_name
   End
 End
 
@@ -331,7 +345,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
     upload_id=$(cat "/tmp/$object_key.upload_id")
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
+    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1 > /dev/null
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
     The output should include "\"ETag\":"
@@ -356,7 +370,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
     upload_id=$(cat "/tmp/$object_key.upload_id")
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
+    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1 > /dev/null
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
     The output should include "\"ETag\":"
@@ -381,7 +395,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
     upload_id=$(cat "/tmp/$object_key.upload_id")
-    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1
+    aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 1 > /dev/null
     When run aws s3api upload-part --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id" --body "$local_file" --part-number 2
     The status should be success
     The output should include "\"ETag\":"
@@ -843,7 +857,7 @@ Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
     case "$client" in
     "aws-s3api" | "aws")
       trap wrong_storage_class ERR
-      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD > /dev/null
       When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
       The status should be success
       The output should include "\"Permission\": \"READ\""
@@ -865,7 +879,7 @@ Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
     case "$client" in
     "aws-s3api" | "aws")
       trap wrong_storage_class ERR
-      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep STANDARD > /dev/null
       When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
       The status should be success
       The output should include "\"Permission\": \"READ\""
@@ -888,7 +902,7 @@ Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
     "aws-s3api" | "aws")
       # asserts that the storage class is the expected, if grep fails the test fails
       trap wrong_storage_class ERR
-      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep GLACIER_IR
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep GLACIER_IR > /dev/null
       When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
       The status should be success
       The output should include "\"Permission\": \"READ\""
