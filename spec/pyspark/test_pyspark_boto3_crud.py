@@ -23,7 +23,7 @@ def test_upload_and_read_object(s3_client):
     
     # Cria um arquivo local para upload
     with open("local_file.txt", "w") as f:
-        f.write("Conteúdo de teste.")
+        f.write("Conteúdo de testes.")
     
     upload_object(s3_client, bucket_name, "local_file.txt", "uploaded_file.txt")
     
