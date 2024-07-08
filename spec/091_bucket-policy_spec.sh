@@ -31,11 +31,6 @@ policy_factory(){
       fi
     done
     resource_list=${resource_list%,}
-    if [ "$prefix" = true ]; then
-      action=[$action]
-    else
-      action="$action"
-    fi
     if [ "$principal" = "*" ]; then
       local principal_entry="\"Principal\": \"*\""
     else
@@ -48,7 +43,7 @@ policy_factory(){
         {
             "Effect": "$effect",
             $principal_entry,
-            "Action": $action,
+            "Action": [$action],
             "Resource": [$resource_list]
         }
     ]
@@ -90,7 +85,7 @@ Describe 'Put bucket policy:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
     wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End
@@ -105,16 +100,15 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
     $PROFILES
     $CLIENTS
   End
-  Example "on profile $1 using client $2" id:"092"
+  Example "on profile $1 using client $2" id:"091"
     profile=$1
     client=$2
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
-    resource=("$bucket_name-$client" "$bucket_name/*")
+    resource=("$bucket_name-$client" "$bucket_name-$client/*")
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    echo $policy
     wait_command bucket-exists $profile "$bucket_name-$client"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -130,7 +124,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
     wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End
@@ -170,12 +164,12 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
-    #aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
-    #wait_command bucket-not-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End
 
-Describe 'Alternativa para object-lock:' category:"Bucket Management"
+Describe 'Alternative to object-lock:' category:"Bucket Management"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -209,7 +203,8 @@ Describe 'Alternativa para object-lock:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    aws s3api delete-bucket-policy --bucket "$bucket_name-$client" > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
     wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End
