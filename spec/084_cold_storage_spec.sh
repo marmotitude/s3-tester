@@ -226,11 +226,13 @@ Describe 'Object custom metadata with storage class' category:"Cold Storage" id:
       The output should include "\"StorageClass\": \"GLACIER_IR\""
       The output should include "\"metadata1\": \"foo\""
       The output should include "\"metadata2\": \"bar\""
+      The output should include "\"ContentLength\": 1068,"
       ;;
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
       The status should be success
       The output should include "GLACIER_IR"
+      The output should include "\"Size\":1068"
       ;;
     "mgc")
       ;;
