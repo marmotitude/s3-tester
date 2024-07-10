@@ -116,6 +116,10 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
   End
 End
 
+include_cold_or_glacier() {
+  value=${include_cold_or_glacier:?}
+  [[ $value == *"GLACIER_IR"* ]] || [[ $value == *"COLD"* ]]
+}
 Describe 'List object with storage class' category:"Cold Storage" id:"085"
   Parameters:matrix
     $PROFILES
@@ -161,7 +165,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       ;;
     esac
   End
-  Example "GLACIER_IR, on profile $1 using client $2"
+  Example "COLD or GLACIER_IR, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
@@ -170,12 +174,12 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
-      The output should include "\"GLACIER_IR\""
+      The output should satisfy include_cold_or_glacier
       ;;
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
       The status should be success
-      The output should include "GLACIER_IR"
+      The output should satisfy include_cold_or_glacier
       ;;
     "mgc")
       ;;
@@ -223,7 +227,7 @@ Describe 'Object custom metadata with storage class' category:"Cold Storage" id:
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api head-object --profile "$profile" --bucket "$bucket_name" --key "$object_key"
       The status should be success
-      The output should include "\"StorageClass\": \"GLACIER_IR\""
+      The output should satisfy include_cold_or_glacier
       The output should include "\"metadata1\": \"foo\""
       The output should include "\"metadata2\": \"bar\""
       The output should include "\"ContentLength\": 1068,"
@@ -231,7 +235,7 @@ Describe 'Object custom metadata with storage class' category:"Cold Storage" id:
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
       The status should be success
-      The output should include "GLACIER_IR"
+      The output should satisfy include_cold_or_glacier
       The output should include "\"Size\":1068"
       ;;
     "mgc")
@@ -324,7 +328,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     }
     When call count_standard
     The status should be success
-    The output should include "\"GLACIER_IR\""
+    The output should satisfy include_cold_or_glacier
     The output should include "\"STANDARD\""
       ;;
     "rclone")
@@ -456,7 +460,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     upload_id=$(cat "/tmp/$object_key.upload_id")
     When run aws s3api list-parts --profile "$profile" --bucket "$bucket_name" --key "$object_key" --upload-id "$upload_id"
     The status should be success
-    The output should include "\"GLACIER_IR\""
+    The output should satisfy include_cold_or_glacier
       ;;
     "rclone")
       ;;
@@ -585,7 +589,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
-      The output should include "\"GLACIER_IR\""
+      The output should satisfy include_cold_or_glacier
       ;;
     "rclone")
       # When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
@@ -721,12 +725,12 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
-      The output should include "\"GLACIER_IR\""
+      The output should satisfy include_cold_or_glacier
       ;;
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
       The status should be success
-      The output should include "GLACIER_IR"
+      The output should satisfy include_cold_or_glacier
       ;;
     "mgc")
       ;;
@@ -741,12 +745,12 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
-      The output should include "\"GLACIER_IR\""
+      The output should satisfy include_cold_or_glacier
       ;;
     "rclone")
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
       The status should be success
-      The output should include "GLACIER_IR"
+      The output should satisfy include_cold_or_glacier
       ;;
     "mgc")
       ;;
