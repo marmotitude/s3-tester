@@ -39,8 +39,8 @@ if __name__ == "__main__":
     s3_client = boto3.client(
         's3',
         endpoint_url='https://br-se1.magaluobjects.com',
-        aws_access_key_id=os.getenv('246889f3-2141-4451-98a7-7a41125fd1ba'),
-        aws_secret_access_key=os.getenv('3ce28097-ba79-4b84-add7-ae3348d09edf'),
+        aws_access_key_id=os.getenv('your_id'),
+        aws_secret_access_key=os.getenv('your_key'),
         verify=False  # Disable SSL verification
     )
 
