@@ -59,6 +59,7 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
+      ./mgc profile set-current $profile > /dev/null
       When run ./mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
       The output should include "uri: $bucket_name/$file"
       ;;
