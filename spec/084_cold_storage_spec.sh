@@ -59,8 +59,8 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
-      ./mgc profile set-current $profile > /dev/null
-      When run ./mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects upload "$file" "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
     esac
@@ -88,6 +88,9 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=STANDARD --raw
+      The output should include "uri: $bucket_name/$file"
       ;;
     esac
   End
@@ -114,6 +117,11 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=GLACIER_IR --raw
+      The output should include "uri: $bucket_name/$file"
+      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
+      The output should include "uri: $bucket_name/$file"
       ;;
     esac
   End
@@ -145,6 +153,9 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should include "STANDARD"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects list "$bucket_name" --raw
+      The output should include "uri: $bucket_name/$file"
       ;;
     esac
   End
@@ -165,6 +176,9 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should include "STANDARD"
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects list "$bucket_name" --raw
+      The output should include "uri: $bucket_name/$file"
       ;;
     esac
   End
@@ -185,6 +199,10 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should satisfy include_cold_or_glacier
       ;;
     "mgc")
+      mgc profile set-current $profile > /dev/null
+      When run mgc object-storage objects list "$bucket_name" --raw
+      The output should include "uri: $bucket_name/$file"
+      The output should include "COLD"
       ;;
     esac
   End
