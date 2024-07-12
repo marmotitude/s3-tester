@@ -26,4 +26,8 @@ for num in $tests; do
     tag_args+=" --tag id:${padded_num}"
 done
 
+# print the tools shasum
+shasum `which mgc` `which aws` `which rclone`
+
+# run the tests
 shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $args_after_double_dash
