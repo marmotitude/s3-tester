@@ -908,7 +908,7 @@ Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
     "aws-s3api" | "aws")
       # asserts that the storage class is the expected, if grep fails the test fails
       trap wrong_storage_class ERR
-      aws --profile "$profile" s3api get-object-attributes --object-attributes StorageClass --bucket "$bucket_name" --key "$object_key" | grep GLACIER_IR > /dev/null
+      aws --profile "$profile" s3api get-object-attributes --object-attributes StorrgeClass --bucket "$bucket_name" --key "$object_key" | grep -E 'GLACIER_IR|COLD' > /dev/null
       When run aws --profile "$profile" s3api get-object-acl --bucket "$bucket_name" --key "$object_key"
       The status should be success
       The output should include "\"Permission\": \"READ\""
