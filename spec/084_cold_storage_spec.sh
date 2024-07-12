@@ -557,46 +557,63 @@ End
 Describe 'Multipart upload' category:"Cold Storage" id:"086"
   Parameters:matrix
     $PROFILES
-    $CLIENTS
+    mgc
   End
 
   # This is same as previous tests, but mgc cli does all operations as one
-  if [$2 -eq "mgc"]
-  then
-    Example "upload with storage class default, on profile $1 using client $2"
-      profile=$1
-      client=$2
-      bucket_name=$(get_test_bucket_name)
-      object_key=$(get_uploaded_key "multipart-default-class")
-      When run mgc object-storage objects upload --profile "$profile" --bucket "$bucket_name" --key "$object_key"
-      The status should be success
-    End
+  Example "upload with storage class default, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key"
+    The status should be success
+  End
 
-    Example "upload with storage class STANDARD, on profile $1 using client $2"
-      profile=$1
-      client=$2
-      bucket_name=$(get_test_bucket_name)
-      object_key=$(get_uploaded_key "multipart-default-class")
-      When run mgc object-storage objects upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --storage-class STANDARD
-      The status should be success
-    End
-    Example "upload with storage class GLACIER_IR, on profile $1 using client $2"
-      profile=$1
-      client=$2
-      bucket_name=$(get_test_bucket_name)
-      object_key=$(get_uploaded_key "multipart-default-class")
-      When run mgc object-storage objects upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --storage-class GLACIER_IR
-      The status should be success
-    End
-    Example "upload with storage class COLD, on profile $1 using client $2"
-      profile=$1
-      client=$2
-      bucket_name=$(get_test_bucket_name)
-      object_key=$(get_uploaded_key "multipart-default-class")
-      When run mgc object-storage objects upload --profile "$profile" --bucket "$bucket_name" --key "$object_key" --storage-class COLD
-      The status should be success
-    End
-  fi
+  Example "upload with storage class STANDARD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class STANDARD
+    The status should be success
+  End
+  Example "upload with storage class GLACIER_IR, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class GLACIER_IR
+    The status should be success
+  End
+  Example "upload with storage class COLD, on profile $1 using client $2"
+    profile=$1
+    client=$2
+    bucket_name=$(get_test_bucket_name)
+    object_key=$(get_uploaded_key "multipart-default-class")
+    local_file="" # will be overwritten by the function below
+    file_size=6
+    file_unit="mb"
+    create_file "$file_size" "$file_unit"
+    case "$client" in
+    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class COLD
+    The status should be success
+  End
 End
 
 Describe 'List multipart object with storage class' category:"Cold Storage" id:"086"
@@ -621,7 +638,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -644,7 +661,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -667,7 +684,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "GLACIER_IR"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc profile set-current $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       The output should include "COLD"
