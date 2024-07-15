@@ -59,7 +59,7 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects upload "$file" "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -88,7 +88,7 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=STANDARD --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -117,7 +117,7 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=GLACIER_IR --raw
       The output should include "uri: $bucket_name/$file"
       When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
@@ -153,7 +153,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -176,7 +176,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -199,7 +199,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       The output should satisfy include_cold_or_glacier
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       The output should include "COLD"
@@ -623,7 +623,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -646,7 +646,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -669,7 +669,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "GLACIER_IR"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       The output should include "COLD"
