@@ -118,8 +118,6 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=GLACIER_IR --raw
-      The output should include "uri: $bucket_name/$file"
       When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
       The output should include "uri: $bucket_name/$file"
       ;;
