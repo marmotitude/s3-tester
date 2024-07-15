@@ -29,3 +29,6 @@ ENV PATH "/app/bin:${PATH}"
 COPY oci/tests.entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# use a custom mgc build
+COPY vendor/MagaluCloud/mgc /usr/local/bin/mgc

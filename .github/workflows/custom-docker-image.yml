@@ -1,9 +1,9 @@
-name: Build OCI Images
+name: Build Custom OCI Images
 
 on:
   push:
     branches:
-      - main
+      - mgc-storage-class-tests
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -25,23 +25,13 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: "Build and push OCI image, tag: tools"
+    - name: "Build and push OCI image, tag: tests-next"
       uses: docker/build-push-action@v5.3.0
       with:
         context: .
         push: true
-        file: oci/tools.Containerfile
+        file: oci/tests-next.Containerfile
         tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tools-${{github.sha}}
-
-    - name: "Build and push OCI image, tag: tests"
-      uses: docker/build-push-action@v5.3.0
-      with:
-        context: .
-        push: true
-        file: oci/tests.Containerfile
-        tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests-${{github.sha}}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests-next
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:tests-next-${{github.sha}}
 
