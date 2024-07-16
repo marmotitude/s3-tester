@@ -570,9 +570,10 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
-    case "$client" in
-    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key"
+    mgc profile set $profile > /dev/null
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --raw
     The status should be success
+    The output should include "uri: $bucket_name/$file"
   End
 
   Example "upload with storage class STANDARD, on profile $1 using client $2"
@@ -584,9 +585,10 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
-    case "$client" in
-    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class STANDARD
+    mgc profile set $profile > /dev/null
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class STANDARD --raw
     The status should be success
+    The output should include "uri: $bucket_name/$file"
   End
   Example "upload with storage class GLACIER_IR, on profile $1 using client $2"
     profile=$1
@@ -597,9 +599,10 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
-    case "$client" in
-    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class GLACIER_IR
+    mgc profile set $profile > /dev/null
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class GLACIER_IR --raw
     The status should be success
+    The output should include "uri: $bucket_name/$file"
   End
   Example "upload with storage class COLD, on profile $1 using client $2"
     profile=$1
@@ -610,9 +613,10 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
-    case "$client" in
-    When run mgc object-storage objects upload --profile "$profile" "$local_file" "$bucket_name/$object_key" --storage-class COLD
+    mgc profile set $profile > /dev/null
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class COLD --raw
     The status should be success
+    The output should include "uri: $bucket_name/$file"
   End
 End
 
