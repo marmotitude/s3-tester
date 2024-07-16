@@ -4,7 +4,7 @@ delete_bucket() {
   client=$2
   bucket_name="$3"
 
-  aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
+  rclone purge "$profile:$bucket_name" > /dev/null
   aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
 }
 
