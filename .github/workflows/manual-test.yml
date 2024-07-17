@@ -27,16 +27,20 @@ on:
 env:
   PROFILES: ${{ secrets.profiles }}
 
+
 jobs:
   run_tests:
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: "Run with tests, clients and profiles from user input"
         run: |
+          echo copying specs from the workspace volume to the image workspace...
+          cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
           cd /app
           mgc --version
-          sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
       - name: CLEAN_BUCKETS
         run: |

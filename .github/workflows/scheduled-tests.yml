@@ -13,9 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: "Profiles: ${{ vars.CRON_PROFILES_1 }}; Clients: ${{ vars.CRON_CLIENTS_1}}; Tests: ${{ vars.CRON_TESTS_1 }};"
         if: github.event.schedule == '30 * * * *'
         run: |
+          echo copying specs from the workspace volume to the image workspace...
+          cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
           cd /app
           mgc --version
           sha256sum `which mgc`
@@ -23,6 +27,8 @@ jobs:
       - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_1 }};"
         if: github.event.schedule == '35 * * * *'
         run: |
+          echo copying specs from the workspace volume to the image workspace...
+          cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
           cd /app
           mgc --version
           sha256sum `which mgc`
