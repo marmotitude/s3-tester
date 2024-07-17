@@ -208,6 +208,8 @@ Describe 'Delete' category:"Object Management"
       objects=""
       for file in $remaining_files; do
         object_key=$(get_uploaded_key "$file")
+        echo "waiting for $object_key to exist before adding it to the deletion list"
+        aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $object_key
         objects+="$object_key "
       done
       case "$client" in
