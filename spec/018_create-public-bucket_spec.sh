@@ -25,7 +25,7 @@ Describe 'Create public bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client --public-read
+      When run mgc object-storage buckets create $bucket_name-$client --public-read --raw
       The output should include "Created bucket $bucket_name-$client"
       ;;
     esac

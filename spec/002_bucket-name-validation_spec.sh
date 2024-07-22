@@ -45,7 +45,7 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       "mgc")
         mgc profile set-current $profile > /dev/null
-        When run mgc object-storage buckets create "$bucket_name"
+        When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;
       "rclone")
@@ -76,7 +76,7 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       "mgc")
         mgc profile set-current $profile > /dev/null
-        When run mgc object-storage buckets create "$bucket_name"
+        When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;
       "rclone")
@@ -109,7 +109,7 @@ Describe 'Create bucket' category:"Bucket Management"
         ;;
       "mgc")
         mgc profile set-current $profile > /dev/null
-        When run mgc object-storage buckets create "$bucket_name"
+        When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;
       "rclone")

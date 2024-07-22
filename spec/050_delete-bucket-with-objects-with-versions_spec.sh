@@ -10,7 +10,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
   End
   Example "on profile $1 using client $2" id:"050"
     profile=$1
-    client=$2    
+    client=$2
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
@@ -33,7 +33,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
       ;;
     "mgc")
     mgc profile set-current $profile > /dev/null
-    When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --recursive
+    When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --recursive --raw
     The status should be failure
     The stderr should include BucketNotEmpty
     The output should include "Deleting"

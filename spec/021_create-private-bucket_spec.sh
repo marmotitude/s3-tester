@@ -6,7 +6,7 @@ Describe 'Create private bucket:' category:"Bucket Permission"
     bucket_name="test-021-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -29,7 +29,7 @@ Describe 'Create private bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets create $bucket_name-$client --raw
       The output should include "Created bucket $bucket_name-$client"
       ;;
     esac

@@ -10,7 +10,7 @@ Describe 'Delete Bucket versioned:' category:"Object Versioning"
   End
   Example "on profile $1 using client $2" id:"048"
     profile=$1
-    client=$2  
+    client=$2
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled > /dev/null
     case "$client" in
@@ -24,7 +24,7 @@ Describe 'Delete Bucket versioned:' category:"Object Versioning"
       ;;
     "mgc")
     mgc profile set-current $profile > /dev/null
-    When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
+    When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
     The output should include ""
       ;;
     esac

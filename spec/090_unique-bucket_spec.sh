@@ -9,14 +9,14 @@ Describe 'Unique bucket:' category:"Bucket Management"
     bucket_name="test-090-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
   End
   Example "on profile $1 using client $2" id:"090"
     profile=$1
-    client=$2    
+    client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
@@ -39,7 +39,7 @@ Describe 'Unique bucket:' category:"Bucket Management"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets create $bucket_name-$client --raw
       The error should include "BucketAlreadyExists"
       The status should be failure
       ;;

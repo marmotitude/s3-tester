@@ -14,7 +14,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
   End
   Example "on profile $1 using client $2" id:"025"
     profile=$1
-    client=$2    
+    client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
@@ -37,7 +37,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     "mgc")
       mgc profile set-current $profile-second > /dev/null
       #Skip "Skipped test to $client"
-      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw
 	    The status should be failure
       The stderr should include "403"
       ;;

@@ -22,7 +22,7 @@ Describe 'Set the versioning for a public bucket:' category:"Object Versioning"
       ;;
     "mgc")
     mgc profile set-current $profile > /dev/null
-    When run mgc object-storage buckets versioning enable $bucket_name-$client
+    When run mgc object-storage buckets versioning enable $bucket_name-$client --raw
     The output should include "Enabled versioning for $bucket_name-$client"
       ;;
     esac
