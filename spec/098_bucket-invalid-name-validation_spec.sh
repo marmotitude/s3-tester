@@ -41,7 +41,7 @@ Describe 'Create invalid bucket' category:"Bucket Management"
         ;;
       "mgc")
         mgc profile set-current $profile > /dev/null
-        When run mgc object-storage buckets create "$bucket_name"
+        When run mgc object-storage buckets create "$bucket_name" --raw
         The error should include "Error: (InvalidBucketName) 400 Bad Request - The specified bucket is not valid."
         ;;
       "rclone")
@@ -78,7 +78,7 @@ Describe 'Create bucket with invalid names' category:"Bucket Management"
       ;;
     "mgc")
       Skip if "mgc cli está validando tamanho do nome" check_length "$bucket_name"
-      When run mgc object-storage buckets create "$bucket_name"
+      When run mgc object-storage buckets create "$bucket_name" --raw
       The error should include "InvalidBucketName"
       ;;
     "rclone")
@@ -117,7 +117,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create "$bucket_name"
+      When run mgc object-storage buckets create "$bucket_name" --raw
       The error should include "InvalidBucketName"
       ;;
     "rclone")

@@ -14,7 +14,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
   End
   Example "on profile $1 using client $2" id:"024"
     profile=$1
-    client=$2  
+    client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
@@ -34,7 +34,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     "mgc")
       mgc profile set-current $profile-second > /dev/null
       #Skip "Skipped test to $client"
-      When run mgc object-storage objects list --dst $bucket_name-$client
+      When run mgc object-storage objects list --dst $bucket_name-$client --raw
       The output should include $file1_name
       ;;
     esac

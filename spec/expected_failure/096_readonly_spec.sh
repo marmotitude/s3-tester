@@ -6,7 +6,7 @@ Describe 'Read-only Create bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -30,7 +30,7 @@ Describe 'Read-only Create bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -42,7 +42,7 @@ Describe 'Read-only List buckets:' category:"Bucket Permission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -66,7 +66,7 @@ Describe 'Read-only List buckets:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets list 
+      When run mgc object-storage buckets list --raw
       The stdout should include BUCKETS
       ;;
     esac
@@ -78,7 +78,7 @@ Describe 'Read-only List objects:' category:"Bucket Permission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -100,7 +100,7 @@ Describe 'Read-only List objects:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects list test-test #$bucket_name-$client
+      When run mgc object-storage objects list test-test --raw #$bucket_name-$client
       The stdout should include FILES
       ;;
     esac
@@ -113,7 +113,7 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
     bucket_name="test-096-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -140,7 +140,7 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm
+      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
       The stderr should include "Blocked account"
     The status should be failure
       ;;
@@ -152,7 +152,7 @@ Describe 'Read-only Delete bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -163,7 +163,7 @@ Describe 'Read-only Delete bucket:' category:"Bucket Permission"
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client 
+      When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
@@ -176,7 +176,7 @@ Describe 'Read-only Delete bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
+      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac

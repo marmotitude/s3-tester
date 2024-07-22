@@ -23,7 +23,7 @@ Describe 'Copy URL for public buckets:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets public-url --dst $bucket_name-$client
+      When run mgc object-storage buckets public-url --dst $bucket_name-$client --raw
       The output should include "$bucket_name-$client"
       ;;
     esac

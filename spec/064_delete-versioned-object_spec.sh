@@ -92,7 +92,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm
+      When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm --raw
       The status should be success
       The error should include "$bucket_name?delete="
       The error should include "200 OK"
@@ -119,7 +119,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects versions --dst="$bucket_name" --cli.output json
+      When run mgc object-storage objects versions --dst="$bucket_name" --cli.output json --raw
       The status should be success
       The output should not include "\"isLatest\": true,"
       ;;

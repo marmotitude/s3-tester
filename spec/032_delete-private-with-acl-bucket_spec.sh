@@ -35,7 +35,7 @@ Describe 'Delete private with ACL bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
+      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The output should include ""
       ;;
     esac

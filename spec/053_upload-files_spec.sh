@@ -67,7 +67,7 @@ Describe 'Upload Files' category:"Object Management"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key"
+      When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
       The status should be success
       The output should include "Uploaded file $local_file to $BUCKET_NAME/$keys3"
       ;;
@@ -103,7 +103,7 @@ Describe 'Upload Files' category:"Object Management"
         ;;
       "mgc")
         mgc profile set-current $profile > /dev/null
-        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key"
+        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
         The output should include "Downloaded from $BUCKET_NAME/$object_key to $out_file"
         ;;
@@ -147,7 +147,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects list --dst="$BUCKET_NAME"
+      When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
       The status should be success
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
@@ -190,7 +190,7 @@ Describe 'Delete' category:"Object Management"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm
+      When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
       The status should be success
       The error should include "$BUCKET_NAME?delete="
       The error should include "200 OK"
@@ -255,7 +255,7 @@ Describe 'Delete' category:"Object Management"
           mgc_objects+='"}'
         done
         mgc_objects+="]"
-        When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects"
+        When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
         The status should be success
         The output should include "Deleting objects from \"$BUCKET_NAME\""
         ;;

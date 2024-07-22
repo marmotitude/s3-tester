@@ -27,7 +27,7 @@ Describe 'Upload object to versioning in the private bucket:' category:"Object V
     "mgc")
     mgc profile set-current $profile > /dev/null
     #Skip "Skipped test to $client"
-    When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client
+    When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw
     The status should be success
     The output should include ""
       ;;
