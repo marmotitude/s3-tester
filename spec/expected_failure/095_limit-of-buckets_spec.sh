@@ -1,9 +1,9 @@
 create_bucket() {
     while true; do
         bucket_name="test-095-setup-$(date +%s)"
-        
+
         aws --profile "$profile" s3 mb "s3://$bucket_name" > /dev/null 2>&1
-        
+
         if [ $? -ne 0 ]; then
             break
         fi
@@ -35,7 +35,7 @@ Describe 'Create 100 buckets:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include TooManyBuckets
       ;;
     esac

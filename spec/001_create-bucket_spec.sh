@@ -32,7 +32,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create "$bucket_name"
+      When run mgc object-storage buckets create "$bucket_name" --raw
       The status should be success
       The output should include "Created bucket $bucket_name"
       ;;
@@ -42,7 +42,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
 End
 
 #015 is also used as teardown of 001
-Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015" 
+Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -68,7 +68,7 @@ Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete "$bucket_name" --no-confirm
+      When run mgc object-storage buckets delete "$bucket_name" --no-confirm --raw
       The status should be success
       ;;
     esac

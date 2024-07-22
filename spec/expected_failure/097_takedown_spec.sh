@@ -6,7 +6,7 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -30,7 +30,7 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client
+      When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -42,7 +42,7 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -66,7 +66,7 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets list
+      When run mgc object-storage buckets list --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -78,7 +78,7 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -102,7 +102,7 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects list $bucket_name-$client
+      When run mgc object-storage objects list $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -115,7 +115,7 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
     bucket_name="test-097-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -139,7 +139,7 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm
+      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -151,7 +151,7 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -162,7 +162,7 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client 
+      When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
@@ -175,7 +175,7 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc profile set-current $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm
+      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac

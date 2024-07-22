@@ -31,7 +31,7 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
       ;;
     "mgc")
     mgc profile set-current $profile > /dev/null
-    When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m"
+    When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw
     The status should be success
     The output should include X-Amz-Algorithm
       ;;
