@@ -1,6 +1,15 @@
-FROM ghcr.io/marmotitude/s3-tester:tools
+ARG TOOLS_IMAGE="ghcr.io/marmotitude/s3-tester:tools"
+
+FROM ${TOOLS_IMAGE}
 
 WORKDIR /app
+
+#python poetry dependencies
+COPY pyproject.toml poetry.lock /app/
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+ENV POETRY_NO_INTERACTION=1
+ENV SPARK_HOME=/tools/spark
+RUN poetry install --no-dev;
 
 # tests
 COPY spec spec

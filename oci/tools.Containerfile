@@ -15,6 +15,7 @@ ARG AWS_CLI_VERSION="2.15.27"
 ARG RCLONE_VERSION="1.66.0"
 ARG MGC_VERSION="0.18.10"
 ARG OPENTOFU_VERSION="1.7.1"
+ARG SPARK_VERSION="3.5.1"
 
 # aws-cli
 FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
@@ -59,6 +60,11 @@ RUN curl --proto '=https' --tlsv1.2 -fsSL https://get.opentofu.org/install-opent
 RUN chmod +x install-opentofu.sh && \
   ./install-opentofu.sh --install-method standalone --install-path /tools/tofu --symlink-path - --skip-verify && \
   rm install-opentofu.sh;
+# Spark with Hadoop
+ARG SPARK_VERSION
+ENV SPARK_VERSION=${SPARK_VERSION}
+RUN curl -Lo spark.tgz "https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.tgz" && \
+  tar -xvzf spark.tgz && rm -rf spark.tgz && mv spark-${SPARK_VERSION}-bin-hadoop3 spark;
 
 # Main image
 FROM ubuntu:${UBUNTU_VERSION} as main
@@ -69,9 +75,13 @@ RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
     ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws_completer" /usr/local/bin/aws_completer
 # additional ubuntu packages
 RUN apt update && apt install -y ca-certificates jq openssl curl python3 python3-pip less
-RUN pip3 install requests --break-system-packages
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
 RUN ln -s "/tools/tofu/tofu" /usr/local/bin/tofu
 
+# java
+RUN apt install -y openjdk-17-jre;
+
+# poetry
+RUN pip3 install poetry --break-system-packages;
