@@ -9,7 +9,7 @@ create_bucket(){
   "rclone")
     rclone mkdir "$profile:$bucket_name" ;;
   "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     mgc object-storage buckets create "$bucket_name" ;;
   esac
 }
@@ -38,7 +38,7 @@ enable_versioning(){
   "rclone")
     rclone backend versioning "$profile:$bucket_name" Enabled ;;
   "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     mgc object-storage buckets versioning enable --bucket "$bucket_name" ;;
   esac
 }
@@ -69,7 +69,7 @@ put_object(){
   "rclone")
     rclone copyto $local_file $profile:$bucket_name/$key --no-check-dest ;;
   "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     mgc object-storage objects upload --src="$local_file" --dst="$bucket_name/$key"
     echo "" ;;
   esac
@@ -100,7 +100,7 @@ list_object_versions(){
   "rclone")
     rclone --s3-versions ls $profile:$bucket_name ;;
   "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     mgc object-storage objects versions --dst="$bucket_name" --cli.output json;;
   esac
 }

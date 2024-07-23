@@ -27,7 +27,7 @@ Describe 'Download object to versioning in the public bucket:' category:"Object 
     Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set-current $profile-second > /dev/null
+    mgc profile set $profile-second > /dev/null
     When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
     The status should be failure
     The stderr should include "403"

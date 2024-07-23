@@ -38,7 +38,7 @@ Describe 'Unique bucket:' category:"Bucket Management"
       The status should be success
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create $bucket_name-$client --raw
       The error should include "BucketAlreadyExists"
       The status should be failure

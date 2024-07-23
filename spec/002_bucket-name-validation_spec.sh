@@ -44,7 +44,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;
@@ -75,7 +75,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;
@@ -108,7 +108,7 @@ Describe 'Create bucket' category:"Bucket Management"
         The output should include "make_bucket: $bucket_name"
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name" --raw
         The output should include "Created bucket $bucket_name"
         ;;

@@ -24,7 +24,7 @@ Describe 'get-presign:' category:"Bucket Sharing"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m")
     When run curl $presign_url
     The output should include Copyright
@@ -59,7 +59,7 @@ Describe 'put-presign:' category:"Bucket Sharing"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --method PUT)
     When run curl -X PUT -T $file1_name $presign_url
     The error should include Current

@@ -29,7 +29,7 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
     Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       #Skip "Skipped test to $client"
       When run mgc object-storage buckets acl set --grant-read id=$id --grant-write id=$id --dst $bucket_name-$client --raw
       The output should include ""
@@ -68,10 +68,10 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
     Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       #Skip "Skipped test to $client"
       mgc object-storage buckets acl set --grant-write id=$id --dst $bucket_name-$client
-      mgc profile set-current $profile-second > /dev/null
+      mgc profile set $profile-second > /dev/null
       When run mgc object-storage objects upload $file1_name --dst $bucket_name-$client --raw
       The output should include "Uploaded file $file1_name to $bucket_name-$client/$file1_name"
       ;;
