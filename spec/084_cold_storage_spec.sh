@@ -642,7 +642,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -665,7 +665,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "STANDARD"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       ;;
@@ -688,7 +688,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       # The output should include "GLACIER_IR"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "uri: $bucket_name/$file"
       The output should include "COLD"
