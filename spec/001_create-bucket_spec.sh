@@ -31,7 +31,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
       The error should include "Bucket \"$bucket_name\" created"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create "$bucket_name" --raw
       The status should be success
       The output should include "Created bucket $bucket_name"
@@ -67,7 +67,7 @@ Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
       The error should include "S3 bucket $bucket_name: Bucket \"$bucket_name\" deleted"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets delete "$bucket_name" --no-confirm --raw
       The status should be success
       ;;

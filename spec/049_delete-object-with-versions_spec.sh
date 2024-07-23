@@ -25,7 +25,7 @@ Describe 'Delete object with versions:' category:"Object Versioning"
     The output should include ""
       ;;
     "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
     The output should include ""
       ;;

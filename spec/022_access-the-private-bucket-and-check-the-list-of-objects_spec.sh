@@ -25,7 +25,7 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     The stderr should include "403"
     ;;
     "mgc")
-      mgc profile set-current $profile-second > /dev/null
+      mgc profile set $profile-second > /dev/null
       #Skip "Skipped test to $client"
       When run mgc object-storage objects list --dst $bucket_name-$client --raw
     The stderr should include "403"

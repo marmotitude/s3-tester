@@ -35,7 +35,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     # todo: its true if where dont have access the status is success but dont make download? test in other providers
       ;;
     "mgc")
-      mgc profile set-current $profile-second > /dev/null
+      mgc profile set $profile-second > /dev/null
       #Skip "Skipped test to $client"
       When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw
 	    The status should be failure

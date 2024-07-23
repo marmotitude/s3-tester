@@ -2,7 +2,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sharing"  
+Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sharing"
   setup(){
     bucket_name="test-038-$(date +%s)"
     file1_name="LICENSE"
@@ -32,7 +32,7 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set-current $profile > /dev/null
+    mgc profile set $profile > /dev/null
     presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m")
     When run curl $presign_url
     The output should include Copyright
