@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - storage-class-tests
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
