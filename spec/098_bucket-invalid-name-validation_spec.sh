@@ -40,7 +40,7 @@ Describe 'Create invalid bucket' category:"Bucket Management"
         The error should include "make_bucket failed: s3://foo bar Parameter validation failed"
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name" --raw
         The error should include "Error: (InvalidBucketName) 400 Bad Request - The specified bucket is not valid."
         ;;
@@ -116,7 +116,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       The error should include "Bucket name must match the regex"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create "$bucket_name" --raw
       The error should include "InvalidBucketName"
       ;;

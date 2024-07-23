@@ -66,7 +66,7 @@ Describe 'Upload Files' category:"Object Management"
       The error should include "to: $key"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
       The status should be success
       The output should include "Uploaded file $local_file to $BUCKET_NAME/$keys3"
@@ -102,7 +102,7 @@ Describe 'Upload Files' category:"Object Management"
         The status should be success
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
         The output should include "Downloaded from $BUCKET_NAME/$object_key to $out_file"
@@ -146,7 +146,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       done
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
       The status should be success
       for file in $FILES;do
@@ -189,7 +189,7 @@ Describe 'Delete' category:"Object Management"
       The error should include "$object_key: Deleted"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
       The status should be success
       The error should include "$BUCKET_NAME?delete="
@@ -247,7 +247,7 @@ Describe 'Delete' category:"Object Management"
         done
         ;;
       "mgc")
-        mgc profile set-current $profile > /dev/null
+        mgc profile set $profile > /dev/null
         mgc_objects="[{}"
         for object_key in $objects; do
           mgc_objects+=',{"include": "'

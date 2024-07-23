@@ -34,7 +34,7 @@ Describe 'Create 100 buckets:' category:"Bucket Permission"
       The stderr should include TooManyBuckets
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include TooManyBuckets
       ;;

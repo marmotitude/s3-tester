@@ -29,7 +29,7 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
@@ -65,7 +65,7 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets list --raw
       The stderr should include "Blocked account"
       ;;
@@ -101,7 +101,7 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects list $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
@@ -138,7 +138,7 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
@@ -174,7 +174,7 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set-current $profile > /dev/null
+      mgc profile set $profile > /dev/null
       When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
