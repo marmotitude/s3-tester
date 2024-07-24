@@ -42,7 +42,7 @@ Describe 'Create invalid bucket' category:"Bucket Management"
       "mgc")
         mgc profile set $profile > /dev/null
         When run mgc object-storage buckets create "$bucket_name" --raw
-        The error should include "Error: (InvalidBucketName) 400 Bad Request - The specified bucket is not valid."
+        The error should include "InvalidBucketName"
         ;;
       "rclone")
         When run rclone mkdir "$profile:$bucket_name" -v

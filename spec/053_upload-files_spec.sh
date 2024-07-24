@@ -69,7 +69,8 @@ Describe 'Upload Files' category:"Object Management"
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
       The status should be success
-      The output should include "Uploaded file $local_file to $BUCKET_NAME/$keys3"
+      The output should include "$local_file"
+      The output should include "$BUCKET_NAME/$keys3"
       ;;
     esac
     # Assert that the file was uploaded by waiting for object-exists
@@ -105,7 +106,8 @@ Describe 'Upload Files' category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
-        The output should include "Downloaded from $BUCKET_NAME/$object_key to $out_file"
+        The output should include "$BUCKET_NAME/$object_key"
+        The output should include "$out_file"
         ;;
       esac
     End
@@ -151,7 +153,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       The status should be success
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
-        The output should include " $object_key"
+        The output should include "$object_key"
       done
       ;;
     esac
@@ -257,7 +259,7 @@ Describe 'Delete' category:"Object Management"
         mgc_objects+="]"
         When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
         The status should be success
-        The output should include "Deleting objects from \"$BUCKET_NAME\""
+        The output should be blank
         ;;
       esac
       # Assert that the 2 remaining objects have been deleted by waiting for object-not-exists

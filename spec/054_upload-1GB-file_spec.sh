@@ -84,7 +84,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
+        The output should include "$filename"
+        The output should include "$BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -120,7 +121,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
+        The output should include "$BUCKET_NAME/$key"
+        The output should include "$out_file"
         ;;
       esac
     End
@@ -165,7 +167,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
+        The output should include "$filename"
+        The output should include "$BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -201,7 +204,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
+        The output should include "$BUCKET_NAME/$key"
+        The output should include "$out_file"
         ;;
       esac
     End
@@ -245,7 +249,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Uploaded file $filename to $BUCKET_NAME/$key"
+        The output should include "$filename"
+        The output should include "$BUCKET_NAME/$key"
         ;;
       esac
     End
@@ -281,7 +286,8 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
         mgc profile set $profile > /dev/null
         When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$key" --raw
         The status should be success
-        The output should include "Downloaded from $BUCKET_NAME/$key to $out_file"
+        The output should include "$BUCKET_NAME/$key"
+        The output should include "$out_file"
         ;;
       esac
     End

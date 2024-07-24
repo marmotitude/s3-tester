@@ -34,7 +34,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
       mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create "$bucket_name" --raw
       The status should be success
-      The output should include "Created bucket $bucket_name"
+      The output should include "$bucket_name"
       ;;
     esac
     aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"

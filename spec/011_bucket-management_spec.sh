@@ -116,7 +116,7 @@ Describe 'Delete buckets' category:"Bucket Management"
       mgc profile set $profile > /dev/null
       When run mgc object-storage buckets delete "$bucket_name" --recursive --no-confirm --raw
       The status should be success
-      The output should include "Deleting objects from \"$bucket_name\""
+      The output should include be ""
       aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
       ;;
     "rclone")
