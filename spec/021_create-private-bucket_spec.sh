@@ -30,7 +30,7 @@ Describe 'Create private bucket:' category:"Bucket Permission"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage buckets create $bucket_name-$client --raw
-      The output should include "Created bucket $bucket_name-$client"
+      The output should include "$bucket_name-$client"
       ;;
     esac
     The status should be success

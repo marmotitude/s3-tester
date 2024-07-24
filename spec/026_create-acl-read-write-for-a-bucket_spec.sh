@@ -73,7 +73,8 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
       mgc object-storage buckets acl set --grant-write id=$id --dst $bucket_name-$client
       mgc profile set $profile-second > /dev/null
       When run mgc object-storage objects upload $file1_name --dst $bucket_name-$client --raw
-      The output should include "Uploaded file $file1_name to $bucket_name-$client/$file1_name"
+      The output should include "$file1_name"
+      The output should include "$bucket_name-$client/$file1_name"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null

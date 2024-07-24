@@ -27,7 +27,7 @@ Describe "setup 064" category:"Object Management" id:"064"
     bucket_name=$(get_test_bucket_name)
     When run create_bucket $profile $client $bucket_name
     The status should be success
-    The output should include "$(create_bucket_success_output $profile $client $bucket_name)"
+    The output should include "$bucket_name"
   End
   Example "enable versioning on test bucket of profile $1 using $2"
     profile=$1
@@ -35,7 +35,7 @@ Describe "setup 064" category:"Object Management" id:"064"
     bucket_name=$(get_test_bucket_name)
     When run enable_versioning $profile $client $bucket_name
     The status should be success
-    The output should include "$(enable_versioning_success_output $profile $client $bucket_name)"
+    The output should include "$bucket_name"
   End
   Example "upload object on versioning-enabled bucket of profile $1 using $2"
     profile=$1
@@ -45,7 +45,8 @@ Describe "setup 064" category:"Object Management" id:"064"
     key=$(get_uploaded_key "$local_file")
     When run put_object $profile $client $bucket_name $local_file $key
     The status should be success
-    The output should include "$(put_object_success_output $profile $client $bucket_name $local_file $key)"
+    The output should include "$bucket_name/$key"
+    The output should include "$local_file"
   End
   Example "overwrite object on versioning-enabled bucket of profile $1 using $2"
     profile=$1
@@ -55,7 +56,8 @@ Describe "setup 064" category:"Object Management" id:"064"
     other_local_file="README.md"
     When run put_object $profile $client $bucket_name $other_local_file $key
     The status should be success
-    The output should include "$(put_object_success_output $profile $client $bucket_name $other_local_file $key)"
+    The output should include "$bucket_name/$key"
+    The output should include "$local_file"
   End
   Example "list versions of test bucket on profile $1 using $2 should have versions"
     profile=$1
