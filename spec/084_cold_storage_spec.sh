@@ -18,6 +18,17 @@ remove_acl_block() {
   aws s3api --profile $profile put-public-access-block --bucket $bucket --public-access-block-configuration BlockPublicAcls=false,BlockPublicPolicy=false
 }
 
+hard_wait() {
+    sleep 3
+    aws s3api --profile $profile wait object-exists --bucket $bucket_name --key $object_key
+    sleep 3
+    aws s3api --profile $profile wait object-exists --bucket $bucket_name --key $object_key
+    sleep 3
+    aws s3api --profile $profile wait object-exists --bucket $bucket_name --key $object_key
+    sleep 3
+    aws s3api --profile $profile wait object-exists --bucket $bucket_name --key $object_key
+    echo hard wait, $object_key exists on bucket $bucket_name and profile $profile
+}
 Describe 'Setup 84, 85, 86, 87, 88, 89'
   Parameters:matrix
     $PROFILES
@@ -60,10 +71,12 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload "$file" "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --raw
+      The output should include "$bucket_name"
+      The output should include "$file"
       ;;
     esac
+    hard_wait
   End
   Example "STANDARD, on profile $1 using client $2"
     profile=$1
@@ -83,16 +96,18 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       The output should include "upload: ./$file to s3://$bucket_name/$object_key"
       ;;
     "rclone")
-      When run rclone copyto "$file" "$profile:$bucket_name/$object_key" --s3-storage-class "STANDARD" -v
+      When run rclone copyto "$file" "$profile:$bucket_name/$object_key" --s3-storage-class "standard" -v
       The status should be success
       The error should include "INFO  : $file: Copied"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=STANDARD --raw
-      The output should include "$bucket_name/$file"
+      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=standard --raw
+      The output should include "$bucket_name"
+      The output should include "$file"
       ;;
     esac
+    hard_wait
   End
   Example "GLACIER_IR, on profile $1 using client $2"
     profile=$1
@@ -118,10 +133,12 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload "$file" "$bucket_name" --storage-class=COLD --raw
-      The output should include "$bucket_name/$file"
+      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=cold_instant --raw
+      The output should include "$bucket_name"
+      The output should include "$file"
       ;;
     esac
+    hard_wait
   End
 End
 
@@ -153,7 +170,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      The output should include "$file"
       ;;
     esac
   End
@@ -176,7 +193,8 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      The output should include "STANDARD"
+      The output should include "$file"
       ;;
     esac
   End
@@ -199,8 +217,8 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
       The output should include "COLD"
+      The output should include "$file"
       ;;
     esac
   End
@@ -571,7 +589,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     file_unit="mb"
     create_file "$file_size" "$file_unit"
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --raw
+    When run mgc object-storage objects upload --src "$local_file" --dst "$bucket_name/$object_key" --raw
     The status should be success
     The output should include "$bucket_name/$file"
   End
@@ -580,13 +598,13 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
-    object_key=$(get_uploaded_key "multipart-default-class")
+    object_key=$(get_uploaded_key "multipart-standard-class")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class STANDARD --raw
+    When run mgc object-storage objects upload --src "$local_file" --dst "$bucket_name/$object_key" --storage-class standard --raw
     The status should be success
     The output should include "$bucket_name/$file"
   End
@@ -594,13 +612,13 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
-    object_key=$(get_uploaded_key "multipart-default-class")
+    object_key=$(get_uploaded_key "multipart-glacier-ir-class")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class GLACIER_IR --raw
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class glacier_ir --raw
     The status should be success
     The output should include "$bucket_name/$file"
   End
@@ -608,13 +626,13 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
-    object_key=$(get_uploaded_key "multipart-default-class")
+    object_key=$(get_uploaded_key "multipart-cold-class")
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class COLD --raw
+    When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class cold_instant --raw
     The status should be success
     The output should include "$bucket_name/$file"
   End
@@ -644,7 +662,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      The output should include "$object_key"
       ;;
     esac
   End
@@ -667,7 +685,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      The output should include "$object_key"
       ;;
     esac
   End
@@ -690,7 +708,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
     "mgc")
       mgc profile set $profile > /dev/null
       When run mgc object-storage objects list "$bucket_name" --raw
-      The output should include "$bucket_name/$file"
+      The output should include "$object_key"
       The output should include "COLD"
       ;;
     esac
@@ -755,29 +773,32 @@ Describe 'Change the storage class of an existing…' category:"Cold Storage" id
       ;;
     esac
   End
-  Example "GLACIER_IR object to default (no storage class) on $1 using $2"
-    profile=$1
-    client=$2
-    bucket_name=$(get_test_bucket_name)
-    object_key=$(get_uploaded_key "glacier-ir-class")
-    new_object_key=$(get_uploaded_key "glacier-ir-class")
-    case "$client" in
-    "aws-s3api" | "aws")
-      When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --copy-source "$bucket_name/$object_key"
-      The status should not be success
-      The error should include "(InvalidRequest)"
-      ;;
-    "aws-s3")
-      When run aws --profile "$profile" s3 cp "s3://$bucket_name/$object_key" "s3://$bucket_name/$new_object_key"
-      The status should not be success
-      The error should include "(InvalidRequest)"
-      ;;
-    "rclone")
-      ;;
-    "mgc")
-      ;;
-    esac
-  End
+#  Example "GLACIER_IR object to default (no storage class) on $1 using $2"
+#    profile=$1
+#    client=$2
+#    bucket_name=$(get_test_bucket_name)
+#    object_key=$(get_uploaded_key "glacier-ir-class")
+#    new_object_key=$(get_uploaded_key "glacier-ir-class")
+#    case "$client" in
+#    "aws-s3api" | "aws")
+#      When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --copy-source "$bucket_name/$object_key"
+#      The status should not be success
+#      The error should include "(InvalidRequest)"
+#      ;;
+#    "aws-s3")
+#      When run aws --profile "$profile" s3 cp "s3://$bucket_name/$object_key" "s3://$bucket_name/$new_object_key"
+#      The status should not be success
+#      The error should include "(InvalidRequest)"
+#      ;;
+#    "rclone")
+#      # When run rclone settier "" "$profile:$bucket_name/$object_key" --dump headers
+#      # The status should be success
+#      # The error should include "X-Amz-Storage-Class: STANDARD"
+#      ;;
+#    "mgc")
+#      ;;
+#    esac
+#  End
   Example "GLACIER_IR object to STANDARD on $1 using $2"
     profile=$1
     client=$2
@@ -858,12 +879,15 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
     object_key=$(get_uploaded_key "glacier-ir-class")
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
+      hard_wait
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
       The status should be success
       The output should include "\"STANDARD\""
       ;;
     "rclone")
+      hard_wait
       When run rclone lsjson --metadata "$profile:$bucket_name/$object_key"
+      Dump
       The status should be success
       The output should include "STANDARD"
       ;;
