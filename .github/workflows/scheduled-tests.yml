@@ -9,7 +9,7 @@ env:
   PROFILES: ${{ secrets.profiles }}
 
 jobs:
-  "CRON_TESTS_1":
+  "CRON_TESTS":
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
@@ -24,7 +24,7 @@ jobs:
           mgc --version
           sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
-      - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_1 }};"
+      - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_2 }};"
         if: github.event.schedule == '35 * * * *'
         run: |
           echo copying specs from the workspace volume to the image workspace...
@@ -32,7 +32,7 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_2 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
       - name: webhook send
         if: always()
         run: |
