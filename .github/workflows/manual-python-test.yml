@@ -1,0 +1,42 @@
+name: "Manually-triggered Python tests"
+
+on:
+  workflow_dispatch:
+    inputs:
+      profiles:
+        description: "List of profiles from $PROFILES secret env var"
+        type: string
+        required: false
+        default: "br-ne1,br-se1"
+      pytest_args:
+        description: "arguments for the pytest command"
+        type: string
+        required: false
+        default: ""
+
+env:
+  PROFILES: ${{ secrets.profiles }}
+  FORCE_COLOR: 1
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/marmotitude/s3-tester:tests
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: "Run with tests, clients and profiles from user input"
+        run: |
+          echo copying specs from the workspace volume to the image workspace...
+          cp $GITHUB_WORKSPACE/spec/boto3/* /app/spec/boto3/.
+          cp $GITHUB_WORKSPACE/spec/pyspark/* /app/spec/pyspark/.
+          cd /app
+          bun --version
+          ./entrypoint.sh py-test.sh --profiles ${{ inputs.profiles }} -- ${{ inputs.pytest_args }}
+      - name: CLEAN_BUCKETS
+        run: |
+          for profile in ${{ vars.PROFILES_TO_CLEAN }}; do
+            aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
+              aws s3 rb s3://$bucket --profile $profile --force
+            done
+          done
