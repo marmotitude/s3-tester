@@ -7,8 +7,7 @@ import pytest
 
 os.environ['JAVA_HOME'] = '/usr/lib/jvm/java-17-openjdk-amd64'
 
-# session = boto3.Session(profile_name='br-ne1')
-session = boto3.Session(profile_name='default')
+session = boto3.Session()
 credentials = session.get_credentials().get_frozen_credentials()
 
 s3_endpoint_url = 'https://br-se1.magaluobjects.com'
