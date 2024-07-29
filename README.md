@@ -31,6 +31,16 @@ one being named `<name-of-one-profile>-second`.
 ./bin/js-test.sh --profiles br-ne1,br-se1 -- --bail
 ```
 
+### Pytest tests (boto3, pyspark)
+
+```
+# use profiles: br-ne1 and br-se1
+# to run all tests from spec/boto3/test_*.py
+# passing pytest arguments after -- (double dash)
+
+./bin/py-test.sh --profiles br-ne1,br-se1 -- ./spec/boto3/test_*.py
+```
+
 #### Profiles (optional)
 
 To make the process of setting multiple profiles on multiple tools less manual, 
