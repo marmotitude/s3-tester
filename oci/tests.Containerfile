@@ -24,9 +24,6 @@ COPY profiles.example.yaml profiles.example.yaml
 COPY bin bin
 COPY vendor/yaacov/argparse.sh vendor/yaacov/argparse.sh
 
-# uncomment the line below to use a custom mgc build
-#COPY vendor/MagaluCloud/mgc /usr/local/bin/mgc
-
 # config templates and entrypoint
 COPY templates /app/templates
 RUN chmod +x /app/bin/webhook.py
