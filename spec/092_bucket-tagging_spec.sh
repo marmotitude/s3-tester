@@ -30,7 +30,10 @@ Describe 'Put bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
+      The stdout should include ""
+      The status should be success
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -66,7 +69,10 @@ Describe 'Get bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets get-bucket-label --bucket $bucket_name-$client
+      The stdout should include "organization"
+      The status should be success
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -101,7 +107,10 @@ Describe 'Delete bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets delete-bucket-label --bucket $bucket_name-$client
+      The stdout should include ""
+      The status should be success
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
