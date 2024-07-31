@@ -8,13 +8,13 @@ setup_policy(){
     local bucket_name=$1
     local client=$2
     local profile=$3
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null 
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null 
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     local get_access=$(aws s3api --profile $profile get-public-access-block --bucket $bucket_name-$client | jq -r '.PublicAccessBlockConfiguration.BlockPublicAcls')
     if [ $get_access = true ];then
       aws s3api --profile $profile put-bucket-ownership-controls --bucket $bucket_name-$client --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]" > /dev/null
       aws s3api --profile $profile put-public-access-block --bucket $bucket_name-$client --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false > /dev/null
-      policy_factory true 
+      policy_factory true
     else
       policy_factory false
     fi
@@ -34,7 +34,14 @@ policy_factory(){
     if [ "$principal" = "*" ]; then
       local principal_entry="\"Principal\": \"*\""
     else
-      local principal_entry="\"Principal\": {\"CanonicalUser\": \"$principal\"}"
+      if [ "$principal" = "CanonicalUser" ]; then
+        principal=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
+      fi
+      if [ "$prefix" = true ]; then
+        local principal_entry="\"Principal\": {\"CanonicalUser\": \"$principal\"}"
+      else
+        local principal_entry="\"Principal\": [\"$principal\"]"
+      fi
     fi
     cat <<EOF
 {
