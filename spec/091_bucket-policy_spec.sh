@@ -1,3 +1,6 @@
+# Constants
+% PRINCIPAL_LIST: "\"*\" CanonicalUser"
+
 # import functions: wait_command
 Include ./spec/019_utils.sh
 is_variable_null() {
@@ -73,17 +76,18 @@ Describe 'Put bucket policy:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
+    $PRINCIPAL_LIST
   End
-  Example "on profile $1 using client $2" id:"091"
+  Example "on profile $1 using client $2 for principal $(echo $3 | tr -d \"):" id:"091"
     profile=$1
     client=$2
+    principal=$(echo $3 | tr -d \")
     #policy vars
     action='"s3:GetObject"'
-    principal="*"
     resource="$bucket_name-$client/*"
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
@@ -112,7 +116,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -129,7 +133,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
     ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile s3api delete-bucket-policy --bucket "$bucket_name-$client" 
+      When run aws --profile $profile s3api delete-bucket-policy --bucket "$bucket_name-$client"
       The stdout should include ""
       The status should be success
       ;;
@@ -151,7 +155,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -190,7 +194,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -210,7 +214,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client 
+      When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
       The stdout should include $file1_name
       The status should be success
       ;;
@@ -232,7 +236,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -252,7 +256,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile-second s3 cp s3://$bucket_name-$client/$file1_name $file1_name-3 
+      When run aws --profile $profile-second s3 cp s3://$bucket_name-$client/$file1_name $file1_name-3
       The stdout should include $file1_name
       The status should be success
       ;;
@@ -274,7 +278,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -315,7 +319,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -358,7 +362,7 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -398,7 +402,7 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
   }
-  Before 'setup' 
+  Before 'setup'
   Parameters:matrix
     $PROFILES
     $CLIENTS
