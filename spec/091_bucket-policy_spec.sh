@@ -77,6 +77,13 @@ policy-without() {
   echo $policy | jq "{Version, Statement: .Statement | map(del(.$removing_field))}"
 }
 
+policy-with-empty() {
+  local policy=$1
+  local affected_field=$(echo $2 | tr -d \":)
+  echo $policy | jq ".Statement[].$affected_field"
+}
+
+
 Describe 'Put bucket policy:' category:"Bucket Management"
   setup(){
     bucket_name="test-091-$(date +%s)"
@@ -641,3 +648,232 @@ Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
   End
 End
 
+###
+# Invalid fields
+###
+Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    policy=$(setup_policy $bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    first_policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(policy-with-empty "$first_policy" "Resource")
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    first_policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(policy-with-empty "$first_policy" "Action")
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    first_policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(policy-with-empty "$first_policy" "Principal")
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    first_policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(policy-with-empty "$first_policy" "Effect")
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+    #policy vars
+    action='"s3:GetObject"'
+    principal="*"
+    resource="$bucket_name-invalid-$client/*"
+    effect="Allow"
+    policy=$(setup_policy $bucket_name $client $profile | jq '.Statement |= []')
+    ensure-bucket-exists $profile $client $bucket_name
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+      When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stderr should include "MalformedPolicy"
+      ;;
+    "rclone")
+      Skip "Skipped test to $client"
+      ;;
+    "mgc")
+      Skip "Skipped test to $client"
+      ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
