@@ -58,6 +58,16 @@ policy_factory(){
 EOF
   }
 
+ensure-bucket-exists() {
+  profile=$1
+  client=$2
+  bucket_name=$3
+  wait_command bucket-exists $profile "$bucket_name-$client"
+  if [ $? -ne 0 ]; then
+    create_bucket $profile $client $bucket_name
+  fi
+}
+
 Describe 'Put bucket policy:' category:"Bucket Management"
   setup(){
     bucket_name="test-091-$(date +%s)"
@@ -77,7 +87,7 @@ Describe 'Put bucket policy:' category:"Bucket Management"
     resource="$bucket_name-$client/*"
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
@@ -116,7 +126,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
     resource="$bucket_name-$client/*"
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api delete-bucket-policy --bucket "$bucket_name-$client" 
@@ -155,7 +165,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
@@ -196,7 +206,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -238,7 +248,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -280,7 +290,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     resource="$bucket_name-$client/*"
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
@@ -322,7 +332,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     effect="Allow"
     policy=$(setup_policy $bucket_name $client $profile)
     echo $policy
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
@@ -362,7 +372,7 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
     resource="$bucket_name-$client/$file1_name"
     effect="Deny"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy"
@@ -402,7 +412,7 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
     resource="$bucket_name-$client/$file1_name"
     effect="Deny"
     policy=$(setup_policy $bucket_name $client $profile)
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    ensure-bucket-exists $profile $client $bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
