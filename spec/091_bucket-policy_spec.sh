@@ -204,6 +204,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     client=$2
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
@@ -247,6 +248,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     #policy vars
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
@@ -290,6 +292,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     action='"s3:GetObject"'
     id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id_principal"
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     principal="$id_principal"
     resource="$bucket_name-$client/*"
     effect="Allow"
@@ -331,6 +334,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     action='"s3:GetObject"'
     id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id_principal"
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     principal="$id_principal"
     resource="$bucket_name-$client/*"
     effect="Allow"
