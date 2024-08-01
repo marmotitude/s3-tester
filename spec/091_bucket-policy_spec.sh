@@ -33,6 +33,11 @@ policy_factory(){
         resource_list+="\"$res\","
       fi
     done
+    if [ "$prefix" = true ]; then
+      version_num="2012-10-17"
+    else
+      version_num="2024-07-19"
+    fi
     resource_list=${resource_list%,}
     if [ "$principal" = "*" ]; then
       local principal_entry="\"Principal\": \"*\""
@@ -48,7 +53,7 @@ policy_factory(){
     fi
     cat <<EOF
 {
-    "Version": "2012-10-17",
+    "Version": "$version_num",
     "Statement": [
         {
             "Effect": "$effect",
