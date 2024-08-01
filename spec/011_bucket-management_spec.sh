@@ -1,4 +1,4 @@
-
+Include ./spec/019_utils.sh
 delete_bucket() {
   profile=$1
   client=$2
@@ -6,6 +6,7 @@ delete_bucket() {
 
   aws --profile "$profile" s3 rb --force "s3://$bucket_name" > /dev/null
   aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"
+  wait_command bucket-not-exists $profile "$bucket_name" "$file1_name"
 }
 
 Describe 'List buckets' category:"Bucket Management" id:"011"
@@ -23,7 +24,7 @@ Describe 'List buckets' category:"Bucket Management" id:"011"
 
     # Create sample bucket to validate listing
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name"> /dev/null
-    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+    wait_command bucket-exists $profile "$bucket_name" "$file1_name"
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -64,7 +65,7 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     # Create sample bucket to validate deleting
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name" > /dev/null
-    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+    wait_command bucket-exists $profile "$bucket_name" "$file1_name"
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -95,9 +96,9 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     # Create sample bucket to validate deleting
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name" > /dev/null
-    aws --profile "$profile" s3api wait bucket-exists --bucket "$bucket_name"
+    wait_command bucket-exists $profile "$bucket_name" "$file1_name"
     aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key foo --body README.md> /dev/null
-    aws --profile "$profile" s3api wait object-exists --bucket "$bucket_name" --key foo
+    wait_command object-exists $profile "$bucket_name" "$file1_name"
 
     case "$client" in
     "aws-s3api" | "aws")
