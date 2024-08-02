@@ -53,5 +53,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: results-tap
+          name: benchmark-delete
           path: /app/report/benchmark-delete.txt
