@@ -96,7 +96,7 @@ Describe 'Delete buckets' category:"Bucket Management"
 
     # Create sample bucket to validate deleting
     aws --profile "$profile" s3api create-bucket --bucket "$bucket_name" > /dev/null
-    wait_command bucket-exists $profile "$bucket_name" "$file1_name"
+    wait_command bucket-exists $profile "$bucket_name"
     aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key foo --body README.md> /dev/null
     wait_command object-exists $profile "$bucket_name" "$file1_name"
 
