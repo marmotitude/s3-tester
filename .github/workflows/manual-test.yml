@@ -49,3 +49,9 @@ jobs:
             rclone purge $profile:$bucket -v | true
             done
           done
+      - name: Upload benchmark-buckets artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-buckets
+          path: /app/report/benchmark-buckets.txt
