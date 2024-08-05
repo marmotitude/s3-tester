@@ -36,7 +36,6 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     esac
-    cat ./report/benchmark-delete.txt
   End
 End
 
@@ -78,7 +77,6 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     esac
-    cat ./report/benchmark-delete.txt
   End
 End
 
@@ -120,7 +118,6 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     esac
-    cat ./report/benchmark-delete.txt
   End
 End
 

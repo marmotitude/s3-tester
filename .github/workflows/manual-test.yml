@@ -49,9 +49,3 @@ jobs:
             rclone purge $profile:$bucket -v | true
             done
           done
-      - name: Upload benchmark-delete artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: benchmark-delete
-          path: /app/report/benchmark-delete.txt
