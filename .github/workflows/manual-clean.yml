@@ -25,7 +25,7 @@ jobs:
         run: |
           cd /app
           echo "$PROFILES" > profiles.yaml
-          ./replace_configs.sh
+          ./bin/replace_configs.sh
           for profile in ${{ inputs.profiles }}; do
             aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
               rclone purge "$profile:$bucket"
