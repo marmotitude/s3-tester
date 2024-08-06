@@ -3,8 +3,8 @@ name: Build Custom OCI Images
 on:
   push:
     branches:
-      - refactor/mgc20
-      - mgc20b
+      - feature/policy-mgc
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}

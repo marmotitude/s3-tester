@@ -120,7 +120,10 @@ Describe 'Put bucket policy:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The stdout should include "$bucket_name-$client"
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -159,7 +162,10 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy delete --dst $bucket_name-$client
+      The stdout should include "$bucket_name-$client"
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -198,7 +204,10 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The stdout should include "$bucket_name-$client"
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -241,7 +250,10 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets list --dst $bucket_name-$client
+      The stdout should include $file1_name
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -284,7 +296,10 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile-second > /dev/null
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-3
+      The stdout should include $file1_name
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -326,7 +341,10 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The stdout should include ""
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -370,7 +388,10 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile-second > /dev/null
+      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2
+      The stdout should include $file1_name
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -409,7 +430,10 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The stdout should include ""
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -450,7 +474,10 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage objects delete --dst $bucket_name-$client
+      The stdout should include ""
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -494,7 +521,10 @@ Describe 'Put bucket policy without Resources:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -532,7 +562,10 @@ Describe 'Put bucket policy without Action:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -570,7 +603,10 @@ Describe 'Put bucket policy without Principal:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -608,7 +644,10 @@ Describe 'Put bucket policy without Effect:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -645,7 +684,10 @@ Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -686,7 +728,10 @@ Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Mana
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -724,7 +769,10 @@ Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -762,7 +810,10 @@ Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -800,7 +851,10 @@ Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -838,7 +892,10 @@ Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -875,7 +932,10 @@ Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      Skip "Skipped test to $client"
+      mgc profile set $profile > /dev/null
+      When run mgc object-storage buckets policy set --dst $bucket_name-$client --policy "$policy"
+      The status should be failure
+      The stdout should include "MalformedPolicy"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
