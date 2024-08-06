@@ -2,7 +2,7 @@ name: Scheduled test runs
 
 on:
   schedule:
-    - cron: '10 * * * *'
+    - cron: '0 2,10,6 * * *'
     - cron: '30 * * * *'
     - cron: '35 * * * *'
 env:
@@ -41,9 +41,9 @@ jobs:
           cd /app
           mgc --version
           sha256sum `which mgc`
-          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_2 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_3 }}" --tests "${{ vars.CRON_TESTS_3 }}" --clients "${{ vars.CRON_CLIENTS_3 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
       - name: webhook send
-        if: github.event.schedule != '10 * * * *'
+        if: github.event.schedule != '0 2,10,6 * * *'
         run: |
           cd /app
           ./bin/webhook.py "${{ vars.WEBHOOK_URL }}" "${{ vars.WEBHOOK_CLEAN_URL }}" "${{ github.repository }}" "${{ github.run_id }}" "${{ vars.TOKEN }}"
