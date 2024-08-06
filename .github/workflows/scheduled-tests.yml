@@ -34,7 +34,7 @@ jobs:
           sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_2 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
       - name: "Profiles: ${{ vars.CRON_PROFILES_3 }}; Clients: ${{ vars.CRON_CLIENTS_3}}; Tests: ${{ vars.CRON_TESTS_3 }};"
-        if: github.event.schedule == '10 * * * *'
+        if: github.event.schedule == '0 2,10,6 * * *'
         run: |
           echo copying specs from the workspace volume to the image workspace...
           cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
