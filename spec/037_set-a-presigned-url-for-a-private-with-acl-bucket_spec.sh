@@ -36,6 +36,6 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
     The output should include X-Amz-Algorithm
       ;;
     esac
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
