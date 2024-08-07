@@ -15,7 +15,7 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    rclone sync ./report/ $profile:$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
@@ -56,7 +56,7 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    rclone sync ./report/ $profile:$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
@@ -97,7 +97,7 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    rclone sync ./report/ $profile:$bucket_name-$client > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
