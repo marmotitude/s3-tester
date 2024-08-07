@@ -210,5 +210,5 @@ Describe 'Verificar a inexistência do objeto publico deletado'
     echo "Tempo para verificar a inexistência do objeto publico deletado no perfil $profile-second: $object_exists_time" >> ./report/benchmark-buckets.txt
     rclone purge $profile:$bucket_name-$client > /dev/null
   End
-  cat ./report/benchmark-buckets.txt
+  #cat ./report/benchmark-buckets.txt
 End
