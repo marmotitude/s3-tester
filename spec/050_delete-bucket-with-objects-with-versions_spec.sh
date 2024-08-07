@@ -21,7 +21,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
     The status should be failure
     The stderr should include BucketNotEmpty
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" > /dev/null
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
       ;;
     "rclone")
     When run rclone rmdir $profile:$bucket_name-$client
@@ -29,7 +29,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
     The stderr should include BucketNotEmpty
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" > /dev/null
     #aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.DeleteMarkers[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" | jq
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
       ;;
     "mgc")
     mgc profile set $profile > /dev/null
@@ -38,7 +38,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
     The stderr should include "bucket contains multiple versions of objects"
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" > /dev/null
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.DeleteMarkers[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')" > /dev/null
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
       ;;
     esac
   End
