@@ -29,6 +29,6 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
     The output should include X-Amz-Algorithm
       ;;
     esac
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
