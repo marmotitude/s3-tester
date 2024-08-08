@@ -27,6 +27,6 @@ Describe 'Set the versioning for a public bucket:' category:"Object Versioning"
       ;;
     esac
     The status should be success
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
