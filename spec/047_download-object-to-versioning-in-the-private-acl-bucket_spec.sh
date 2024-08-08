@@ -41,7 +41,7 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
       ;;
     esac
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     rm -rf $file1_name-2
   End
 End
