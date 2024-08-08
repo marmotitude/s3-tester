@@ -39,6 +39,6 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
     The error should include Current
       ;;
     esac
-    aws --profile $profile s3 rb s3://$bucket_name-$client --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
