@@ -212,3 +212,118 @@ Describe 'Verificar a inexistência do objeto publico deletado'
   End
   #cat ./report/benchmark-buckets.txt
 End
+
+#tempo para upload 1gb
+Describe 'Tempo para upload 1gb'
+  setup(){
+    bucket_name="test-094-$(date +%s)"
+    file1_name="1gb"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "Tempo para upload $1 using client $2" id:"094"
+    profile=$1
+    client=$2
+    fallocate -l 1gb 1gb
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    start_time=$(date +%s)
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    end_time=$(date +%s)
+    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    object_exists_time=$((end_time - start_time))
+    echo "Tempo para upload 1gb no perfil $profile: $object_exists_time" >> ./report/benchmark-buckets.txt
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+  #cat ./report/benchmark-buckets.txt
+End
+#tempo para upload 2gb
+Describe 'Tempo para upload 2gb'
+  setup(){
+    bucket_name="test-094-$(date +%s)"
+    file1_name="2gb"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "Tempo para upload $1 using client $2" id:"094"
+    profile=$1
+    client=$2
+    fallocate -l 2gb 2gb
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    start_time=$(date +%s)
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client  > /dev/null
+    end_time=$(date +%s)
+    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    object_exists_time=$((end_time - start_time))
+    echo "Tempo para upload 2gb no perfil $profile: $object_exists_time" >> ./report/benchmark-buckets.txt
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+  #cat ./report/benchmark-buckets.txt
+End
+#tempo para download 1gb
+Describe 'Tempo para download 1gb'
+  setup(){
+    bucket_name="test-094-$(date +%s)"
+    file1_name="1gb"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "Tempo para download $1 using client $2" id:"094"
+    profile=$1
+    client=$2
+    fallocate -l 1gb 1gb
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    start_time=$(date +%s)
+    aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name . > /dev/null
+    end_time=$(date +%s)
+    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    object_exists_time=$((end_time - start_time))
+    echo "Tempo para download 1gb no perfil $profile: $object_exists_time" >> ./report/benchmark-buckets.txt
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+  #cat ./report/benchmark-buckets.txt
+End
+#tempo para download 2gb
+Describe 'Tempo para download 2gb'
+  setup(){
+    bucket_name="test-094-$(date +%s)"
+    file1_name="2gb"
+  }
+  Before 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "Tempo para download $1 using client $2" id:"094"
+    profile=$1
+    client=$2
+    fallocate -l 1gb 1gb
+    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    start_time=$(date +%s)
+    aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name . > /dev/null
+    end_time=$(date +%s)
+    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    object_exists_time=$((end_time - start_time))
+    echo "Tempo para download 2gb no perfil $profile: $object_exists_time" >> ./report/benchmark-buckets.txt
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+  cat ./report/benchmark-buckets.txt
+End
