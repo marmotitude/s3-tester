@@ -45,7 +45,7 @@ Describe 'Unique bucket:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$bucket_name-$client"
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     wait_command bucket-not-exists "$profile" "$bucket_name-$client"
   End
 End

@@ -36,7 +36,7 @@ Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W dif
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End

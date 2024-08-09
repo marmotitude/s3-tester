@@ -32,6 +32,6 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     ;;
     esac
     The status should be failure
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
