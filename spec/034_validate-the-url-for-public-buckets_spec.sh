@@ -27,6 +27,6 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile --force > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
