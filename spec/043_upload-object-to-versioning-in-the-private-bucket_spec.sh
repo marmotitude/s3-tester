@@ -32,7 +32,7 @@ Describe 'Upload object to versioning in the private bucket:' category:"Object V
     The output should include ""
       ;;
     esac
-    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
+    #aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
