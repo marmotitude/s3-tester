@@ -34,7 +34,7 @@ Describe 'Create a ACL read for a bucket:' category:"Bucket Permission"
       ;;
     esac
     The status should be success
-    aws s3 rb s3://$bucket_name-$client --profile $profile > /dev/null
+    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
     aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End
