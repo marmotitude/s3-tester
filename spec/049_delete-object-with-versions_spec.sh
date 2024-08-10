@@ -31,8 +31,6 @@ Describe 'Delete object with versions:' category:"Object Versioning"
       ;;
     esac
     The status should be success
-    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
-    aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.DeleteMarkers[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
   End
 End
