@@ -22,7 +22,7 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
       When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
-      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
+      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
       The stdout should include ""
       #The stderr should include ""
       The status should be success
@@ -63,7 +63,7 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
       When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
-      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
+      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
       The stdout should include ""
       #The stderr should include ""
       The status should be success
@@ -104,7 +104,7 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
       When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
-      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
+      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
       The stdout should include ""
       #The stderr should include ""
       The status should be success
@@ -145,7 +145,7 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
       When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
-      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
+      echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
       The stdout should include ""
       #The stderr should include ""
       The status should be success
@@ -159,6 +159,6 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     esac
-    cat ./report/benchmark-delete.txt
+    cat ./report/benchmark-delete.tap
   End
 End
