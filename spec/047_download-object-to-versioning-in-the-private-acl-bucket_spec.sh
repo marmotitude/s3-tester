@@ -23,7 +23,7 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
-    wait_command object-exists $profile "$bucket_name" "$file1_name"
+    wait_command object-exists $profile "$bucket_name-$client" "$file1_name"
     aws s3api --profile $profile put-object-acl --bucket $bucket_name-$client --key $file1_name --grant-write id=$id --grant-read id=$id > /dev/null
     version=$(aws s3api list-object-versions --bucket $bucket_name-$client --profile $profile-second | jq -r '.Versions[1].VersionId')
     case "$client" in
