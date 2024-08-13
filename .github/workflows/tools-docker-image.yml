@@ -1,4 +1,4 @@
-name: Build OCI Images
+name: Build tools OCI Image
 
 on:
   push:
