@@ -22,7 +22,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     wait_command bucket-exists $profile "$bucket_name-$client"
     #aws --profile $profile s3api wait bucket-exists --bucket $bucket_name-$client
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
-    #wait_command object-exists $profile "$bucket_name-$client" "$file1_name"
+    wait_command object-exists $profile "$bucket_name-$client" "$file1_name"
     #aws --profile $profile s3api wait object-exists --key $file1_name --bucket $bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id > /dev/null
     case "$client" in
@@ -48,7 +48,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     esac
     The status should be success
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    wait_command bucket-not-exists $profile "$bucket_name-$client" "$file1_name"
+    wait_command bucket-not-exists $profile "$bucket_name-$client"
     #aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End
