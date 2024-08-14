@@ -38,7 +38,8 @@ Describe 'Access the public bucket and check the list of objects:' category:"Buc
       ;;
     "mgc")
       mgc profile set $profile-second > /dev/null
-      When run mgc object-storage objects list --dst $bucket_name-$client --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst $bucket_name-$client --raw"
+      # When run mgc object-storage objects list --dst $bucket_name-$client --raw
       The output should include "$file1_name"
       ;;
     esac

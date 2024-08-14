@@ -1,16 +1,13 @@
 #!/bin/bash
 
-profile=$1
-bucket_name=$2
-command=$3
-sub_command=$4
+command=$1
 
 while true; do
-  output=$(mgc object-storage "$command" "$sub_command" "$bucket_name" --raw 2>&1)
+  output=$($command 2>&1)
   status=$?
 
   if [ $status -eq 0 ]; then
-    echo "Bucket "$bucket_name" created successfully!"
+    echo "$output"
     exit 0
   fi
 
@@ -23,3 +20,10 @@ while true; do
   echo "Unexpected error: $output"
   exit 1
 done
+
+
+#When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name""
+#When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name-$client""
+
+#When run bash ./spec/retry_command.sh "mgc object-storage buckets delete "$bucket_name" --no-confirm --raw"
+#The output should equal ""

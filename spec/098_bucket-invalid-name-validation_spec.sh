@@ -116,6 +116,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       The error should include "Bucket name must match the regex"
       ;;
     "mgc")
+      Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
       mgc profile set $profile > /dev/null
       When run bash ./spec/retry_command.sh "$profile" "$bucket_name" "buckets" "create"
       The  stdout should include "InvalidBucketName"

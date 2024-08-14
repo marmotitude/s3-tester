@@ -29,7 +29,8 @@ Describe 'Download object to versioning in the private bucket:' category:"Object
       ;;
     "mgc")
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
+    When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw"
+    # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
     The status should be success
     The output should include "LICENSE"
       ;;

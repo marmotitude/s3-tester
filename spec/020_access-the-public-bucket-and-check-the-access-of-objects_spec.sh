@@ -28,9 +28,11 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     ;;
     "mgc")
       mgc profile set $profile-second > /dev/null
-      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst . --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst . --raw"
+      #When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst . --raw
       The status should be failure
-      The stderr should include "403 Forbidden"
+      The output should include "403 Forbidden"
+      #The stderr should include "403 Forbidden"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null

@@ -37,9 +37,11 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     "mgc")
       mgc profile set $profile-second > /dev/null
       #Skip "Skipped test to $client"
-      When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw"
+      #When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw
 	    The status should be failure
-      The stderr should include "403"
+      #The stderr should include "403"
+      The output should include "403"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null

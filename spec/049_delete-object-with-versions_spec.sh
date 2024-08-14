@@ -26,7 +26,8 @@ Describe 'Delete object with versions:' category:"Object Versioning"
       ;;
     "mgc")
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
+    When run bash ./spec/retry_command.sh "mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw"
+    # When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
     The output should include ""
       ;;
     esac

@@ -24,7 +24,8 @@ Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
       ;;
     "mgc")
     mgc profile set $profile > /dev/null
-    When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw"
+    # When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw
     The status should be success
     The output should include X-Amz-Algorithm
       ;;
