@@ -117,8 +117,8 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage buckets create "$bucket_name" --raw
-      The error should include "InvalidBucketName"
+      When run bash ./spec/retry_command.sh "$profile" "$bucket_name" "buckets" "create"
+      The  stdout should include "InvalidBucketName"
       ;;
     "rclone")
       When run rclone mkdir "$profile:$bucket_name" -v
