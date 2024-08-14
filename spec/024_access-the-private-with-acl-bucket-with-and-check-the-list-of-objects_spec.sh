@@ -33,7 +33,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     The output should include "$file1_name"
       ;;
     "rclone")
-    wait_command bucket-exists $profile "$bucket_name-$client""
+    wait_command bucket-exists $profile "$bucket_name-$client"
     #aws --profile $profile-second s3api wait bucket-exists --bucket $bucket_name-$client
     When run rclone ls $profile-second:$bucket_name-$client
     The output should include "$file1_name"
