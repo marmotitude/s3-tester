@@ -20,10 +20,3 @@ while true; do
   echo "Unexpected error: $output"
   exit 1
 done
-
-
-#When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name""
-#When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name-$client""
-
-#When run bash ./spec/retry_command.sh "mgc object-storage buckets delete "$bucket_name" --no-confirm --raw"
-#The output should equal ""

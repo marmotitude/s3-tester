@@ -67,7 +67,8 @@ Describe 'Upload Files' category:"Object Management"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw"
+      #When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
       The status should be success
       The output should include "$local_file"
       The output should include "$BUCKET_NAME/$keys3"
@@ -104,7 +105,8 @@ Describe 'Upload Files' category:"Object Management"
         ;;
       "mgc")
         mgc profile set $profile > /dev/null
-        When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
+        When run bash ./spec/retry_command.sh "mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key"
+        # When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
         The output should include "$BUCKET_NAME/$object_key"
         The output should include "$out_file"
@@ -149,7 +151,8 @@ Describe 'List Objects' category:"Object Management" id:"061"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst="$BUCKET_NAME" --raw"
+      # When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
       The status should be success
       for file in $FILES;do
         object_key=$(get_uploaded_key "$file")
@@ -192,7 +195,8 @@ Describe 'Delete' category:"Object Management"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
+      When run bash ./spec/retry_command.sh "mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw"
+      # When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
       The status should be success
       The error should include "$BUCKET_NAME?delete="
       The error should include "200 OK"
@@ -257,7 +261,8 @@ Describe 'Delete' category:"Object Management"
           mgc_objects+='"}'
         done
         mgc_objects+="]"
-        When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
+        When run bash ./spec/retry_command.sh "mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw"
+        # When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
         The status should be success
         The output should be blank
         ;;

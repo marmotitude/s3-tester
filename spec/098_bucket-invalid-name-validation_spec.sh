@@ -41,7 +41,8 @@ Describe 'Create invalid bucket' category:"Bucket Management"
         ;;
       "mgc")
         mgc profile set $profile > /dev/null
-        When run mgc object-storage buckets create "$bucket_name" --raw
+        When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
+        # When run mgc object-storage buckets create "$bucket_name" --raw
         The error should include "InvalidBucketName"
         ;;
       "rclone")
@@ -78,7 +79,8 @@ Describe 'Create bucket with invalid names' category:"Bucket Management"
       ;;
     "mgc")
       Skip if "mgc cli está validando tamanho do nome" check_length "$bucket_name"
-      When run mgc object-storage buckets create "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
+      # When run mgc object-storage buckets create "$bucket_name" --raw
       The error should include "InvalidBucketName"
       ;;
     "rclone")
@@ -118,7 +120,8 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
     "mgc")
       Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
       mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "$profile" "$bucket_name" "buckets" "create"
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
+      # When run mgc object-storage buckets create "$bucket_name" --raw
       The  stdout should include "InvalidBucketName"
       ;;
     "rclone")

@@ -39,7 +39,8 @@ Describe 'Unique bucket:' category:"Bucket Management"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets create $bucket_name-$client --raw"
+      # When run mgc object-storage buckets create $bucket_name-$client --raw
       The error should include "BucketAlreadyExists"
       The status should be failure
       ;;
