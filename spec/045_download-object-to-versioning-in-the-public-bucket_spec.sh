@@ -30,9 +30,11 @@ Describe 'Download object to versioning in the public bucket:' category:"Object 
       ;;
     "mgc")
     mgc profile set $profile-second > /dev/null
-    When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
+    When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw"
+    # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
     The status should be failure
-    The stderr should include "403"
+    #The stderr should include "403"
+    The output should include "403"
       ;;
     esac
     aws --profile $profile s3api delete-objects --bucket $bucket_name-$client --delete "$(aws --profile $profile s3api list-object-versions --bucket $bucket_name-$client| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null

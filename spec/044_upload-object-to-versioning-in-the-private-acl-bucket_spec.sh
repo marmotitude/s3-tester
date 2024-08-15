@@ -31,7 +31,8 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
       ;;
     "mgc")
     mgc profile set $profile-second > /dev/null
-    When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw
+    When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw"
+    # When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw
     The output should include ""
       ;;
     esac

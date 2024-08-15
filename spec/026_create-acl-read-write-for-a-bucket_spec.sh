@@ -31,7 +31,8 @@ Describe 'Create a ACL read/write for a bucket:' category:"Bucket Permission"
     "mgc")
       mgc profile set $profile > /dev/null
       #Skip "Skipped test to $client"
-      When run mgc object-storage buckets acl set --grant-read id=$id --grant-write id=$id --dst $bucket_name-$client --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets acl set --grant-read id=$id --grant-write id=$id --dst $bucket_name-$client --raw"
+      #When run mgc object-storage buckets acl set --grant-read id=$id --grant-write id=$id --dst $bucket_name-$client --raw
       The output should include ""
       ;;
     esac
@@ -72,7 +73,8 @@ Describe 'Validate a ACL write for a bucket:' category:"Bucket Permission"
       #Skip "Skipped test to $client"
       mgc object-storage buckets acl set --grant-write id=$id --dst $bucket_name-$client
       mgc profile set $profile-second > /dev/null
-      When run mgc object-storage objects upload $file1_name --dst $bucket_name-$client --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects upload $file1_name --dst $bucket_name-$client --raw"
+      # When run mgc object-storage objects upload $file1_name --dst $bucket_name-$client --raw
       The output should include "$file1_name"
       The output should include "$bucket_name-$client/$file1_name"
       ;;

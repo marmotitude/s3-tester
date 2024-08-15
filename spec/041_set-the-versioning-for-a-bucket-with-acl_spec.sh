@@ -29,7 +29,8 @@ Describe 'Set the versioning for a bucket with ACL:' category:"Object Versioning
       ;;
     "mgc")
     mgc profile set $profile > /dev/null
-    When run mgc object-storage buckets versioning enable $bucket_name-$client --raw
+    When run bash ./spec/retry_command.sh "mgc object-storage buckets versioning enable $bucket_name-$client --raw"
+    # When run mgc object-storage buckets versioning enable $bucket_name-$client --raw
     The output should include "$bucket_name-$client"
       ;;
     esac

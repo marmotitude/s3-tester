@@ -71,7 +71,8 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --raw"
+      # When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --raw
       The output should include "$bucket_name"
       The output should include "$file"
       ;;
@@ -102,7 +103,8 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=standard --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=standard --raw"
+      # When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=standard --raw
       The output should include "$bucket_name"
       The output should include "$file"
       ;;
@@ -133,7 +135,8 @@ Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"08
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=cold_instant --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=cold_instant --raw"
+      # When run mgc object-storage objects upload --src "$file" --dst "$bucket_name/$object_key" --storage-class=cold_instant --raw
       The output should include "$bucket_name"
       The output should include "$file"
       ;;
@@ -169,7 +172,8 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "$file"
       ;;
     esac
@@ -192,7 +196,8 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "STANDARD"
       The output should include "$file"
       ;;
@@ -216,7 +221,8 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "COLD"
       The output should include "$file"
       ;;
@@ -661,7 +667,8 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "$object_key"
       ;;
     esac
@@ -684,7 +691,8 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "$object_key"
       ;;
     esac
@@ -707,7 +715,8 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage objects list "$bucket_name" --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list "$bucket_name" --raw"
+      # When run mgc object-storage objects list "$bucket_name" --raw
       The output should include "$object_key"
       The output should include "COLD"
       ;;

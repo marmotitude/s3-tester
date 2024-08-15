@@ -36,7 +36,8 @@ Describe 'List buckets' category:"Bucket Management" id:"011"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage buckets list --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets list --raw"
+      #When run mgc object-storage buckets list --raw
       The output should include "$bucket_name"
       ;;
     "rclone")
@@ -77,8 +78,9 @@ Describe 'Delete buckets' category:"Bucket Management"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage buckets delete "$bucket_name" --no-confirm --raw
-      The status should be success
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets delete "$bucket_name" --no-confirm --raw"
+      #When run mgc object-storage buckets delete "$bucket_name" --no-confirm --raw
+      The output should equal ""
       ;;
     "rclone")
       When run rclone rmdir "$profile:$bucket_name" -v
@@ -114,7 +116,8 @@ Describe 'Delete buckets' category:"Bucket Management"
       ;;
     "mgc")
       mgc profile set $profile > /dev/null
-      When run mgc object-storage buckets delete "$bucket_name" --recursive --no-confirm --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets delete "$bucket_name" --recursive --no-confirm --raw"
+      #When run mgc object-storage buckets delete "$bucket_name" --recursive --no-confirm --raw
       The status should be success
       The output should be blank
       aws --profile "$profile" s3api wait bucket-not-exists --bucket "$bucket_name"

@@ -42,7 +42,9 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
       wait_command bucket-exists $profile "$bucket_name-$client"
       #aws --profile $profile-second s3api wait bucket-exists --bucket $bucket_name-$client
       mgc profile set $profile-second > /dev/null
-      When run mgc object-storage objects list --dst $bucket_name-$client --raw
+      #Skip "Skipped test to $client"
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst $bucket_name-$client --raw"
+      #When run mgc object-storage objects list --dst $bucket_name-$client --raw
       The output should include $file1_name
       ;;
     esac
