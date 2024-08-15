@@ -93,8 +93,8 @@ Describe 'Create bucket with invalid names' category:"Bucket Management"
 End
 
 
-#%const INVALID_CHARS: "% @ | \\ [ ^ ] { } | &"
-%const INVALID_CHARS: " @ | \\ [ ^ ] { } | &" #remove % for test retry
+#%const INVALID_CHARS: "% @ | \\ [ ^ ] { } | &" #remove % for test retry
+%const INVALID_CHARS: " @ | \\ [ ^ ] { } | &"
 Describe 'Create bucket with invalid characters' category:"Bucket Management" id:007
   Parameters:matrix
     $PROFILES
