@@ -105,7 +105,7 @@ Describe 'Upload Files' category:"Object Management"
         ;;
       "mgc")
         mgc profile set $profile > /dev/null
-        When run bash ./spec/retry_command.sh "mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key"
+        When run bash ./spec/retry_command.sh "mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key""
         # When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
         The output should include "$BUCKET_NAME/$object_key"
