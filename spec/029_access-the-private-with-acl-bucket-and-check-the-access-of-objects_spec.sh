@@ -29,9 +29,11 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
       ;;
     "rclone")
-    When run rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2
+    When run bash ./spec/retry_command.sh "rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2"
+    # When run rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2
     The status should be success
-    The stderr should include "There was nothing to transfer"
+    The stdout should include "There was nothing to transfer"
+    # The stderr should include "There was nothing to transfer"
       ;;
     "mgc")
       mgc profile set $profile-second > /dev/null

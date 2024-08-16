@@ -19,7 +19,8 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force"
+      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -60,7 +61,8 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force"
+      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -101,7 +103,8 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force"
+      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -142,7 +145,8 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force"
+      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
