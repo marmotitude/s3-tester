@@ -1,20 +1,23 @@
 #!/bin/bash
 
 command=$1
-timeout_duration=10 # Tempo máximo de execução em segundos (240 = 4 minutos)
+timeout_duration=240 # Tempo máximo de execução em segundos (240 = 4 minutos)
+
+end_time=$((SECONDS + timeout_duration))
 
 while true; do
-  output=$(timeout $timeout_duration $command 2>&1)
+  # Verifica se o tempo limite foi alcançado
+  if [ $SECONDS -ge $end_time ]; then
+    echo "Timeout de $timeout_duration segundos alcançado. O comando: $command não foi concluído dentro do prazo."
+    exit 1
+  fi
+
+  output=$($command 2>&1)
   status=$?
 
   if [ $status -eq 0 ]; then
     echo "$output"
     exit 0
-  fi
-
-  if [ $status -eq 124 ]; then
-    echo "Timeout de $timeout_duration segundos alcançado. O comando $command não foi concluído dentro de $timeout_duration segundos."
-    exit 1
   fi
 
   if echo "$output" | grep -q "connection reset by peer"; then
