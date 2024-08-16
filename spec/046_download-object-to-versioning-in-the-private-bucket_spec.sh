@@ -17,6 +17,7 @@ Describe 'Download object to versioning in the private bucket:' category:"Object
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$bucket_name-$client > /dev/null
+    sleep 10
     version=$(aws s3api list-object-versions --bucket $bucket_name-$client --profile $profile | jq -r '.Versions[1].VersionId')
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
