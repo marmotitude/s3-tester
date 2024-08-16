@@ -45,6 +45,6 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    # aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
   End
 End
