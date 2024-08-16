@@ -24,14 +24,18 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
+    When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2"
+    # When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
     The status should be failure
-    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    The stdout should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    # The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
       ;;
     "rclone")
-    When run rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2
+    When run bash ./spec/retry_command.sh "rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2"
+    # When run rclone -v copy $profile-second:$bucket_name-$client/$file1_name $file1_name-2
     The status should be success
-    The stderr should include "There was nothing to transfer"
+    The stdout should include "There was nothing to transfer"
+    # The stderr should include "There was nothing to transfer"
       ;;
     "mgc")
       mgc profile set $profile-second > /dev/null

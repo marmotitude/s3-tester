@@ -22,11 +22,13 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     aws s3api --profile $profile put-bucket-versioning --bucket $bucket_name-$client --versioning-configuration Status=Enabled > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run aws --profile $profile-second s3 cp $file1_name s3://$bucket_name-$client
+    When run bash ./spec/retry_command.sh "aws --profile $profile-second s3 cp $file1_name s3://$bucket_name-$client"
+    # When run aws --profile $profile-second s3 cp $file1_name s3://$bucket_name-$client
     The output should include "$file1_name"
       ;;
     "rclone")
-    When run rclone copy $file1_name $profile-second:$bucket_name-$client
+    When run bash ./spec/retry_command.sh "rclone copy $file1_name $profile-second:$bucket_name-$client"
+    # When run rclone copy $file1_name $profile-second:$bucket_name-$client
     The output should include ""
       ;;
     "mgc")

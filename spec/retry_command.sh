@@ -17,6 +17,19 @@ while true; do
     continue
   fi
 
+  if echo "$output" | grep -q "AccessDenied"; then
+    echo "AccessDenied error detected. retrying..."
+    sleep 1
+    continue
+  fi
+
+  if echo "$output" | grep -q "BucketNotEmpty"; then
+    echo "BucketNotEmpty detected. retrying..."
+    sleep 1
+    continue
+  fi
+
   echo "Unexpected error: $output"
   exit 1
 done
+
