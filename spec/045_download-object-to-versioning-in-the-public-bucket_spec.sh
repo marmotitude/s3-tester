@@ -21,11 +21,9 @@ Describe 'Download object to versioning in the public bucket:' category:"Object 
     version=$(aws s3api list-object-versions --bucket $bucket_name-$client --profile $profile | jq -r '.Versions[1].VersionId')
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2"
-    # When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
+    When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
     The status should be failure
-    # The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
-    The output should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
       ;;
     "rclone")
     Skip "Skipped test to $client"

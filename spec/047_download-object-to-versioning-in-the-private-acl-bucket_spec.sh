@@ -28,11 +28,9 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
     version=$(aws s3api list-object-versions --bucket $bucket_name-$client --profile $profile-second | jq -r '.Versions[1].VersionId')
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name --version-id $version $file1_name-2"
-    # When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name --version-id $version $file1_name-2
+    When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name --version-id $version $file1_name-2
     The status should be failure
-    #The stderr should include "AccessDenied"
-    The output should include "AccessDenied"
+    The stderr should include "AccessDenied"
       ;;
     "rclone")
     Skip "Skipped test to $client"
