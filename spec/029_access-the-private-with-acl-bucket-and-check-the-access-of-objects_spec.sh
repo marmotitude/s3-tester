@@ -22,6 +22,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3api wait object-exists --key $file1_name --bucket $bucket_name-$client
     aws s3api --profile $profile put-bucket-acl --bucket $bucket_name-$client --grant-read id=$id > /dev/null
+    sleep 10
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
