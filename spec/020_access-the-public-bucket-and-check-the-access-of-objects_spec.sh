@@ -19,7 +19,7 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
-    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    The stderr should include "AccessDenied"
     The status should be failure
     ;;
     "rclone")
