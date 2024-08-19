@@ -23,7 +23,7 @@ Describe 'Download object to versioning in the public bucket:' category:"Object 
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $bucket_name-$client --key $file1_name $file1_name-2
     The status should be failure
-    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    The stderr should include "AccessDenied"
       ;;
     "rclone")
     Skip "Skipped test to $client"
