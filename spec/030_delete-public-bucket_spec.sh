@@ -31,6 +31,6 @@ Describe 'Delete public bucket:' category:"Bucket Permission"
     esac
     The status should be success
     sleep 10
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    bash ./spec/retry_command.sh  "aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile"
   End
 End
