@@ -36,7 +36,7 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile
+    bash ./spec/retry_command.sh  "aws s3api wait bucket-not-exists --bucket $bucket_name-$client --profile $profile"
   End
 End
 
