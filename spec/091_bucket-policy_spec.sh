@@ -7,13 +7,17 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
+has_s3_block_public_access() {
+    aws s3api --profile $profile get-public-access-block --bucket $bucket_name-$client | jq -r '.PublicAccessBlockConfiguration.BlockPublicAcls'
+}
+
 setup_policy(){
     local bucket_name=$1
     local client=$2
     local profile=$3
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
-    local get_access=$(aws s3api --profile $profile get-public-access-block --bucket $bucket_name-$client | jq -r '.PublicAccessBlockConfiguration.BlockPublicAcls')
+    local get_access=$(has_s3_block_public_access)
     if [ $get_access = true ];then
       aws s3api --profile $profile put-bucket-ownership-controls --bucket $bucket_name-$client --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]" > /dev/null
       aws s3api --profile $profile put-public-access-block --bucket $bucket_name-$client --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false > /dev/null
@@ -21,7 +25,7 @@ setup_policy(){
     else
       policy_factory false
     fi
-    }
+}
 
 policy_factory(){
     local prefix=$1
@@ -881,4 +885,331 @@ Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
     wait_command bucket-exists "$profile" "$bucket_name-$client"
     rclone purge $profile:$bucket_name-$client > /dev/null
   End
+End
+
+###
+# Cross access
+###
+Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is locked:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  BeforeAll 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2" id:"091"
+    profile=$1
+    client=$2
+
+    # Check if other profiles exist, we need 3 for this test to work
+    user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if $(is_variable_null "$user2id"); then return; fi # ! SKIP DOES NOT SKIP
+    user3id=$(aws s3api --profile $profile-third list-buckets | jq -r '.Owner.ID')
+    Skip if "No such a "$profile-third" user" is_variable_null "$id"
+    if $(is_variable_null "$user3id"); then return; fi # ! SKIP DOES NOT SKIP
+
+    #policy vars
+    action='"s3:ListBucket","s3:GetObject"'
+    principal="$user3id"
+    resource=("$bucket_name-$client" "$bucket_name-$client/*")
+    effect="Allow"
+    policy=$(setup_policy $bucket_name $client $profile)
+
+    ensure-bucket-exists $profile $client $bucket_name
+    aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
+        The stdout should include "404"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    rclone purge $profile:$bucket_name-$client > /dev/null
+  End
+End
+
+Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 cannot do other operations:' category:"Bucket Management"
+  local ready=false
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  BeforeAll 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2: setup policy" id:"091"
+    profile=$1
+    client=$2
+
+    # Check if other profiles exist
+    user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    echo "Profile-second = ;$user2id;" >> /logs/debug.txt
+    if $(is_variable_null "$user2id"); then
+      return # ! SKIP DOES NOT SKIP
+    else
+      ready=true
+    fi
+
+    #policy vars
+    action='"s3:ListBucket","s3:GetObject"'
+    principal="$user2id"
+    resource=("$bucket_name-$client" "$bucket_name-$client/*")
+    effect="Allow"
+    policy=$(setup_policy $bucket_name $client $profile)
+
+    ensure-bucket-exists $profile $client $bucket_name
+    When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
+    The status should be success
+    echo "Created policy in bucket $bucket_name" > /logs/debug.txt
+  End
+  Example "on profile $1 using client $2: user tries to read" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
+        The stdout should include $file1_name
+        The status should be success
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to write" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api put-object --bucket $bucket_name-$client --key $file1_name-copy --body file://$file1_name
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to delete" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api delete-object --bucket $bucket_name-$client --key $file1_name
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to remove policy" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile s3api delete-bucket-policy --bucket $bucket_name-$client > /dev/null
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: cleanup" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    cleanup() {
+    wait_command bucket-exists $profile "$bucket_name-$client" \
+      && rclone purge $profile:$bucket_name-$client > /dev/null \
+      || true
+    }
+    When run cleanup
+    The status should be success
+  End
+End
+
+Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 cannot do other operations:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  BeforeAll 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2: setup policy" id:"091"
+    profile=$1
+    client=$2
+
+    # Check if other profiles exist
+    user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
+    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if $(is_variable_null "$user2id"); then
+      return # ! SKIP DOES NOT SKIP
+    else
+      ready=true
+    fi
+
+    #policy vars
+    action='"s3:ListBucket","s3:GetObject"'
+    principal="$user2id"
+    resource=("$bucket_name-$client" "$bucket_name-$client/*")
+    effect="Allow"
+    policy=$(setup_policy $bucket_name $client $profile)
+
+    ensure-bucket-exists $profile $client $bucket_name
+    When run aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
+    The output should be success
+  End
+  Example "on profile $1 using client $2: user tries to read" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to write" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api put-object --bucket $bucket_name-$client --key $file1_name-copy --body file://$file1_name
+        The stdout should include $file1_name
+        The status should be success
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to delete" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile-second s3api delete-object --bucket $bucket_name-$client --key $file1_name
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: user tries to remove policy" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    case "$client" in
+    "aws-s3api" | "aws" | "aws-s3")
+        When run aws --profile $profile s3api delete-bucket-policy --bucket $bucket_name-$client > /dev/null
+        The stdout should include "403"
+        The status should be failure
+        ;;
+    "rclone")
+        Skip "Skipped test to $client"
+        ;;
+    "mgc")
+        Skip "Skipped test to $client"
+        ;;
+    esac
+  End
+  Example "on profile $1 using client $2: cleanup" id:"091"
+    profile=$1
+    client=$2
+    [ ! $ready ] && Skip "Test was not correctly setup" && return
+    cleanup() {
+    wait_command bucket-exists $profile "$bucket_name-$client" \
+      && rclone purge $profile:$bucket_name-$client > /dev/null \
+      || true
+    }
+    When run cleanup
+    The status should be success
+  End
+End
+
+Describe 'Owner denies all access but can still change policy:' category:"Bucket Management"
+  setup(){
+    bucket_name="test-091-$(date +%s)"
+    file1_name="LICENSE"
+  }
+  BeforeAll 'setup'
+  Parameters:matrix
+    $PROFILES
+    $CLIENTS
+  End
+  Example "on profile $1 using client $2: setup policy" id:"091"
+    profile=$1
+    client=$2
+
+    is_aws=$(has_s3_block_public_access)
+    [ $is_aws = true ] && Skip "This test is only valid when accessing MagaluCloud's Swift" && return
+
+    #policy vars
+    action='"*"'
+    principal="*"
+    resource=("$bucket_name-$client" "$bucket_name-$client/*")
+    effect="Deny"
+    policy=$(setup_policy $bucket_name $client $profile)
+
+    ensure-bucket-exists $profile $client $bucket_name
+    aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
+    When run aws --profile $profile s3api delete-bucket-policy --bucket "$bucket_name-$client"
+    The output should be success
+  End
+
 End
