@@ -10,7 +10,7 @@ measure_time() {
 Describe 'Benchmark test:' category:"Bucket Management"
   setup() {
     bucket_name="test-100-$(date +%s)"
-    date=$(date +%s.%N)
+    date=$(date "+%Y-%m-%d.%H")
   }
 
   Before 'setup'
@@ -96,6 +96,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
-    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/${date}h.csv > /dev/null
+    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
+    #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark.csv > /dev/null
   End
 End
