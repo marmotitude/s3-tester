@@ -1,0 +1,54 @@
+name: "Manually-triggered tests"
+
+on:
+  workflow_dispatch:
+    inputs:
+      profiles:
+        description: "List of profiles from $PROFILES secret env var"
+        type: string
+        required: false
+        default: "br-ne1,br-se1"
+      tests:
+        description: "List of test ids, see README for the table, leave empty for ALL"
+        type: string
+        required: false
+        default: "100"
+      clients:
+        description: "List of clients"
+        type: string
+        required: false
+        default: "mgc,aws-s3api,rclone,aws-s3"
+      sizes:
+        description: "List of files size"
+        type: string
+        required: false
+        default: "1,2,3"
+      quantity:
+        description: "List of quantity files"
+        type: string
+        required: false
+        default: "1,2,3"
+      skip_known_issues:
+        description: "Skip known issues"
+        type: string
+        required: false
+        default: "no"
+
+env:
+  PROFILES: ${{ secrets.profiles }}
+
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    container: ghcr.io/marmotitude/s3-tester:tests
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: "Run with tests, clients and profiles from user input"
+        run: |
+          echo copying specs from the workspace volume to the image workspace...
+          cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
+          cd /app
+          mgc --version
+          ./entrypoint.sh benchmark-test.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
