@@ -36,7 +36,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
       #echo "$date,$profile,$client" >> ./report/benchmark.csv
       case "$client" in
         "aws-s3api" | "aws" | "aws-s3")
-          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
+          printf "\n%s,%s,%s,%s" "$date" "$profile" "$client" "$size," >> ./report/benchmark.csv
           for i in $(seq 1 $quantity); do
             time=$(measure_time aws --profile $profile s3 cp ./report/arquivo_${size}M_$i.txt s3://$bucket_name-$client)
             printf "create%d,%s," "$i" "$time" >> ./report/benchmark.csv
@@ -55,7 +55,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           done
           ;;
         "rclone")
-          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
+          printf "\n%s,%s,%s,%s" "$date" "$profile" "$client" "$size," >> ./report/benchmark.csv
           for i in $(seq 1 $quantity); do
             time=$(measure_time rclone s3 copy ./report/arquivo_${size}M_$i.txt $profile:$bucket_name-$client)
             printf "create%d,%s," "$i" "$time" >> ./report/benchmark.csv
@@ -74,7 +74,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           done
           ;;
         "mgc")
-          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
+          printf "\n%s,%s,%s,%s" "$date" "$profile" "$client" "$size," >> ./report/benchmark.csv
           mgc profile set "$profile" > /dev/null
           for i in $(seq 1 $quantity); do
             time=$(measure_time mgc object-storage objects upload ./report/arquivo_${size}M_$i.txt $bucket_name-$client)
@@ -96,7 +96,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
-    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
+    #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
     #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark.csv > /dev/null
   End
 End
