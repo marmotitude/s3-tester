@@ -10,7 +10,7 @@ measure_time() {
 Describe 'Benchmark test:' category:"Bucket Management"
   setup() {
     bucket_name="test-100-$(date +%s)"
-    date=$(date +%s.%N)
+    date=$(date "+%Y-%m-%d.%H")
   }
 
   Before 'setup'
@@ -32,65 +32,70 @@ Describe 'Benchmark test:' category:"Bucket Management"
       for i in $(seq 1 $quantity); do
         fallocate -l "${size}M" "./report/arquivo_${size}M_$i.txt"
       done
-      echo $date,$profile,$client,$size>> ./report/benchmark.csv
+      #echo "" >> ./report/benchmark.csv
+      #echo "$date,$profile,$client" >> ./report/benchmark.csv
       case "$client" in
         "aws-s3api" | "aws" | "aws-s3")
+          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
           for i in $(seq 1 $quantity); do
-            time=$(measure_time aws --profile $profile s3 cp ./report/arquivo_$i.txt s3://$bucket_name-$client)
-            printf ",create%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time aws --profile $profile s3 cp ./report/arquivo_${size}M_$i.txt s3://$bucket_name-$client)
+            printf "create%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            time=$(measure_time aws --profile $profile s3 cp s3://$bucket_name-$client/arquivo_$i.txt ./$bucket_name-$client/arquivo_$i.txt)
-            printf ",download%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time aws --profile $profile s3 cp s3://$bucket_name-$client/arquivo_${size}M_$i.txt ./$bucket_name-$client/arquivo_${size}M_$i.txt)
+            printf "read%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            time=$(measure_time aws --profile $profile s3 cp ./report/arquivo_$i.txt s3://$bucket_name-$client)
-            printf ",update%d,%s,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time aws --profile $profile s3 cp ./report/arquivo_${size}M_$i.txt s3://$bucket_name-$client)
+            printf "update%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client/arquivo_$i.txt)
-            printf ",delete%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client/arquivo_${size}M_$i.txt)
+            printf "delete%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           ;;
         "rclone")
+          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
           for i in $(seq 1 $quantity); do
-            create_time=$(measure_time rclone s3 copy ./report/arquivo_$i.txt $profile:$bucket_name-$client)
-            printf ",create%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time rclone s3 copy ./report/arquivo_${size}M_$i.txt $profile:$bucket_name-$client)
+            printf "create%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            download_time=$(measure_time rclone copy $profile:$bucket_name-$client/arquivo_$i.txt ./$bucket_name-$client/arquivo_$i.txt)
-            printf ",download%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time rclone copy $profile:$bucket_name-$client/arquivo_${size}M_$i.txt ./$bucket_name-$client/arquivo_${size}M_$i.txt)
+            printf "read%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            update_time=$(measure_time rclone copy ./report/arquivo_$i.txt $profile:$bucket_name-$client)
-            printf ",update%d,%s,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time rclone copy ./report/arquivo_${size}M_$i.txt $profile:$bucket_name-$client)
+            printf "update%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            delete_time=$(measure_time rclone delete $profile:$bucket_name-$client/arquivo_$i.txt)
-            printf ",delete%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time rclone delete $profile:$bucket_name-$client/arquivo_${size}M_$i.txt)
+            printf "delete%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           ;;
         "mgc")
+          printf "\n%s,%s,%s" "$date" "$profile" "$client," >> ./report/benchmark.csv
           mgc profile set "$profile" > /dev/null
           for i in $(seq 1 $quantity); do
-            create_time=$(measure_time mgc object-storage objects upload ./report/arquivo_$i.txt $bucket_name-$client)
-            printf ",create%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time mgc object-storage objects upload ./report/arquivo_${size}M_$i.txt $bucket_name-$client)
+            printf "create%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            download_time=$(measure_time mgc object-storage objects download $bucket_name-$client/arquivo_$i.txt ./$bucket_name-$client/arquivo_$i.txt)
-            printf ",download%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time mgc object-storage objects download $bucket_name-$client/arquivo_${size}M_$i.txt ./$bucket_name-$client/arquivo_${size}M_$i.txt)
+            printf "read%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            update_time=$(measure_time mgc object-storage objects upload ./report/arquivo_$i.txt $bucket_name-$client)
-            printf ",update%d,%s,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time mgc object-storage objects upload ./report/arquivo_${size}M_$i.txt $bucket_name-$client)
+            printf "update%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           for i in $(seq 1 $quantity); do
-            delete_time=$(measure_time mgc object-storage objects delete $bucket_name-$client/arquivo_$i.txt --no-confirm)
-            printf ",delete%d,%s" "$i" "$time" >> ./report/benchmark.csv
+            time=$(measure_time mgc object-storage objects delete $bucket_name-$client/arquivo_${size}M_$i.txt --no-confirm)
+            printf "delete%d,%s," "$i" "$time" >> ./report/benchmark.csv
           done
           ;;
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
+    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/${date}h.csv > /dev/null
   End
 End
