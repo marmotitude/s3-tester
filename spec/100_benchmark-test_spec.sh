@@ -10,7 +10,7 @@ measure_time() {
 Describe 'Benchmark test:' category:"Bucket Management"
   setup() {
     bucket_name="test-100-$(date +%s)"
-    date=$(date "+%Y-%m-%d.%H")
+    date=$(date +%s.%N)
   }
 
   Before 'setup'
