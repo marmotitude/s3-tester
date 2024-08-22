@@ -51,4 +51,4 @@ jobs:
           cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
           cd /app
           mgc --version
-          ./bin/benchmark-test.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
+          ./bin/benchmark-test.sh --profiles ${{ inputs.profiles }} --tests ${{ inputs.tests }} --clients ${{ inputs.clients }} --sizes ${{ inputs.sizes }} --quantity ${{ inputs.quantity }}-- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
