@@ -1,9 +1,9 @@
 # Função para medir o tempo de uma operação
 measure_time() {
-    start=$(date +%s.%N)
+    start=$(date +%s%3N)
     "$@" > /dev/null
-    end=$(date +%s.%N)
-    runtime=$(echo "$end - $start" | bc)
+    end=$(date +%s%3N)
+    runtime=$((end - start))
     echo "$runtime"
 }
 
