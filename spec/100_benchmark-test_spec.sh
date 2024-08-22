@@ -96,7 +96,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
-    #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
+    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
     #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark.csv > /dev/null
   End
 End
