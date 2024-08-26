@@ -10,7 +10,6 @@ measure_time() {
 Describe 'Benchmark test:' category:"Bucket Management"
   setup() {
     bucket_name="test-100-$(date +%s)"
-    date=$(date "+%Y-%m-%d.%H")
   }
 
   Before 'setup'
@@ -19,6 +18,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
       $CLIENTS
       $SIZES
       $QUANTITY
+      $DATE
     End
 
   Example "on profile $1 using client $2" id:"100"
@@ -26,6 +26,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
     client=$2
     sizes=$3 #param
     quantity=$4 #param
+    date=$5 #param
     aws --profile "$profile" s3 mb s3://"$bucket_name-$client" > /dev/null
     for size in $(echo $sizes | tr "," "\n")
     do
@@ -96,7 +97,8 @@ Describe 'Benchmark test:' category:"Bucket Management"
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
-    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/$(date "+%Y-%m-%d.%H")h.csv > /dev/null
-    #aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark.csv > /dev/null
+    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/data/${date}h.csv > /dev/null
+    python3 ./bin/process_data.py
+    aws s3 --profile br-se1 cp ./report/$(date "+%Y-%m-%d.%H")h-processed_data.csv s3://benchmark/processed_data/${date}h.csv > /dev/null
   End
 End
