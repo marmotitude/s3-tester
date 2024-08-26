@@ -1,7 +1,33 @@
 #!/usr/bin/env python3
-
 import pandas as pd
 from datetime import datetime
+import re
+import csv
+
+# Defina os caminhos dos arquivos
+input_file = './report/benchmark.csv'
+
+# Passo 1: Ler o arquivo para determinar o número máximo de colunas
+with open(input_file, 'r') as file:
+    lines = file.readlines()
+
+# Encontre o número máximo de colunas em qualquer linha
+max_cols = max(len(re.split(r',\s*', line)) for line in lines)
+
+# Passo 2: Preencher linhas curtas com vírgulas faltantes
+with open(input_file, 'w', newline='') as file:
+    writer = csv.writer(file)
+    
+    for line in lines:
+        # Divide a linha em colunas
+        columns = re.split(r',\s*', line.strip())
+        
+        # Adiciona colunas vazias se necessário
+        if len(columns) < max_cols:
+            columns.extend([''] * (max_cols - len(columns)))
+        
+        # Escreve a linha no novo CSV
+        writer.writerow(columns)
 
 file_path = './report/benchmark.csv'
 # Criar um DataFrame a partir dos dados
@@ -107,6 +133,7 @@ def process_data(df):
 
 # Processa os dados
 processed_df = process_data(df)
+
 
 # Salva o DataFrame processado em um arquivo CSV
 processed_df.to_csv(f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-processed_data.csv', index=False)
