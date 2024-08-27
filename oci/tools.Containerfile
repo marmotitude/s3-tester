@@ -87,4 +87,4 @@ RUN apt install -y openjdk-17-jre;
 RUN pip3 install poetry --break-system-packages;
 
 # pandas
-RUN pip3 install pandas --break-system-packages;
+RUN apt install python3-pandas -y
