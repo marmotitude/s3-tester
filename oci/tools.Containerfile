@@ -22,7 +22,7 @@ FROM public.ecr.aws/aws-cli/aws-cli:${AWS_CLI_VERSION} as awscli
 
 # Tools downloader
 FROM alpine as downloader
-RUN apk add --no-cache curl unzip bash py3-pandas;
+RUN apk add --no-cache curl unzip bash;
 WORKDIR /tools
 # rclone
 ARG RCLONE_VERSION
@@ -85,3 +85,6 @@ RUN apt install -y openjdk-17-jre;
 
 # poetry
 RUN pip3 install poetry --break-system-packages;
+
+# pandas
+RUN pip3 install pandas --break-system-packages;
