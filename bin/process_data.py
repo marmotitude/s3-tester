@@ -9,7 +9,7 @@ input_file = './report/benchmark.csv'
 
 # Passo 1: Ler o arquivo para determinar o número máximo de colunas
 with open(input_file, 'r') as file:
-    lines = file.downloadlines()
+    lines = file.readlines()
 
 # Encontre o número máximo de colunas em qualquer linha
 max_cols = max(len(re.split(r',\s*', line)) for line in lines)
@@ -31,7 +31,7 @@ with open(input_file, 'w', newline='') as file:
 
 # Passo 3: Carregar os dados do CSV e adicionar cabeçalhos
 file_path = './report/benchmark.csv'
-df = pd.download_csv(file_path, header=None)
+df = pd.read_csv(file_path, header=None)
 
 # Adicionar os cabeçalhos corretos
 headers = ["date", "region", "tool", "operation", "size", "quantity"]
@@ -46,11 +46,11 @@ def process_data(df):
     # Inicializa listas para armazenar os resultados
     result_list = []
 
-    # Itera sobre cada grupo de (date, region, tool, size)
-    for (date, region, tool, size), group in df.groupby(['date', 'region', 'tool', 'size']):
+    # Itera sobre cada grupo de (date, region, tool, size, quantity)
+    for (date, region, tool, size, quantity), group in df.groupby(['date', 'region', 'tool', 'size', 'quantity']):
         
         # Inicializa dicionários para armazenar os valores de cada operação
-        operations = {'upload': [], 'download': [], 'update': [], 'delete': []}
+        operations = {'create': [], 'read': [], 'update': [], 'delete': []}
 
         # Itera sobre cada linha do grupo
         for _, row in group.iterrows():
@@ -61,23 +61,24 @@ def process_data(df):
             if operation in operations:
                 operations[operation].extend(values)
 
-        # Calcula as somas, médias, mínimas e máximas para cada tipo de operação
-        result_dict = {
-            'date': date,
-            'region': region,
-            'tool': tool,
-            'size': size,
-        }
-
-        for op in ['upload', 'download', 'update', 'delete']:
+        # Cria as linhas de resultado para cada operação
+        for op in ['create', 'read', 'update', 'delete']:
             values = list(map(float, operations[op]))
-            result_dict[f'{op}_sum'] = sum(values)
-            result_dict[f'{op}_avg'] = pd.Series(values).mean() if values else 0
-            result_dict[f'{op}_min'] = pd.Series(values).min() if values else 0
-            result_dict[f'{op}_max'] = pd.Series(values).max() if values else 0
-
-        # Adiciona o resultado ao result_list
-        result_list.append(result_dict)
+            if values:  # Processa apenas se houver valores
+                result_dict = {
+                    'date': date,
+                    'region': region,
+                    'tool': tool,
+                    'size': size,
+                    'quantity': quantity,
+                    'operation': op,
+                    'sum': sum(values),
+                    'avg': pd.Series(values).mean(),
+                    'min': pd.Series(values).min(),
+                    'max': pd.Series(values).max()
+                }
+                # Adiciona o resultado ao result_list
+                result_list.append(result_dict)
 
     # Cria um DataFrame com os resultados
     result_df = pd.DataFrame(result_list)
