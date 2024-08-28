@@ -17,17 +17,17 @@ on:
         description: "List of clients"
         type: string
         required: false
-        default: "mgc,aws-s3api,rclone,aws-s3"
+        default: "mgc,rclone,aws-s3"
       sizes:
         description: "List of files size"
         type: string
         required: false
-        default: "1,2,3"
+        default: "1,10,100"
       quantity:
         description: "List of quantity files"
         type: string
         required: false
-        default: "1,2,3"
+        default: "10"
       skip_known_issues:
         description: "Skip known issues"
         type: string
