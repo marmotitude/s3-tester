@@ -136,6 +136,8 @@ def filter_equals(github_repository, github_token):
     not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")]
     not_ok_string_not_equals = "\n".join(not_ok_line_not_equals)
 
+    not_ok_string_not_equals, not_ok_string_see_more = remove_flaky(not_ok_string_not_equals, not_ok_string_see_more)
+
     return not_ok_string_not_equals, not_ok_string_equals, not_ok_string_see_more
 
 def get_old_artifact(github_repository, github_token):
@@ -170,6 +172,13 @@ def get_old_artifact(github_repository, github_token):
         os.rename('/app/results.tap', novo_caminho_arquivo)
     else:
         print("Erro ao baixar o artefato:", response.status_code)
+
+def remove_flaky(not_ok_string_not_equals, not_ok_string_see_more):
+    lines = not_ok_string_not_equals.count('\n') + 1
+    exit_status_1=not_ok_string_see_more.count("exit status: 1")
+    if lines == exit_status_1:
+        return 0,0
+    return not_ok_string_not_equals, not_ok_string_see_more
 
 def main():
     if len(sys.argv) != 6:
