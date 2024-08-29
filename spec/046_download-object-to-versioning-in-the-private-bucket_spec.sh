@@ -21,7 +21,7 @@ Describe 'Download object to versioning in the private bucket:' category:"Object
     version=$(aws s3api list-object-versions --bucket $bucket_name-$client --profile $profile | jq -r '.Versions[1].VersionId')
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run aws --profile $profile s3api get-object --bucket $bucket_name-$client --key $file1_name --version-id $version $file1_name-2
+   When run bash ./spec/retry_command.sh "aws --profile $profile s3api get-object --bucket $bucket_name-$client --key $file1_name --version-id $version $file1_name-2"
     The status should be success
     The output should include "ETag"
       ;;
