@@ -61,7 +61,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
         "rclone")
           printf "\n%s,%s,%s,upload,%s,%s" "$date" "$profile" "$client" "$size" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $quantity); do
-            time=$(measure_time rclone s3 copy ./report/arquivo_${size}M_$i.txt $profile:$bucket_name-$client)
+            time=$(measure_time rclone copy ./report/arquivo_${size}M_$i.txt $profile:$bucket_name-$client)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s" "$date" "$profile" "$client" "$size" "$quantity," >> ./report/benchmark.csv
