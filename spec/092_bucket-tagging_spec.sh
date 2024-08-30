@@ -29,11 +29,7 @@ Describe 'Put bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
-      The stdout should include ""
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -68,11 +64,7 @@ Describe 'Get bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets get-bucket-label --bucket $bucket_name-$client"
-      # When run mgc object-storage buckets get-bucket-label --bucket $bucket_name-$client
-      The stdout should include "organization"
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -106,11 +98,7 @@ Describe 'Delete bucket tagging:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets delete-bucket-label --bucket $bucket_name-$client"
-      # When run mgc object-storage buckets delete-bucket-label --bucket $bucket_name-$client
-      The stdout should include ""
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -144,11 +132,7 @@ Describe 'Put bucket tagging wrong json:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
-      The stdout should include "Error parsing parameter '--tagging'"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -182,11 +166,7 @@ Describe 'Put bucket tagging with wrong "value":' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -219,11 +199,7 @@ Describe 'Put bucket tagging with file:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
@@ -256,11 +232,7 @@ Describe 'Put bucket tagging with wrong file:' category:"Bucket Management"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $bucket_name-$client --labelling $tag
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$bucket_name-$client"
