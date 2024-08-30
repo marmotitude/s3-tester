@@ -32,7 +32,7 @@ Describe 'Set bucket label:' category:"Bucket Management"
       The status should be success
       ;;
     esac
-    #rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
   End
 End
 
@@ -66,7 +66,7 @@ Describe 'Get bucket label:' category:"Bucket Management"
       The status should be success
       ;;
     esac
-    #rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
   End
 End
 
@@ -103,7 +103,7 @@ Describe 'Delete bucket label:' category:"Bucket Management"
       The status should be success
       ;;
     esac
-    #rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$bucket_name-$client > /dev/null
   End
 End
 
