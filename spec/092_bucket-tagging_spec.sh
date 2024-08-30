@@ -225,8 +225,8 @@ Describe 'Put bucket tagging with wrong file:' category:"Bucket Management"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-tagging --bucket $bucket_name-$client --tagging file://$file1_name
-      The stderr should include ""
-      The status should be success
+      The stderr should include "Error parsing parameter '--tagging'"
+      The status should be failure
       ;;
     "rclone")
       Skip "Skipped test to $client"
