@@ -106,8 +106,8 @@ Describe 'Benchmark test:' category:"Bucket Management"
       esac
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
-    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/data/${date}h.csv > /dev/null
+    aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/data/${date}h.csv --acl public-read > /dev/null
     python3 ./bin/process_data.py
-    aws s3 --profile br-se1 cp ./report/$(date "+%Y-%m-%d.%H")h-processed_data.csv s3://benchmark/processed_data/${date}h.csv > /dev/null
+    aws s3 --profile br-se1 cp ./report/$(date "+%Y-%m-%d.%H")h-processed_data.csv s3://benchmark/processed_data/${date}h.csv --acl public-read > /dev/null
   End
 End
