@@ -50,7 +50,7 @@ def process_data(df):
     for (date, region, tool, size, quantity), group in df.groupby(['date', 'region', 'tool', 'size', 'quantity']):
         
         # Inicializa dicionários para armazenar os valores de cada operação
-        operations = {'create': [], 'read': [], 'update': [], 'delete': []}
+        operations = {'upload': [], 'download': [], 'update': [], 'delete': []}
 
         # Itera sobre cada linha do grupo
         for _, row in group.iterrows():
@@ -62,7 +62,7 @@ def process_data(df):
                 operations[operation].extend(values)
 
         # Cria as linhas de resultado para cada operação
-        for op in ['create', 'read', 'update', 'delete']:
+        for op in ['upload', 'download', 'update', 'delete']:
             values = list(map(float, operations[op]))
             if values:  # Processa apenas se houver valores
                 result_dict = {
