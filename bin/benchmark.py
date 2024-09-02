@@ -1,9 +1,11 @@
+from datetime import datetime
+
 import pandas as pd
 import plotly.express as px
 import json
 
 # Carregar os dados
-csv_file = "/home/develcode134/Área de Trabalho/base.csv"
+csv_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-processed_data.csv'
 df = pd.read_csv(csv_file)
 
 # Gerar os dropdowns únicos
@@ -159,7 +161,7 @@ html_content = f'''
 '''
 
 # Salvar o HTML no arquivo
-html_file = "/home/develcode134/Área de Trabalho/dashboard_interativo.html"
+html_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-dashboard.html'
 with open(html_file, 'w') as f:
     f.write(html_content)
 
