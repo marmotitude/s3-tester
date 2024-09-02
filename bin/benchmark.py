@@ -3,7 +3,7 @@ import plotly.express as px
 import json
 
 # Carregar os dados
-csv_file = "/home/develcode134/Área de Trabalho/base.csv"
+csv_file = "DIR"
 df = pd.read_csv(csv_file)
 
 # Gerar os dropdowns únicos
@@ -159,7 +159,7 @@ html_content = f'''
 '''
 
 # Salvar o HTML no arquivo
-html_file = "/home/develcode134/Área de Trabalho/dashboard_interativo.html"
+html_file = "DIR"
 with open(html_file, 'w') as f:
     f.write(html_content)
 
