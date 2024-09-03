@@ -90,4 +90,5 @@ RUN pip3 install poetry --break-system-packages;
 RUN apt install python3-pandas -y
 
 # plotly
-RUN apt install python3-plotly -y
+RUN pip3 install --no-cache-dir plotly
+
