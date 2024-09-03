@@ -5,9 +5,8 @@ import plotly.express as px
 import json
 
 
-
+# Carregar os dados
 csv_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-processed_data.csv'
-
 
 df = pd.read_csv(csv_file)
 
@@ -175,9 +174,9 @@ html_content = f'''
 </html>
 '''
 
+# Salvar o HTML no arquivo
 
 html_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-dashboard.html'
-
 
 
 with open(html_file, 'w') as f:
