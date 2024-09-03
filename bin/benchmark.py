@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import pandas as pd
 import plotly.express as px
 import json
@@ -12,15 +10,16 @@ df = pd.read_csv(csv_file)
 regions = df['region'].unique().tolist()
 operations = df['operation'].unique().tolist()
 sizes = df['size'].unique().tolist()
-
+quantities = df['quantity'].unique().tolist()
 
 # Função para criar o gráfico com base nos filtros
-def create_plot(region, operation, size):
-    filtered_df = df[(df['region'] == region) & (df['operation'] == operation) & (df['size'] == size)]
+def create_plot(region, operation, size, quantity):
+    filtered_df = df[(df['region'] == region) & (df['operation'] == operation) &
+                     (df['size'] == size) & (df['quantity'] == quantity)]
 
     fig = px.bar(filtered_df, x='tool', y=['avg', 'min', 'max'],
                  labels={'value': 'Tempo (ms)', 'tool': 'Ferramenta', 'variable': 'Métrica'},
-                 title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB)",
+                 title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
                  template='plotly_dark')
     fig.update_layout(
         title_font=dict(size=20, color='#F5F5F5', family="Arial"),
@@ -33,13 +32,13 @@ def create_plot(region, operation, size):
     )
     return fig
 
-
 # Criar gráfico inicial
 initial_region = regions[0]
 initial_operation = operations[0]
 initial_size = sizes[0]
+initial_quantity = quantities[0]
 
-fig = create_plot(initial_region, initial_operation, initial_size)
+fig = create_plot(initial_region, initial_operation, initial_size, initial_quantity)
 
 # Gerar HTML autossuficiente com estilo Grafana e Bootstrap
 html_content = f'''
@@ -106,6 +105,12 @@ html_content = f'''
                     {''.join([f'<option value="{size}">{size}</option>' for size in sizes])}
                 </select>
             </div>
+            <div class="col-md-3">
+                <label for="quantity">Quantidade:</label>
+                <select class="form-control" id="quantity" onchange="updatePlot()">
+                    {''.join([f'<option value="{quantity}">{quantity}</option>' for quantity in quantities])}
+                </select>
+            </div>
         </div>
 
         <div id="plotly-div"></div>
@@ -114,8 +119,9 @@ html_content = f'''
     <script type="text/javascript">
         var data = {json.dumps(df.to_dict(orient='records'))};
 
-        function createPlot(region, operation, size) {{
-            var filteredData = data.filter(d => d.region == region && d.operation == operation && d.size == size);
+        function createPlot(region, operation, size, quantity) {{
+            var filteredData = data.filter(d => d.region == region && d.operation == operation && 
+                                                d.size == size && d.quantity == quantity);
             var traces = [];
 
             ['avg', 'min', 'max'].forEach(function(metric) {{
@@ -133,7 +139,8 @@ html_content = f'''
             }});
 
             var layout = {{
-                title: 'Desempenho: ' + operation.charAt(0).toUpperCase() + operation.slice(1) + ' - ' + region.toUpperCase() + ' (Tamanho: ' + size + ' MB)',
+                title: 'Desempenho: ' + operation.charAt(0).toUpperCase() + operation.slice(1) + 
+                        ' - ' + region.toUpperCase() + ' (Tamanho: ' + size + ' MB, Quantidade: ' + quantity + ')',
                 xaxis: {{ title: 'Ferramenta', gridcolor: '#4f4f4f' }},
                 yaxis: {{ title: 'Tempo (ms)', gridcolor: '#4f4f4f' }},
                 plot_bgcolor: '#2a2a2a',
@@ -149,11 +156,12 @@ html_content = f'''
             var region = document.getElementById('region').value;
             var operation = document.getElementById('operation').value;
             var size = parseFloat(document.getElementById('size').value);
-            createPlot(region, operation, size);
+            var quantity = parseFloat(document.getElementById('quantity').value);
+            createPlot(region, operation, size, quantity);
         }}
 
         document.addEventListener('DOMContentLoaded', function() {{
-            createPlot('{initial_region}', '{initial_operation}', {initial_size});
+            createPlot('{initial_region}', '{initial_operation}', {initial_size}, {initial_quantity});
         }});
     </script>
 </body>
@@ -166,3 +174,4 @@ with open(html_file, 'w') as f:
     f.write(html_content)
 
 print(f"Dashboard salvo como '{html_file}'")
+
