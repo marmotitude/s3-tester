@@ -88,6 +88,7 @@ RUN /opt/venv/bin/pip install --no-cache-dir plotly
 # Adicionar o ambiente virtual ao PATH
 ENV PATH="/opt/venv/bin:$PATH"
 
+
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
@@ -100,4 +101,6 @@ RUN apt install -y openjdk-17-jre;
 RUN pip3 install poetry --break-system-packages;
 
 # pandas
-RUN apt install -y python3-pandas
+RUN apt install python3-pandas -y
+
+
