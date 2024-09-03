@@ -1,9 +1,13 @@
+from datetime import datetime
+
 import pandas as pd
 import plotly.express as px
 import json
 
+
 # Carregar os dados
 csv_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-processed_data.csv'
+
 df = pd.read_csv(csv_file)
 
 # Gerar os dropdowns únicos
@@ -19,7 +23,9 @@ def create_plot(region, operation, size, quantity):
 
     fig = px.bar(filtered_df, x='tool', y=['avg', 'min', 'max'],
                  labels={'value': 'Tempo (ms)', 'tool': 'Ferramenta', 'variable': 'Métrica'},
-                 title=f"DEsempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
+
+                 title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
+
                  template='plotly_dark')
     fig.update_layout(
         title_font=dict(size=20, color='#F5F5F5', family="Arial"),
@@ -169,7 +175,10 @@ html_content = f'''
 '''
 
 # Salvar o HTML no arquivo
+
 html_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-dashboard.html'
+
+
 with open(html_file, 'w') as f:
     f.write(html_content)
 
