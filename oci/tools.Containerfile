@@ -76,15 +76,17 @@ RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
 # additional ubuntu packages
 RUN apt update && apt install -y ca-certificates jq bc openssl curl python3 python3-pip less
 
-
-# Add pack python3-venv
+# Adiciona o pacote python3-venv para criar ambientes virtuais
 RUN apt update && apt install -y python3-venv
 
-# create venv
+# Crie um ambiente virtual
 RUN python3 -m venv /opt/venv
 
-# Active venv and plotly
-RUN . /opt/venv/bin/activate && pip install --no-cache-dir plot
+# Ative o ambiente virtual e instale plotly
+RUN . /opt/venv/bin/activate && pip install --no-cache-dir plotly
+
+# Adicione o ambiente virtual ao PATH
+ENV PATH="/opt/venv/bin:$PATH"
 
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
@@ -99,5 +101,3 @@ RUN pip3 install poetry --break-system-packages;
 
 # pandas
 RUN apt install python3-pandas -y
-
-# plotly
