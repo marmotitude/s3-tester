@@ -114,5 +114,3 @@ RUN pip3 install poetry --break-system-packages;
 
 # pandas
 RUN apt install python3-pandas -y
-
-
