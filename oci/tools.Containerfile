@@ -91,3 +91,4 @@ RUN apt install python3-pandas -y
 
 # plotly
 RUN pip3 install plotly==5.24.0 -y
+
