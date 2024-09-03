@@ -23,7 +23,9 @@ def create_plot(region, operation, size, quantity):
     fig = px.bar(filtered_df, x='tool', y=['avg', 'min', 'max'],
                  labels={'value': 'Tempo (ms)', 'tool': 'Ferramenta', 'variable': 'Métrica'},
 
+
                  title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
+
 
                  template='plotly_dark')
     fig.update_layout(
@@ -173,9 +175,10 @@ html_content = f'''
 </html>
 '''
 
-# Salvar o HTML no arquivo
+
 
 html_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-dashboard.html'
+
 
 with open(html_file, 'w') as f:
     f.write(html_content)
