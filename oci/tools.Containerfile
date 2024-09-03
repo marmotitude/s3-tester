@@ -94,8 +94,8 @@ RUN apt install -y python3-venv
 # Criar um ambiente virtual
 RUN python3 -m venv /opt/venv
 
-# Ativar o ambiente virtual e instalar Plotly
-RUN /opt/venv/bin/pip install --no-cache-dir plotly
+# Ativar o ambiente virtual e instalar Plotly e Pandas
+RUN /opt/venv/bin/pip install --no-cache-dir plotly pandas
 
 # Adicionar o ambiente virtual ao PATH
 ENV PATH="/opt/venv/bin:$PATH"
