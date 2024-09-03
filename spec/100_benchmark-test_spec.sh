@@ -110,7 +110,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
     python3 ./bin/process_data.py
     aws s3 --profile br-se1 cp ./report/processed_data.csv s3://benchmark/processed_data/${date}h.csv --acl public-read > /dev/null
     python3 ./bin/benchmark.py
-    aws s3 --profile br-se1 cp ./report/${date}h-dashboard.html s3://benchmark/dashboards/${date}h-dashboard.html --acl public-read > /dev/null
-    aws s3 --profile br-se1 cp ./report/${date}h-dashboard.html s3://benchmark/dashboards/index.html --acl public-read > /dev/null
+    aws s3 --profile br-se1 cp ./report/dashboard.html s3://benchmark/dashboards/${date}h-dashboard.html --acl public-read > /dev/null
+    aws s3 --profile br-se1 cp ./report/dashboard.html s3://benchmark/dashboards/index.html --acl public-read > /dev/null
   End
 End
