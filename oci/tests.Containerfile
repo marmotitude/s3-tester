@@ -9,7 +9,7 @@ COPY pyproject.toml poetry.lock /app/
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV POETRY_NO_INTERACTION=1
 ENV SPARK_HOME=/tools/spark
-RUN poetry install --only main;
+RUN poetry install --no-dev;
 
 # tests
 COPY spec spec
