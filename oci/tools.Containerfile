@@ -97,7 +97,7 @@ RUN apt install -y openjdk-17-jre;
 # poetry
 RUN pip3 install poetry --break-system-packages;
 
-# pandas
+# pandass
 RUN apt install python3-pandas -y
 
 # plotly
