@@ -87,7 +87,6 @@ RUN python3 -m venv /opt/venv
 # Active venv and plotly
 RUN . /opt/venv/bin/activate && pip install --no-cache-dir plotly
 
-
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/
