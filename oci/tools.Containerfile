@@ -88,6 +88,19 @@ RUN . /opt/venv/bin/activate && pip install --no-cache-dir plotly
 # Adicione o ambiente virtual ao PATH
 ENV PATH="/opt/venv/bin:$PATH"
 
+# Adicionar o pacote python3-venv para criar ambientes virtuais
+RUN apt install -y python3-venv
+
+# Criar um ambiente virtual
+RUN python3 -m venv /opt/venv
+
+# Ativar o ambiente virtual e instalar Plotly e Pandas
+RUN /opt/venv/bin/pip install --no-cache-dir plotly
+
+# Adicionar o ambiente virtual ao PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
 COPY --from=downloader /usr/local/bin/ /usr/local/bin/

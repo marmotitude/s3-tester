@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import json
 
+
 # Carregar os dados
 csv_file = f'report/processed_data.csv'
 df = pd.read_csv(csv_file)
@@ -21,7 +22,9 @@ def create_plot(region, operation, size, quantity):
 
     fig = px.bar(filtered_df, x='tool', y=['avg', 'min', 'max'],
                  labels={'value': 'Tempo (ms)', 'tool': 'Ferramenta', 'variable': 'Métrica'},
+
                  title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
+
                  template='plotly_dark')
     fig.update_layout(
         title_font=dict(size=20, color='#F5F5F5', family="Arial"),

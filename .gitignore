@@ -4,3 +4,4 @@ profiles.yaml
 profiles.github.yaml
 node_modules
 spec/pyspark/__pycache__/script_pyspark.cpython-310-pytest-8.2.2.pyc
+.idea/
