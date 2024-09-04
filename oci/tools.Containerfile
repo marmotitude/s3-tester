@@ -41,8 +41,7 @@ RUN curl -Lo gotpl.zip "https://github.com/belitre/gotpl/releases/download/v${GO
     ln -s "/tools/gotpl/linux-amd64/gotpl" /usr/local/bin/gotpl
 # shellspec
 ARG SHELLSPEC_VERSION
-RUN curl -Lo shellspec.tar.gz "https://github.co    tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
-m/shellspec/shellspec/archive/${SHELLSPEC_VERSION}.tar.gz" && \
+RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${SHELLSPEC_VERSION}.tar.gz" && \
     tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
     ln -s "/tools/shellspec-${SHELLSPEC_VERSION}/shellspec" /usr/local/bin/
 # mgc
@@ -77,15 +76,30 @@ RUN ln -s "/tools/aws-cli/v2/${AWS_CLI_VERSION}/bin/aws" /usr/local/bin/aws && \
 # additional ubuntu packages
 RUN apt update && apt install -y ca-certificates jq bc openssl curl python3 python3-pip less
 
-
-# Add pack python3-venv
+# Adiciona o pacote python3-venv para criar ambientes virtuais
 RUN apt update && apt install -y python3-venv
 
-# create venv
+# Crie um ambiente virtual
 RUN python3 -m venv /opt/venv
 
-# Active venv and plotly
+# Ative o ambiente virtual e instale plotly
 RUN . /opt/venv/bin/activate && pip install --no-cache-dir plotly
+
+# Adicione o ambiente virtual ao PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Adicionar o pacote python3-venv para criar ambientes virtuais
+RUN apt install -y python3-venv
+
+# Criar um ambiente virtual
+RUN python3 -m venv /opt/venv
+
+# Ativar o ambiente virtual e instalar Plotly e Pandas
+RUN /opt/venv/bin/pip install --no-cache-dir plotly
+
+# Adicionar o ambiente virtual ao PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
 
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
@@ -98,7 +112,5 @@ RUN apt install -y openjdk-17-jre;
 # poetry
 RUN pip3 install poetry --break-system-packages;
 
-# pandass
+# pandas
 RUN apt install python3-pandas -y
-
-# plotly
