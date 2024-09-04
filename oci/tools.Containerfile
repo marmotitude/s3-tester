@@ -41,7 +41,8 @@ RUN curl -Lo gotpl.zip "https://github.com/belitre/gotpl/releases/download/v${GO
     ln -s "/tools/gotpl/linux-amd64/gotpl" /usr/local/bin/gotpl
 # shellspec
 ARG SHELLSPEC_VERSION
-RUN curl -Lo shellspec.tar.gz "https://github.com/shellspec/shellspec/archive/${SHELLSPEC_VERSION}.tar.gz" && \
+RUN curl -Lo shellspec.tar.gz "https://github.co    tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
+m/shellspec/shellspec/archive/${SHELLSPEC_VERSION}.tar.gz" && \
     tar xzvf shellspec.tar.gz && rm shellspec.tar.gz && \
     ln -s "/tools/shellspec-${SHELLSPEC_VERSION}/shellspec" /usr/local/bin/
 # mgc
@@ -84,7 +85,7 @@ RUN apt update && apt install -y python3-venv
 RUN python3 -m venv /opt/venv
 
 # Active venv and plotly
-RUN . /opt/venv/bin/activate && pip install --no-cache-dir plot
+RUN . /opt/venv/bin/activate && pip install --no-cache-dir plotly
 
 # rclone, dasel, gotpl, shellspec, mgc
 COPY --from=downloader /tools/ /tools/
