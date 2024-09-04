@@ -6,8 +6,7 @@ import json
 
 
 # Carregar os dados
-csv_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-processed_data.csv'
-
+csv_file = f'report/processed_data.csv'
 df = pd.read_csv(csv_file)
 
 # Gerar os dropdowns únicos
@@ -175,10 +174,7 @@ html_content = f'''
 '''
 
 # Salvar o HTML no arquivo
-
-html_file = f'report/{datetime.today().strftime("%Y-%m-%d.%H")}h-dashboard.html'
-
-
+html_file = 'report/dashboard.html'
 with open(html_file, 'w') as f:
     f.write(html_content)
 
