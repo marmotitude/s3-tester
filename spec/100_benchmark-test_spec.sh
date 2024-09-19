@@ -47,25 +47,25 @@ Describe 'Benchmark test:' category:"Bucket Management"
       #echo "$date,$profile,$client" >> ./report/benchmark.csv
       case "$client" in
         "aws-s3api" | "aws" | "aws-s3")
-          aws configure set s3.max_concurrent_requests $workers --profile $profile
+          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
             time=$(measure_time aws --profile $profile s3 sync ./temp-report-${size}k s3://$bucket_name-$client)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
-          aws configure set s3.max_concurrent_requests $workers --profile $profile
+          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
             time=$(measure_time aws --profile $profile s3 sync s3://$bucket_name-$client ./$bucket_name-$client)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
-          aws configure set s3.max_concurrent_requests $workers --profile $profile
+          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,update,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
             time=$(measure_time aws --profile $profile s3 sync ./temp-report-${size}k s3://$bucket_name-$client)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
-          aws configure set s3.max_concurrent_requests $workers --profile $profile
+          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
             time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client --recursive)
