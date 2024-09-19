@@ -8,11 +8,6 @@ on:
         type: string
         required: false
         default: "br-ne1,br-se1"
-      tests:
-        description: "List of test ids, see README for the table, leave empty for ALL"
-        type: string
-        required: false
-        default: "100"
       clients:
         description: "List of clients"
         type: string
