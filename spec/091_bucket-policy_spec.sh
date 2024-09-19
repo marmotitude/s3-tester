@@ -33,11 +33,7 @@ policy_factory(){
         resource_list+="\"$res\","
       fi
     done
-    if [ "$prefix" = true ]; then
-      version_num="2012-10-17"
-    else
-      version_num="2024-07-19"
-    fi
+    version_num="2012-10-17"
     resource_list=${resource_list%,}
     if [ "$principal" = "*" ]; then
       local principal_entry="\"Principal\": \"*\""
@@ -48,7 +44,7 @@ policy_factory(){
       if [ "$prefix" = true ]; then
         local principal_entry="\"Principal\": {\"CanonicalUser\": \"$principal\"}"
       else
-        local principal_entry="\"Principal\": [\"$principal\"]"
+        local principal_entry="\"Principal\": {\"MGC\": \"${principal%%:*}\"}"
       fi
     fi
     cat <<EOF
