@@ -34,7 +34,7 @@ file_path = './report/benchmark.csv'
 df = pd.read_csv(file_path, header=None)
 
 # Adicionar os cabeçalhos corretos
-headers = ["date", "region", "tool", "operation", "size", "quantity"]
+headers = ["date", "region", "tool", "operation", "size", "times", "workers", "quantity"]
 num_additional_cols = df.shape[1] - len(headers)
 additional_headers = [f"value_{i+1}" for i in range(num_additional_cols)]
 all_headers = headers + additional_headers
@@ -47,7 +47,7 @@ def process_data(df):
     result_list = []
 
     # Itera sobre cada grupo de (date, region, tool, size, quantity)
-    for (date, region, tool, size, quantity), group in df.groupby(['date', 'region', 'tool', 'size', 'quantity']):
+    for (date, region, tool, size, times, workers, quantity), group in df.groupby(['date', 'region', 'tool', 'size', 'times', 'workers', 'quantity']):
         
         # Inicializa dicionários para armazenar os valores de cada operação
         operations = {'upload': [], 'download': [], 'update': [], 'delete': []}
@@ -55,7 +55,7 @@ def process_data(df):
         # Itera sobre cada linha do grupo
         for _, row in group.iterrows():
             operation = row['operation'].lower()
-            values = row[6:].dropna().tolist()
+            values = row[8:].dropna().tolist()
 
             # Armazena os valores da operação correspondente
             if operation in operations:
@@ -69,8 +69,10 @@ def process_data(df):
                     'date': date,
                     'region': region,
                     'tool': tool,
-                    'size': size,
-                    'quantity': quantity,
+                    'size': int(size), 
+                    'times': int(times),
+                    'workers': int(workers),
+                    'quantity': int(quantity),
                     'operation': op,
                     'sum': sum(values),
                     'avg': pd.Series(values).mean(),

@@ -28,6 +28,16 @@ on:
         type: string
         required: false
         default: "10"
+      times:
+        description: "Times of run tests"
+        type: string
+        required: false
+        default: "10"
+      workers:
+        description: "Number of workers to parallelize CLIS"
+        type: string
+        required: false
+        default: "10"
       skip_known_issues:
         description: "Skip known issues"
         type: string

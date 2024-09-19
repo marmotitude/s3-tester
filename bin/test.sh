@@ -33,6 +33,8 @@ shasum `which mgc` `which aws` `which rclone`
 SIZES=${SIZES:-0}
 QUANTITY=${QUANTITY:-0}
 DATE=${DATE:-0}
+TIMES=${TIMES:-0}
+WORKERS=${WORKERS:-0}
 benchmark_envs='--env SIZES="$SIZES" --env QUANTITY="$QUANTITY" --env DATE="$DATE"'
 
 # run the tests
