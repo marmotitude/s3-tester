@@ -4,5 +4,5 @@
   region = {{ $profile.region }}
   s3 =
       addressing_style = {{ or $profile.addressing_style "path" }}
+      max_concurrent_requests = {{ or $profile.max_concurrent_requests "5" }}
 {{end}}
-

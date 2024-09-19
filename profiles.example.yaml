@@ -4,6 +4,7 @@ profile1:
   access_key: ""
   secret_key: ""
   addressing_style: "virtual"
+  max_concurrent_requests: "5"
 profile2:
   endpoint: ""
   region: ""
