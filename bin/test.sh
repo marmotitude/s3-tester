@@ -29,5 +29,13 @@ done
 # print the tools shasum
 shasum `which mgc` `which aws` `which rclone`
 
+# benchmark test uses other envs, this sets a default value
+SIZES=${SIZES:-0}
+QUANTITY=${QUANTITY:-0}
+DATE=${DATE:-0}
+TIMES=${TIMES:-0}
+WORKERS=${WORKERS:-0}
+benchmark_envs='--env SIZES="$SIZES" --env QUANTITY="$QUANTITY" --env DATE="$DATE" --env TIMES="$TIMES" --env WORKERS="$WORKERS"'
+
 # run the tests
-shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $args_after_double_dash
+shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $args_after_double_dash $benchmark_envs

@@ -18,16 +18,19 @@ regions = df['region'].unique().tolist()
 operations = df['operation'].unique().tolist()
 sizes = df['size'].unique().tolist()
 quantities = df['quantity'].unique().tolist()
+times = df['times'].unique().tolist()
+workers = df['workers'].unique().tolist()
 
 # Função para criar o gráfico com base nos filtros
-def create_plot(region, operation, size, quantity):
+def create_plot(region, operation, size, quantity, times, workers):
     filtered_df = df[(df['region'] == region) & (df['operation'] == operation) &
-                     (df['size'] == size) & (df['quantity'] == quantity)]
+                     (df['size'] == size) & (df['quantity'] == quantity) &
+                     (df['times'] == times) & (df['workers'] == workers)]
 
     fig = px.bar(filtered_df, x='tool', y=['avg', 'min', 'max'],
                  labels={'value': 'Tempo (ms)', 'tool': 'Ferramenta', 'variable': 'Métrica'},
 
-                 title=f"DEsempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} MB, Quantidade: {quantity})",
+                 title=f"Desempenho: {operation.capitalize()} - {region.upper()} (Tamanho: {size} KB, Quantidade: {quantity}, Vezes: {times}, Workers: {workers})",
 
                  template='plotly_dark')
     fig.update_layout(
@@ -46,8 +49,10 @@ initial_region = regions[0]
 initial_operation = operations[0]
 initial_size = sizes[0]
 initial_quantity = quantities[0]
+initial_times = times[0]
+initial_workers = workers[0]
 
-fig = create_plot(initial_region, initial_operation, initial_size, initial_quantity)
+fig = create_plot(initial_region, initial_operation, initial_size, initial_quantity, initial_times, initial_workers)
 
 # Gerar HTML autossuficiente com estilo Grafana e Bootstrap
 html_content = f'''
@@ -109,7 +114,7 @@ html_content = f'''
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="size">Tamanho do Arquivo (MB):</label>
+                <label for="size">Tamanho do Arquivo (KB):</label>
                 <select class="form-control" id="size" onchange="updatePlot()">
                     {''.join([f'<option value="{size}">{size}</option>' for size in sizes])}
                 </select>
@@ -120,6 +125,18 @@ html_content = f'''
                     {''.join([f'<option value="{quantity}">{quantity}</option>' for quantity in quantities])}
                 </select>
             </div>
+            <div class="col-md-3">
+                <label for="times">Vezes:</label>
+                <select class="form-control" id="times" onchange="updatePlot()">
+                    {''.join([f'<option value="{times}">{times}</option>' for times in times])}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="workers">Workers:</label>
+                <select class="form-control" id="workers" onchange="updatePlot()">
+                    {''.join([f'<option value="{workers}">{workers}</option>' for workers in workers])}
+                </select>
+            </div>
         </div>
 
         <div id="plotly-div"></div>
@@ -128,9 +145,10 @@ html_content = f'''
     <script type="text/javascript">
         var data = {json.dumps(df.to_dict(orient='records'))};
 
-        function createPlot(region, operation, size, quantity) {{
+        function createPlot(region, operation, size, quantity, times, workers) {{
             var filteredData = data.filter(d => d.region == region && d.operation == operation && 
-                                                d.size == size && d.quantity == quantity);
+                                                d.size == size && d.quantity == quantity && 
+                                                d.times == times && d.workers == workers);
             var traces = [];
 
             ['avg', 'min', 'max'].forEach(function(metric) {{
@@ -149,7 +167,7 @@ html_content = f'''
 
             var layout = {{
                 title: 'Desempenho: ' + operation.charAt(0).toUpperCase() + operation.slice(1) + 
-                        ' - ' + region.toUpperCase() + ' (Tamanho: ' + size + ' MB, Quantidade: ' + quantity + ')',
+                        ' - ' + region.toUpperCase() + ' (Tamanho: ' + size + ' KB, Quantidade: ' + quantity + ', Vezes: ' + times + ', Workers: ' + workers + ')',
                 xaxis: {{ title: 'Ferramenta', gridcolor: '#4f4f4f' }},
                 yaxis: {{ title: 'Tempo (ms)', gridcolor: '#4f4f4f' }},
                 plot_bgcolor: '#2a2a2a',
@@ -166,11 +184,13 @@ html_content = f'''
             var operation = document.getElementById('operation').value;
             var size = parseFloat(document.getElementById('size').value);
             var quantity = parseFloat(document.getElementById('quantity').value);
-            createPlot(region, operation, size, quantity);
+            var times = parseFloat(document.getElementById('times').value);
+            var workers = parseFloat(document.getElementById('workers').value);
+            createPlot(region, operation, size, quantity, times, workers);
         }}
 
         document.addEventListener('DOMContentLoaded', function() {{
-            createPlot('{initial_region}', '{initial_operation}', {initial_size}, {initial_quantity});
+            createPlot('{initial_region}', '{initial_operation}', '{initial_size}', '{initial_quantity}', '{initial_times}', '{initial_workers}');
         }});
     </script>
 </body>
