@@ -58,4 +58,4 @@ jobs:
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
           mgc --version
-          ./bin/benchmark-test.sh --profiles ${{ inputs.profiles }} --clients ${{ inputs.clients }} --sizes ${{ inputs.sizes }} --quantity ${{ inputs.quantity }} -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
+          ./bin/benchmark-test.sh --profiles ${{ inputs.profiles }} --clients ${{ inputs.clients }} --sizes ${{ inputs.sizes }} --quantity ${{ inputs.quantity }} --times ${{ inputs.times }} --workers ${{ inputs.workers }} -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ inputs.skip_known_issues }} --color
