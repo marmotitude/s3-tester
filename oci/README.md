@@ -42,7 +42,7 @@ The image will use a `PROFILES` env var to set the profiles inside the container
 
 ```sh
 # podman run if you use podman
-docker run -t   -e PROFILES="$(cat profiles.yaml)"   -v ./report:/app/report   ghcr.io/marmotitude/s3-tester:tests   benchmark-test.sh --profiles profile1 --tests 100 --clients aws --sizes 1,2,3 --quantity 1,2,3 --workers 64 --times 10
+docker run -t   -e PROFILES="$(cat profiles.yaml)"   -v ./report:/app/report   ghcr.io/marmotitude/s3-tester:tests   benchmark-test.sh --profiles profile1 --clients aws --sizes 1,2,3 --quantity 1,2,3 --workers 64 --times 10
 ```
 
 The html output saved to you local path /report
