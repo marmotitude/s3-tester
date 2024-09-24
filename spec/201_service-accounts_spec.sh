@@ -25,7 +25,7 @@ Describe "Service Accounts: " category:"Service Accounts"  id:"201"
     $PROFILES
     $CLIENTS
   End
-  Describe "Should NOT be able to" category:"Service Accounts"  id:"201"
+  Describe "Should NOT be able to" category:"Service Accounts"  id:"202"
     Example "list buckets."
       profile=$1
       sa_profile=$profile-sa
@@ -81,6 +81,11 @@ Describe "Service Accounts: " category:"Service Accounts"  id:"201"
         The stderr should include "AccessDenied"
         ;;
       esac
+    End
+  End
+  Describe "Should be able, with bucket policy, to" category:"Service Accounts" id:"203"
+    Example "list objects"
+      Skip "TBD 203"
     End
   End
 End

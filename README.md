@@ -165,6 +165,9 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 087 | Cold Storage | Change the storage class of an object (copy to same bucket with same key, but different storage class) | |
 | 088 | Cold Storage | Upload object with storage class and metadata | |
 | 089 | Cold Storage | Upload object with storage class and ACL | |
+| 201 | Service Accounts | All SA tests| |
+| 202 | Service Accounts | Account with Limited Privileges | |
+| 203 | Service Accounts | Bucket policies | |
 
 ## Acknowledgements
 
