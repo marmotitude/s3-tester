@@ -236,8 +236,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     profile=$1
     client=$2
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile" user" is_variable_null "$id"
-    # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
@@ -286,8 +285,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     client=$2
     #policy vars
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile" user" is_variable_null "$id"
-    # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
@@ -971,10 +969,8 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
 
     # Check if other profiles exist, we need 3 for this test to work
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-second" user" is_variable_null "$id"
     if $(is_variable_null "$user2id"); then return; fi # ! SKIP DOES NOT SKIP
     user3id=$(aws s3api --profile $profile-third list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-third" user" is_variable_null "$id"
     if $(is_variable_null "$user3id"); then return; fi # ! SKIP DOES NOT SKIP
 
     #policy vars
@@ -1027,7 +1023,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
 
     # Check if other profiles exist
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-second" user" is_variable_null "$id"
     if $(is_variable_null "$user2id"); then
       return # ! SKIP DOES NOT SKIP
     else
@@ -1170,7 +1165,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
 
     # Check if other profiles exist
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-second" user" is_variable_null "$id"
     if $(is_variable_null "$user2id"); then
       return # ! SKIP DOES NOT SKIP
     else
@@ -1314,10 +1308,8 @@ Describe 'Owner denies all access but can still change policy:' category:"Bucket
 
     # Check if other profiles exist, we need 3 for this test to work
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-second" user" is_variable_null "$id"
     if $(is_variable_null "$user2id"); then return; fi # ! SKIP DOES NOT SKIP
     user3id=$(aws s3api --profile $profile-third list-buckets | jq -r '.Owner.ID')
-    # Skip if "No such a "$profile-third" user" is_variable_null "$id"
     if $(is_variable_null "$user3id"); then return; fi # ! SKIP DOES NOT SKIP
 
     #policy vars
