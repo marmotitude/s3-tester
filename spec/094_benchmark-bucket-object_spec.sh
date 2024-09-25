@@ -161,7 +161,7 @@ Describe 'Verificar a inexistência do bucket vazio após deletar'
       ;;
     "mgc")
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     mgc object-storage buckets delete "$bucket_name-$client" --recursive --no-confirm > /dev/null
     start_time=$(date +%s)
     wait_command bucket-not-exists "$profile" "$bucket_name-$client"
@@ -253,7 +253,7 @@ Describe 'Verificar a inexistência do bucket publico deletado'
     "mgc")
     aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
     wait_command bucket-exists "$profile-second" "$bucket_name-$client"
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     mgc object-storage buckets delete "$bucket_name-$client" --recursive --no-confirm > /dev/null
     start_time=$(date +%s)
     wait_command bucket-not-exists "$profile-second" "$bucket_name-$client"
@@ -297,7 +297,7 @@ Describe 'Verificar a inexistência do objeto publico deletado'
     object_exists_time=$((end_time - start_time))
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     mgc object-storage objects delete "$bucket_name-$client/$file1_name" --no-confirm > /dev/null
     start_time=$(date +%s)
     wait_command object-not-exists "$profile-second" "$bucket_name-$client" "$file1_name"
@@ -353,7 +353,7 @@ Describe 'Tempo para upload 1gb'
       ;;
     "mgc")
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    mgc profile set $profile /dev/null
+    mgc workspace set $profile /dev/null
     start_time=$(date +%s)
     mgc object-storage objects upload $file1_name --dst $bucket_name-$client > /dev/null
     end_time=$(date +%s)
@@ -409,7 +409,7 @@ Describe 'Tempo para upload 2gb'
       ;;
     "mgc")
     aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    mgc profile set $profile /dev/null
+    mgc workspace set $profile /dev/null
     start_time=$(date +%s)
     mgc object-storage objects upload $file1_name --dst $bucket_name-$client > /dev/null
     end_time=$(date +%s)

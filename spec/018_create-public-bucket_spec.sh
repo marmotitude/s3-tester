@@ -24,7 +24,7 @@ Describe 'Create public bucket:' category:"Bucket Permission"
       The error should include "Bucket \"$bucket_name-$client\" created"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name-$client""
       #When run mgc object-storage buckets create $bucket_name-$client --public-read --raw
       The output should include "$bucket_name-$client"

@@ -21,7 +21,7 @@ Describe 'Set the versioning for a private bucket:' category:"Object Versioning"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     When run bash ./spec/retry_command.sh "mgc object-storage buckets versioning enable $bucket_name-$client --raw"
     # When run mgc object-storage buckets versioning enable $bucket_name-$client --raw
     The output should include "$bucket_name-$client"

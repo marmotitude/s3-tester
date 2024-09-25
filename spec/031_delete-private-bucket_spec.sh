@@ -24,7 +24,7 @@ Describe 'Delete private bucket:' category:"Bucket Permission"
     The output should include ""
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw"
       # When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The output should include ""

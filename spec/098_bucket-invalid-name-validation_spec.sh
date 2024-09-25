@@ -40,7 +40,7 @@ Describe 'Create invalid bucket' category:"Bucket Management"
         The error should include "make_bucket failed: s3://foo bar Parameter validation failed"
         ;;
       "mgc")
-        mgc profile set $profile > /dev/null
+        mgc workspace set $profile > /dev/null
         When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
         #When run mgc object-storage buckets create "$bucket_name" --raw
         The error should include "InvalidBucketName"
@@ -119,7 +119,7 @@ Describe 'Create bucket with invalid characters' category:"Bucket Management" id
       ;;
     "mgc")
       Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
       # When run mgc object-storage buckets create "$bucket_name" --raw
       The  stdout should include "InvalidBucketName"

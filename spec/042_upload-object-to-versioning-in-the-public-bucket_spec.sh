@@ -25,7 +25,7 @@ Describe 'Upload object to versioning in the public bucket:' category:"Object Ve
     The output should include ""
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw"
     # When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw
     The status should be success

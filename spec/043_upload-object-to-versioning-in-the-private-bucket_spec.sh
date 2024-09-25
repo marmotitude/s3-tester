@@ -25,7 +25,7 @@ Describe 'Upload object to versioning in the private bucket:' category:"Object V
     The output should include ""
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     #Skip "Skipped test to $client"
     When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw"
     # When run mgc object-storage objects upload --src $file1_name --dst $bucket_name-$client --raw

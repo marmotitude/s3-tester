@@ -66,7 +66,7 @@ Describe 'Upload Files' category:"Object Management"
       The error should include "to: $key"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw"
       #When run mgc object-storage objects upload --src="$local_file" --dst="$BUCKET_NAME/$key" --raw
       The status should be success
@@ -104,7 +104,7 @@ Describe 'Upload Files' category:"Object Management"
         The status should be success
         ;;
       "mgc")
-        mgc profile set $profile > /dev/null
+        mgc workspace set $profile > /dev/null
         When run bash ./spec/retry_command.sh "mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key""
         # When run mgc object-storage objects download --dst="$out_file" --src="$BUCKET_NAME/$object_key" --raw
         The status should be success
@@ -150,7 +150,7 @@ Describe 'List Objects' category:"Object Management" id:"061"
       done
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst="$BUCKET_NAME" --raw"
       # When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
       The status should be success
@@ -194,7 +194,7 @@ Describe 'Delete' category:"Object Management"
       The error should include "$object_key: Deleted"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw"
       # When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
       The status should be success
@@ -255,7 +255,7 @@ Describe 'Delete' category:"Object Management"
         done
         ;;
       "mgc")
-        mgc profile set $profile > /dev/null
+        mgc workspace set $profile > /dev/null
         mgc_objects="[{}"
         for object_key in $objects; do
           mgc_objects+=',{"include": "'

@@ -29,7 +29,7 @@ Describe 'Read-only Create bucket:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run mgc object-storage buckets create $bucket_name-$client --raw
       The stderr should include "Blocked account"
       ;;
@@ -65,7 +65,7 @@ Describe 'Read-only List buckets:' category:"Bucket Permission"
       The stdout should include ""
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run mgc object-storage buckets list --raw
       The stdout should include BUCKETS
       ;;
@@ -99,7 +99,7 @@ Describe 'Read-only List objects:' category:"Bucket Permission"
       When run rclone lsd $profile:test-test -v #$bucket_name-$client -v
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run mgc object-storage objects list test-test --raw #$bucket_name-$client
       The stdout should include FILES
       ;;
@@ -139,7 +139,7 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
       The status should be success
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
       The stderr should include "Blocked account"
     The status should be failure
@@ -175,7 +175,7 @@ Describe 'Read-only Delete bucket:' category:"Bucket Permission"
       The stderr should include "Blocked account"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
       The stderr should include "Blocked account"
       ;;

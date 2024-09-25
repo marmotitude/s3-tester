@@ -32,7 +32,7 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"Bucket Sh
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m")
     When run curl $presign_url
     The output should include Copyright

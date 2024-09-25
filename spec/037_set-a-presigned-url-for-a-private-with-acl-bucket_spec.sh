@@ -30,7 +30,7 @@ Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket S
       Skip "Skipped test to $client"
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     When run bash ./spec/retry_command.sh "mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw"
     # When run mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --raw
     The status should be success
