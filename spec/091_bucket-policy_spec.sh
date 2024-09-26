@@ -51,7 +51,7 @@ policy_factory(){
         local principal_entry="\"Principal\": {\"MGC\": \"${principal%%:*}\"}"
       fi
     fi
-    if [ ! "$action" = '"s3:*"' ]; then
+    if [ ! "$action" = '"s3:*"' ]; then #action can't be ["s3:*"], has to be "s3:*" outside the list
       action="[$action]"
     fi
     cat <<EOF
@@ -236,7 +236,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     profile=$1
     client=$2
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
-    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
+    # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
@@ -247,17 +247,17 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile s3api list-objects-v2 --bucket $bucket_name-$client
+      When run aws --profile $profile-second s3api list-objects-v2 --bucket $bucket_name-$client
       The stdout should include $file1_name
       The status should be success
       ;;
     "rclone")
-      When run rclone ls $profile:$bucket_name-$client
+      When run rclone ls $profile-second:$bucket_name-$client
       The stdout should include $file1_name
       The status should be success
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
+      mgc workspace set $profile-second > /dev/null
       When run mgc os objects list $bucket_name-$client
       The stdout should include $file1_name
       The status should be success
@@ -285,7 +285,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     client=$2
     #policy vars
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
-    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
+    # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
     resource=("$bucket_name-$client" "$bucket_name-$client/*")
@@ -295,12 +295,12 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name $file1_name-3
+      When run aws --profile $profile-second s3 cp s3://$bucket_name-$client/$file1_name $file1_name-3
       The stdout should include $file1_name
       The status should be success
       ;;
     "rclone")
-      When run rclone copy $profile:$bucket_name-$client/$file1_name $file1_name-3
+      When run rclone copy $profile-second:$bucket_name-$client/$file1_name $file1_name-3
       The stdout should include ""
       The status should be success
       ;;
@@ -330,7 +330,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     client=$2
     #policy vars
     action='"s3:GetObject"'
-    id_principal=$(aws --profile $profile s3api list-buckets | jq -r '.Owner.ID')
+    id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile" user" is_variable_null "$id_principal"
     if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP  
     principal="$id_principal"
@@ -376,7 +376,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     client=$2
     #policy vars
     action='"s3:GetObject"'
-    id_principal=$(aws --profile $profile s3api list-buckets | jq -r '.Owner.ID')
+    id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile" user" is_variable_null "$id_principal"
     if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     principal="$id_principal"
@@ -387,7 +387,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
-      When run aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name $file1_name-2
+      When run aws --profile $profile-second s3 cp s3://$bucket_name-$client/$file1_name $file1_name-2
       The stdout should include $file1_name
       The status should be success
       ;;
@@ -471,17 +471,17 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
     aws --profile $profile s3api put-bucket-policy --bucket $bucket_name-$client --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name
+      When run aws --profile $profile-second s3 rm s3://$bucket_name-$client/$file1_name
       The stderr should include "AccessDenied"
       The status should be failure
       ;;
     "rclone")
-      When run rclone delete $profile:$bucket_name-$client/$file1_name
+      When run rclone delete $profile-second:$bucket_name-$client/$file1_name
       The stderr should include "AccessDenied"
       The status should be failure
       ;;
     "mgc")
-      mgc workspace set $profile
+      mgc workspace set $profile-second
       When run mgc os objects delete $bucket_name-$client/$file1_name --no-confirm
       The stderr should include "Error: (AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
       The status should be failure
