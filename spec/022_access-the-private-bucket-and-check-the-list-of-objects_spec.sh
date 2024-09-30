@@ -25,7 +25,7 @@ Describe 'Access the private bucket and check the list of objects:' category:"Bu
     The stderr should include "403"
     ;;
     "mgc")
-      mgc profile set $profile-second > /dev/null
+      mgc workspace set $profile-second > /dev/null
       #When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst $bucket_name-$client --raw"
       When run mgc object-storage objects list --dst $bucket_name-$client --raw
       #The output should include "403"

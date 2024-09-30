@@ -31,7 +31,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
       The error should include "Bucket \"$bucket_name\" created"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw" 
       #When run mgc object-storage buckets create "$bucket_name" --raw
       The status should be success
@@ -68,7 +68,7 @@ Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
       The error should include "S3 bucket $bucket_name: Bucket \"$bucket_name\" deleted"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage buckets delete "$bucket_name" --no-confirm --raw"
       #When run mgc object-storage buckets delete "$bucket_name" --no-confirm --raw
       The status should be success

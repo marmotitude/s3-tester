@@ -37,7 +37,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     # The stderr should include "There was nothing to transfer"
       ;;
     "mgc")
-      mgc profile set $profile-second > /dev/null
+      mgc workspace set $profile-second > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw"
       # When run mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-2 --raw
       The status should be failure

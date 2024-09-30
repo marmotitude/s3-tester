@@ -93,7 +93,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
       The error should include "$key: Deleted"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm --raw"
       # When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm --raw
       The status should be success
@@ -121,7 +121,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
       The line 1 of output should include "$key-v"
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage objects versions --dst="$bucket_name" --cli.output json --raw"
       # When run mgc object-storage objects versions --dst="$bucket_name" --cli.output json --raw
       The status should be success

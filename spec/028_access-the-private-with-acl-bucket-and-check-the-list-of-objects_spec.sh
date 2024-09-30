@@ -34,7 +34,7 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     The output should include "$file1_name"
       ;;
     "mgc")
-      mgc profile set $profile-second > /dev/null
+      mgc workspace set $profile-second > /dev/null
       When run bash ./spec/retry_command.sh "mgc object-storage objects list $bucket_name-$client --raw"
       #When run mgc object-storage objects list $bucket_name-$client --raw
       The status should be success

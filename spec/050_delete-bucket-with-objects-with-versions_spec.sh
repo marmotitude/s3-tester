@@ -32,7 +32,7 @@ Describe 'Delete bucket with objects with versions:' category:"Object Versioning
     rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
       ;;
     "mgc")
-    mgc profile set $profile > /dev/null
+    mgc workspace set $profile > /dev/null
     When run bash ./spec/retry_command.sh "mgc object-storage buckets delete $bucket_name-$client --no-confirm --recursive --raw"
     # When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --recursive --raw
     The status should be failure
