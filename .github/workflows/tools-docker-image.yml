@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - oci/tools.*
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
