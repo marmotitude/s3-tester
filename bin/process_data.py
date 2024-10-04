@@ -75,7 +75,8 @@ def process_data(df):
                     'quantity': int(quantity),
                     'operation': op,
                     'sum': sum(values),
-                    'avg': pd.Series(values).mean(),
+                    #'avg': pd.Series(values).mean(),
+                    'avg': pd.Series(values).median(),
                     'min': pd.Series(values).min(),
                     'max': pd.Series(values).max()
                 }
