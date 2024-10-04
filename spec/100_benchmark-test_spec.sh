@@ -96,7 +96,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           ;;
         "mgc")
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
-          mgc profile set "$profile" > /dev/null
+          mgc workspace set "$profile" > /dev/null
           for i in $(seq 1 $times); do
             time=$(measure_time mgc object-storage objects sync ./temp-report-${size}k $bucket_name-$client --workers $workers)
             printf "%s," "$time" >> ./report/benchmark.csv
