@@ -34,63 +34,47 @@ Describe 'Benchmark test:' category:"Bucket Management"
     aws --profile "$profile" s3 mb s3://"$bucket_name-$client" > /dev/null
     for size in $(echo $sizes | tr "," "\n")
     do
-    if [ ! -d "temp-report-${size}k" ]; then
-        mkdir "temp-report-${size}k" > /dev/null
-        echo "Diretório 'temp-report-${size}k' criado." > /dev/null
-    else
-        echo "Diretório 'temp-report-${size}k' já existe." > /dev/null
-    fi
       for i in $(seq 1 $quantity); do
-        fallocate -l "${size}k" "./temp-report-${size}k/arquivo_${size}k_$i.txt"
+          if [ ! -d "temp-report-${size}k-${quantity}" ]; then
+            mkdir "temp-report-${size}k-${quantity}" > /dev/null
+            echo "Diretório 'temp-report-${size}k-${quantity}' criado." > /dev/null
+          else
+              echo "Diretório 'temp-report-${size}k-${quantity}' já existe." > /dev/null
+          fi
+        fallocate -l "${size}k" "./temp-report-${size}k-${quantity}/arquivo_${size}k_$i.txt"
       done
-      #echo "" >> ./report/benchmark.csv
-      #echo "$date,$profile,$client" >> ./report/benchmark.csv
       case "$client" in
         "aws-s3api" | "aws" | "aws-s3")
-          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 sync ./temp-report-${size}k s3://$bucket_name-$client)
+            time=$(measure_time aws --profile $profile s3 cp ./temp-report-${size}k-${quantity} s3://$bucket_name-$client/${size}k-${quantity}/$i/ --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
-          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 sync s3://$bucket_name-$client ./$bucket_name-$client)
+            time=$(measure_time aws --profile $profile s3 cp s3://$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
-          #aws configure set s3.max_concurrent_requests $workers --profile $profile
-          printf "\n%s,%s,%s,update,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
-          for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 sync ./temp-report-${size}k s3://$bucket_name-$client)
-            printf "%s," "$time" >> ./report/benchmark.csv
-          done
-          #aws configure set s3.max_concurrent_requests $workers --profile $profile
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client --recursive)
+            time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client/${size}k-${quantity}/$i/ --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
         "rclone")
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone sync ./temp-report-${size}k $profile:$bucket_name-$client --transfers=$workers)
+            time=$(measure_time rclone copy ./temp-report-${size}k-${quantity} $profile:$bucket_name-$client/${size}k-${quantity}/$i/ --transfers=$workers)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone sync $profile:$bucket_name-$client ./$bucket_name-$client --transfers=$workers)
-            printf "%s," "$time" >> ./report/benchmark.csv
-          done
-          printf "\n%s,%s,%s,update,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
-          for i in $(seq 1 $times); do
-            time=$(measure_time rclone sync ./temp-report-${size}k $profile:$bucket_name-$client --transfers=$workers)
+            time=$(measure_time rclone copy $profile:$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --transfers=$workers)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone delete $profile:$bucket_name-$client)
+            time=$(measure_time rclone delete $profile:$bucket_name-$client/${size}k-${quantity}/$i/)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
@@ -98,26 +82,23 @@ Describe 'Benchmark test:' category:"Bucket Management"
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           mgc workspace set "$profile" > /dev/null
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects sync ./temp-report-${size}k $bucket_name-$client --workers $workers)
+            time=$(measure_time mgc object-storage objects upload-dir ./temp-report-${size}k-${quantity} $bucket_name-$client/${size}k-${quantity}/$i/ --workers $workers)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects download-all $bucket_name-$client ./$bucket_name-$client)
-            printf "%s," "$time" >> ./report/benchmark.csv
-          done
-          printf "\n%s,%s,%s,update,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
-          for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects sync ./temp-report-${size}k $bucket_name-$client --workers $workers)
+            time=$(measure_time mgc object-storage objects download-all $bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects delete-all $bucket_name-$client/arquivo_${size}M_$i.txt --no-confirm)
+            time=$(measure_time mgc object-storage objects delete-all $bucket_name-$client/${size}k-${quantity}/$i/ --no-confirm)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
       esac
+      rm -rf temp-report*
+      rm -rf test-*
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
     python3 ./bin/process_data.py
