@@ -89,6 +89,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           for i in $(seq 1 $times); do
             time=$(measure_time mgc object-storage objects download-all $bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i)
             printf "%s," "$time" >> ./report/benchmark.csv
+            rm -rf temp-report*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
@@ -97,7 +98,6 @@ Describe 'Benchmark test:' category:"Bucket Management"
           done
           ;;
       esac
-      rm -rf temp-report*
       rm -rf test-*
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
