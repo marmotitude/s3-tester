@@ -54,6 +54,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           for i in $(seq 1 $times); do
             time=$(measure_time aws --profile $profile s3 cp s3://$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
+            rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
@@ -71,6 +72,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           for i in $(seq 1 $times); do
             time=$(measure_time rclone copy $profile:$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --transfers=$workers)
             printf "%s," "$time" >> ./report/benchmark.csv
+            rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
@@ -89,7 +91,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           for i in $(seq 1 $times); do
             time=$(measure_time mgc object-storage objects download-all $bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i)
             printf "%s," "$time" >> ./report/benchmark.csv
-            rm -rf temp-report*
+            rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
@@ -98,7 +100,7 @@ Describe 'Benchmark test:' category:"Bucket Management"
           done
           ;;
       esac
-      rm -rf test-*
+      rm -rf temp-report*
     done
     rclone purge $profile:$bucket_name-$client > /dev/null
     python3 ./bin/process_data.py
