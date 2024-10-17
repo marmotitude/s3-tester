@@ -129,11 +129,12 @@ def filter_equals(github_repository, github_token):
     # filter all lines of equals if starts with "not ok" and save in list
     not_ok_line_see_more = [line for line in lines if line.startswith("#")]
     not_ok_string_see_more = "".join(not_ok_line_see_more)
-    not_ok_line_equals = [line.strip()[7:] for line in equals if line.startswith("not ok")]
+    not_ok_line_equals = [line.strip()[7:] for line in equals if line.startswith("not ok") and "# TODO" not in line]
+
     not_ok_string_equals = "\n".join(not_ok_line_equals)
 
     # filter all lines of not_equals if starts with "not ok" and save in list
-    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")]
+    not_ok_line_not_equals = [line.strip()[7:] for line in not_equals if line.startswith("not ok")and "# TODO" not in line]
     not_ok_string_not_equals = "\n".join(not_ok_line_not_equals)
 
     not_ok_string_not_equals, not_ok_string_see_more = remove_flaky(not_ok_string_not_equals, not_ok_string_see_more)
