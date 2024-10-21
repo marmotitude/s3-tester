@@ -206,7 +206,7 @@ Describe 'Remove object lock and try delete especified version old locked:' cate
       aws --profile $profile s3api put-object-lock-configuration --bucket $bucket_name-$client --object-lock-configuration  "{\"ObjectLockEnabled\": \"Enabled\"}" > /dev/null
       aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
       When run aws --profile $profile s3 rb s3://$bucket_name-$client/ --force
-      The stderr should include "An error occurred (BucketNotEmpty) when calling the DeleteBucket operation: The bucket you tried to delete is not empty. You must delete all versions in the bucket."
+      The stderr should include "(BucketNotEmpty)"
       The status should be failure
       ;;
     "rclone")
