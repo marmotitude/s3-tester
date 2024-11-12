@@ -11,11 +11,13 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
   Example "on profile $1 using client $2" id:"034"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     endpoint_url=$(aws configure get $profile.endpoint_url)
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read  > /dev/null
+    aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read  > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run curl ${endpoint_url}${bucket_name-$client}
+    When run curl ${endpoint_url}${test_bucket_name}
     The output should include ListBucketResult
     The error should include Current
       ;;
@@ -27,6 +29,6 @@ Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
       ;;
     esac
     The status should be success
-    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
+    rclone purge --log-file /dev/null "$profile:$test_bucket_name" > /dev/null
   End
 End

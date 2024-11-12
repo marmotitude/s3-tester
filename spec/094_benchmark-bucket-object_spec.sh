@@ -30,17 +30,19 @@ Describe 'Verificar a existência do bucket'
   Example "bucket exists on profile $1 using client $2" id:"094"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
     start_time=$(date +%s)
-    wait_command bucket-exists "$profile" "$bucket_name-$client"
+    wait_command bucket-exists "$profile" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar a existência do bucket no perfil $profile com $client: $bucket_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -57,18 +59,20 @@ Describe 'Verificar a existência do objeto'
   Example "bucket exists on profile $1 using client $2" id:"094"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
     start_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar a existência do objeto no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -85,17 +89,19 @@ Describe 'Verificar a existência do bucket publico'
   Example "bucket exists on profile $1-second using client $2" id:"094"
     profile=$1
     client=$2
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
     start_time=$(date +%s)
-    wait_command bucket-exists "$profile-second" "$bucket_name-$client"
+    wait_command bucket-exists "$profile-second" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar existência do bucket publico no perfil $profile-second com $client: $bucket_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -112,18 +118,20 @@ Describe 'Verificar a existência do objeto publico'
   Example "bucket exists on profile $1-second using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client --acl public-read > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name --acl public-read > /dev/null
     start_time=$(date +%s)
-    wait_command object-exists "$profile-second" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile-second" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar a existência do objeto publico no perfil $profile-second com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -142,29 +150,31 @@ Describe 'Verificar a inexistência do bucket vazio após deletar'
   Example "bucket exists on profile $1 using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 rb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 rb s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
     "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     mgc workspace set $profile > /dev/null
-    mgc object-storage buckets delete "$bucket_name-$client" --recursive --no-confirm > /dev/null
+    mgc object-storage buckets delete "$test_bucket_name" --recursive --no-confirm > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
@@ -186,34 +196,36 @@ Describe 'Verificar a inexistência do objeto deletado'
   Example "bucket exists on profile $1 using client $2" id:"094"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     "rclone")
-    rclone delete $profile:$bucket_name-$client/$file1_name > /dev/null
+    rclone delete $profile:$test_bucket_name/$file1_name > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     "mgc")
-    mgc object-storage objects delete $bucket_name-$client/$file1_name --no-confirm > /dev/null
+    mgc object-storage objects delete $test_bucket_name/$file1_name --no-confirm > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar a inexistência do objeto deletado no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -230,33 +242,35 @@ Describe 'Verificar a inexistência do bucket publico deletado'
   Example "bucket exists on profile $1-second using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
-    wait_command bucket-exists "$profile-second" "$bucket_name-$client"
-    aws --profile $profile s3 rb s3://$bucket_name-$client  > /dev/null
+    aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
+    wait_command bucket-exists "$profile-second" "$test_bucket_name"
+    aws --profile $profile s3 rb s3://$test_bucket_name  > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile-second" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile-second" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
     echo "Tempo para verificar a inexistência do bucket publico deletado no perfil $profile-second: $bucket_exists_time" >> ./report/results-benchmark.tap
       ;;
     "rclone")
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
-    wait_command bucket-exists "$profile-second" "$bucket_name-$client"
-    rclone rmdir $profile:$bucket_name-$client  > /dev/null
+    aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
+    wait_command bucket-exists "$profile-second" "$test_bucket_name"
+    rclone rmdir $profile:$test_bucket_name  > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile-second" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile-second" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
     "mgc")
-    aws --profile $profile s3api create-bucket --bucket $bucket_name-$client --acl public-read > /dev/null
-    wait_command bucket-exists "$profile-second" "$bucket_name-$client"
+    aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
+    wait_command bucket-exists "$profile-second" "$test_bucket_name"
     mgc workspace set $profile > /dev/null
-    mgc object-storage buckets delete "$bucket_name-$client" --recursive --no-confirm > /dev/null
+    mgc object-storage buckets delete "$test_bucket_name" --recursive --no-confirm > /dev/null
     start_time=$(date +%s)
-    wait_command bucket-not-exists "$profile-second" "$bucket_name-$client"
+    wait_command bucket-not-exists "$profile-second" "$test_bucket_name"
     end_time=$(date +%s)
     bucket_exists_time=$((end_time - start_time))
       ;;
@@ -278,35 +292,37 @@ Describe 'Verificar a inexistência do objeto publico deletado'
   Example "bucket exists on profile $1-second using client $2" id:"094"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client --acl public-read > /dev/null
-    wait_command object-exists "$profile-second" "$bucket_name-$client" "$file1_name"
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name --acl public-read > /dev/null
+    wait_command object-exists "$profile-second" "$test_bucket_name" "$file1_name"
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile-second" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile-second" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     "rclone")
-    rclone delete $profile:$bucket_name-$client/$file1_name > /dev/null
+    rclone delete $profile:$test_bucket_name/$file1_name > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile-second" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile-second" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     "mgc")
     mgc workspace set $profile > /dev/null
-    mgc object-storage objects delete "$bucket_name-$client/$file1_name" --no-confirm > /dev/null
+    mgc object-storage objects delete "$test_bucket_name/$file1_name" --no-confirm > /dev/null
     start_time=$(date +%s)
-    wait_command object-not-exists "$profile-second" "$bucket_name-$client" "$file1_name"
+    wait_command object-not-exists "$profile-second" "$test_bucket_name" "$file1_name"
     end_time=$(date +%s)
     object_exists_time=$((end_time - start_time))
       ;;
     esac
     echo "Tempo para verificar a inexistência do objeto publico deletado no perfil $profile-second com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
   End
 End
 
@@ -325,44 +341,46 @@ Describe 'Tempo para upload 1gb'
   Example "Tempo para upload $1 using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     fallocate -l 1gb 1gb    
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload $file1_name no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    rclone copy $file1_name $profile:$bucket_name-$client > /dev/null
+    rclone copy $file1_name $profile:$test_bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload $file1_name no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     mgc workspace set $profile /dev/null
     start_time=$(date +%s)
-    mgc object-storage objects upload $file1_name --dst $bucket_name-$client > /dev/null
+    mgc object-storage objects upload $file1_name --dst $test_bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload 1gb no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     esac
   End
@@ -381,44 +399,46 @@ Describe 'Tempo para upload 2gb'
   Example "Tempo para upload $1 using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     fallocate -l 2gb 2gb
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client  > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name  > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload $file1_name no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    rclone copy $file1_name $profile:$bucket_name-$client > /dev/null
+    rclone copy $file1_name $profile:$test_bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload $file1_name no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     mgc workspace set $profile /dev/null
     start_time=$(date +%s)
-    mgc object-storage objects upload $file1_name --dst $bucket_name-$client > /dev/null
+    mgc object-storage objects upload $file1_name --dst $test_bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para upload $file1_name no perfil $profile com $client: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     esac
   End
@@ -437,46 +457,48 @@ Describe 'Tempo para download 1gb'
   Example "Tempo para download $1 using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name . > /dev/null
+    aws --profile $profile s3 cp s3://$test_bucket_name/$file1_name . > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    rclone copy $profile:$bucket_name-$client/$file1_name ./$file1_name-$bucket_name > /dev/null
+    rclone copy $profile:$test_bucket_name/$file1_name ./$file1_name-$bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-$bucket_name > /dev/null
-    rclone copy $profile:$bucket_name-$client/$file1_name ./$file1_name-$bucket_name > /dev/null
+    mgc object-storage objects download --src $test_bucket_name/$file1_name --dst $file1_name-$bucket_name > /dev/null
+    rclone copy $profile:$test_bucket_name/$file1_name ./$file1_name-$bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     esac
   End
@@ -495,46 +517,48 @@ Describe 'Tempo para download 2gb'
   Example "Tempo para download $1 using client $2" id:"094"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    aws --profile $profile s3 cp s3://$bucket_name-$client/$file1_name . > /dev/null
+    aws --profile $profile s3 cp s3://$test_bucket_name/$file1_name . > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     "rclone")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    rclone copy $profile:$bucket_name-$client/$file1_name ./$file1_name-$bucket_name > /dev/null
+    rclone copy $profile:$test_bucket_name/$file1_name ./$file1_name-$bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null,
+    rclone purge $profile:$test_bucket_name > /dev/null,
       ;;
     "mgc")
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     start_time=$(date +%s)
-    mgc object-storage objects download --src $bucket_name-$client/$file1_name --dst $file1_name-$bucket_name > /dev/null
-    rclone copy $profile:$bucket_name-$client/$file1_name ./$file1_name-$bucket_name > /dev/null
+    mgc object-storage objects download --src $test_bucket_name/$file1_name --dst $file1_name-$bucket_name > /dev/null
+    rclone copy $profile:$test_bucket_name/$file1_name ./$file1_name-$bucket_name > /dev/null
     end_time=$(date +%s)
-    wait_command object-exists "$profile" "$bucket_name-$client" "$file1_name"
-    aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name > /dev/null
-    wait_command object-not-exists "$profile" "$bucket_name-$client" "$file1_name"
+    wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
+    aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name > /dev/null
+    wait_command object-not-exists "$profile" "$test_bucket_name" "$file1_name"
     object_exists_time=$((end_time - start_time))
     echo "Tempo para download $file1_name no perfil $profile: $object_exists_time" >> ./report/results-benchmark.tap
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
       ;;
     esac
   End

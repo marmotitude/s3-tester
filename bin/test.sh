@@ -39,3 +39,6 @@ benchmark_envs='--env SIZES="$SIZES" --env QUANTITY="$QUANTITY" --env DATE="$DAT
 
 # run the tests
 shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $args_after_double_dash $benchmark_envs
+
+# clean of buckets list
+source "$SCRIPT_PATH/clear_buckets.sh" $profiles

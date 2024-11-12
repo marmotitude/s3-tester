@@ -13,16 +13,18 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"093"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 sync ./report/ s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force" 5000
-      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$test_bucket_name --force" 5000
+      # When run aws --profile $profile s3 rb s3://$test_bucket_name --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -32,7 +34,7 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
       ;;
     "rclone")
       start_time=$(date +%s) > /dev/null
-      When run rclone purge $profile:$bucket_name-$client
+      When run rclone purge $profile:$test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -42,7 +44,7 @@ Describe 'Delete large bucket with 100 objects:' category:"Bucket Management"
     "mgc")
       mgc profile set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
-      When run mgc object-storage buckets delete --recursive --bucket $bucket_name-$client
+      When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -66,16 +68,18 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"093"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 sync ./report/ s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force" 5000
-      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$test_bucket_name --force" 5000
+      # When run aws --profile $profile s3 rb s3://$test_bucket_name --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -85,7 +89,7 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
       ;;
     "rclone")
       start_time=$(date +%s) > /dev/null
-      When run rclone purge $profile:$bucket_name-$client
+      When run rclone purge $profile:$test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -95,7 +99,7 @@ Describe 'Delete large bucket with 1000 objects:' category:"Bucket Management"
     "mgc")
       mgc profile set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
-      When run mgc object-storage buckets delete --recursive --bucket $bucket_name-$client
+      When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -119,16 +123,18 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"093"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 sync ./report/ s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force" 5000
-      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$test_bucket_name --force" 5000
+      # When run aws --profile $profile s3 rb s3://$test_bucket_name --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -138,7 +144,7 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
       ;;
     "rclone")
       start_time=$(date +%s) > /dev/null
-      When run rclone purge $profile:$bucket_name-$client
+      When run rclone purge $profile:$test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -148,7 +154,7 @@ Describe 'Delete large bucket with 10000 objects:' category:"Bucket Management"
     "mgc")
       mgc profile set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
-      When run mgc object-storage buckets delete --recursive --bucket $bucket_name-$client
+      When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -172,16 +178,18 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"093"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
     done
-    aws --profile $profile s3 sync ./report/ s3://$bucket_name-$client > /dev/null
+    aws --profile $profile s3 sync ./report/ s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       start_time=$(date +%s) > /dev/null
-      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$bucket_name-$client --force" 5000
-      # When run aws --profile $profile s3 rb s3://$bucket_name-$client --force
+      When run bash ./spec/retry_command.sh "aws --profile $profile s3 rb s3://$test_bucket_name --force" 5000
+      # When run aws --profile $profile s3 rb s3://$test_bucket_name --force
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.tap
@@ -191,7 +199,7 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
       ;;
     "rclone")
       start_time=$(date +%s) > /dev/null
-      When run rclone purge $profile:$bucket_name-$client
+      When run rclone purge $profile:$test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt
@@ -201,7 +209,7 @@ Describe 'Delete large bucket with 50000 objects:' category:"Bucket Management"
     "mgc")
       mgc profile set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
-      When run mgc object-storage buckets delete --recursive --bucket $bucket_name-$client
+      When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
       remove_bucket_time=$((end_time - start_time)) > /dev/null
       echo "Time to remove bucket with $files_count files on profile $profile: $remove_bucket_time seconds" >> ./report/benchmark-delete.txt

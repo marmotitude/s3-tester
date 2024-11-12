@@ -11,6 +11,8 @@ Describe 'Copy URL for public buckets:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"033"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws" | "aws-s3")
     Skip "Skipped test to $client"
@@ -23,9 +25,9 @@ Describe 'Copy URL for public buckets:' category:"Bucket Permission"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets public-url --dst $bucket_name-$client --raw"
-      # When run mgc object-storage buckets public-url --dst $bucket_name-$client --raw
-      The output should include "$bucket_name-$client"
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets public-url --dst $test_bucket_name --raw"
+      # When run mgc object-storage buckets public-url --dst $test_bucket_name --raw
+      The output should include "$test_bucket_name"
       ;;
     esac
     The status should be success
