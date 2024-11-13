@@ -11,11 +11,13 @@ Describe 'get-presign:' category:"Bucket Sharing"
   Example "on profile $1 using client $2" id:"036"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    presign_url=$(aws --profile $profile s3 presign s3://$bucket_name-$client/$file1_name)
+    presign_url=$(aws --profile $profile s3 presign s3://$test_bucket_name/$file1_name)
     When run curl $presign_url
     The output should include Copyright
     The error should include Current
@@ -25,14 +27,14 @@ Describe 'get-presign:' category:"Bucket Sharing"
       ;;
     "mgc")
     mgc workspace set $profile > /dev/null
-    presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m")
+    presign_url=$(mgc object-storage objects presign --dst $test_bucket_name/$file1_name --expires-in "5m")
     When run curl $presign_url
     The output should include Copyright
     The error should include Current
       ;;
     esac
     The status should be success
-    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
+    rclone purge --log-file /dev/null "$profile:$test_bucket_name" > /dev/null
   End
 End
 
@@ -49,8 +51,10 @@ Describe 'put-presign:' category:"Bucket Sharing"
   Example "on profile $1 using client $2" id:"036"
     profile=$1
     client=$2
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$bucket_name-$client > /dev/null
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       Skip "Skipped test to $client"
@@ -60,12 +64,12 @@ Describe 'put-presign:' category:"Bucket Sharing"
       ;;
     "mgc")
     mgc workspace set $profile > /dev/null
-    presign_url=$(mgc object-storage objects presign --dst $bucket_name-$client/$file1_name --expires-in "5m" --method PUT)
+    presign_url=$(mgc object-storage objects presign --dst $test_bucket_name/$file1_name --expires-in "5m" --method PUT)
     When run curl -X PUT -T $file1_name $presign_url
     The error should include Current
       ;;
     esac
     The status should be success
-    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
+    rclone purge --log-file /dev/null "$profile:$test_bucket_name" > /dev/null
   End
 End

@@ -17,36 +17,38 @@ Describe 'Unique bucket:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"090"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
-    aws --profile $profile s3 mb s3://$bucket_name-$client > /dev/null
-    wait_command bucket-exists $profile "$bucket_name-$client"
+    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
+    wait_command bucket-exists $profile "$test_bucket_name"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api create-bucket --bucket $bucket_name-$client
+      When run aws --profile $profile s3api create-bucket --bucket $test_bucket_name
       The error should include "BucketAlreadyExists"
       The status should be failure
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 mb s3://$bucket_name-$client
+      When run aws --profile $profile s3 mb s3://$test_bucket_name
       The error should include "BucketAlreadyExists"
       The status should be failure
       ;;
     "rclone")
-      When run rclone mkdir $profile:$bucket_name-$client -vv --dump-headers
+      When run rclone mkdir $profile:$test_bucket_name -vv --dump-headers
       The error should include "409 Conflict"
       The status should be success
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets create $bucket_name-$client --raw"
-      # When run mgc object-storage buckets create $bucket_name-$client --raw
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets create $test_bucket_name --raw"
+      # When run mgc object-storage buckets create $test_bucket_name --raw
       The error should include "BucketAlreadyExists"
       The status should be failure
       ;;
     esac
-    wait_command bucket-exists "$profile" "$bucket_name-$client"
-    rclone purge --log-file /dev/null "$profile:$bucket_name-$client" > /dev/null
-    wait_command bucket-not-exists "$profile" "$bucket_name-$client"
+    wait_command bucket-exists "$profile" "$test_bucket_name"
+    rclone purge --log-file /dev/null "$profile:$test_bucket_name" > /dev/null
+    wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End

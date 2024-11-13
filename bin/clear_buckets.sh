@@ -1,45 +1,89 @@
-#!/bin/env bash
-function usage() {
-    echo $1
-    echo "Usage: clear_buckets -n <test_number> -p <profile>"
-    echo "WARN: Since aws listing is paginated, this script may need to be run multiple times"
+#!/bin/bash
+
+# Verifique se o nome do profile foi fornecido como argumento
+if [[ -z "$1" ]]; then
+    echo "Por favor, forneça o profile da AWS como argumento."
+    echo "Uso: $0 <profile-list>"
+    exit 1
+fi
+
+# Armazenar o profile recebido como argumento
+profile_list="$1"
+
+# Caminho para o arquivo .txt contendo a lista de buckets
+bucket_list_file="report/buckets_to_delete.txt"
+
+# Certifique-se de que o arquivo de lista existe
+if [[ ! -f "$bucket_list_file" ]]; then
+    # echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
+    exit 1
+fi
+
+# Converte a lista de profiles para um array
+IFS=',' read -r -a profiles <<< "$profile_list"
+
+# Certifique-se de que o arquivo de lista de buckets existe
+if [[ ! -f "$bucket_list_file" ]]; then
+    # echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
+    exit 1
+fi
+
+# Função para excluir objetos e buckets
+excluir_bucket() {
+    local bucket="$1"
+    local profile="$2"
+    
+    # echo "Processando o bucket: $bucket com o profile $profile"
+
+    rclone purge $profile:$bucket > /dev/null
+    
+    # Excluir todas as versões dos objetos no bucket
+    versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile") > /dev/null
+
+    while IFS= read -r line; do
+        # Extrair a versão e a chave do objeto
+        version_id=$(echo "$line" | awk '{print $1}')
+        key=$(echo "$line" | awk '{print $2}')
+
+        # Excluir a versão do objeto
+        aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile" > /dev/null
+        # echo "  Excluindo versão: $version_id de $key"
+    done <<< "$versions"
+
+    # Excluir os objetos não versionados (se houver)
+    objects=$(aws s3api list-objects --bucket "$bucket" --query "Contents[].[Key]" --output text --profile "$profile")
+
+    while IFS= read -r object; do
+        aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile" > /dev/null
+    done <<< "$objects"
+
+    # Remover o bucket vazio
+    aws s3 rb s3://"$bucket" --force --profile "$profile" > /dev/null
+
+    echo "Todos os objetos e versões excluídos do bucket: $bucket"
 }
 
-re='^[0-9]+$'
-while getopts ":n:p:" config
-do
-    case "$config" in
-    n)
-        [[ ! $OPTARG =~ $re ]] && usage "$OPTARG is not a number" && exit 1
-        test_n=$(printf "%03d" $OPTARG)
-    ;;
-    p)
-        [ -z "$OPTARG" ] && usage "$OPTARG should be a string" && exit 1
-        profile="$OPTARG"
-    ;;
-    ?)
-        echo "Unknown flag $config"
-        usage
-        exit 1
-    ;;
-    esac
-done
+# Leia o arquivo de lista de buckets linha por linha (cada linha é um bucket)
+while IFS= read -r bucket; do
+    # Verifique se a linha não está vazia
+    if [[ -z "$bucket" ]]; then
+        continue
+    fi
+    
+    # Flag para determinar se o bucket foi processado
+    processed=false
 
-# both variables should be set
-[ ! -v test_n ] || [ ! -v profile ] && usage "Please provide both test_number and profile" && exit 1
+    # Percorre os profiles e verifica se o nome do profile está no nome do bucket
+    for profile in "${profiles[@]}"; do
+        if [[ "$bucket" == *"$profile"* ]]; then
+            excluir_bucket "$bucket" "$profile"
+            processed=true
+            break
+        fi
+    done
 
-echo "Deleting buckets matching 'test-$test_n-*' in profile $profile"
+    if [[ "$processed" == false ]]; then
+        echo "Nenhum profile encontrado para o bucket: $bucket" > /dev/null
+    fi
 
-buckets=$(aws --profile $profile s3 ls \
-| cut -d " " -f 3 \
-| grep "test-$test_n-*")
-echo "$buckets"
-read -p "Delete buckets listed? [yN]: " -n 1 -r
-echo
-[[ ! $REPLY =~ ^[Yy]$ ]] && echo "aborting" && exit
-set -x
-for bucket in $buckets; do
-    aws --profile "$profile" s3api delete-bucket-policy --bucket "$bucket"
-    aws --profile "$profile" s3 rm "s3://$bucket" --recursive
-    aws --profile "$profile" s3 rb "s3://$bucket"
-done
+done < "$bucket_list_file"

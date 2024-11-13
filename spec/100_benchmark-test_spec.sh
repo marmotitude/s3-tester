@@ -26,12 +26,14 @@ Describe 'Benchmark test:' category:"Bucket Management"
   Example "on profile $1 using client $2" id:"100"
     profile=$1
     client=$2
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     sizes=$3 #param
     quantity=$4 #param
     times=$5 #param
     workers=$6 #param
     date=$7
-    aws --profile "$profile" s3 mb s3://"$bucket_name-$client" > /dev/null
+    aws --profile "$profile" s3 mb s3://"$test_bucket_name" > /dev/null
     for size in $(echo $sizes | tr "," "\n")
     do
       for i in $(seq 1 $quantity); do
@@ -47,36 +49,36 @@ Describe 'Benchmark test:' category:"Bucket Management"
         "aws-s3api" | "aws" | "aws-s3")
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 cp ./temp-report-${size}k-${quantity} s3://$bucket_name-$client/${size}k-${quantity}/$i/ --recursive)
+            time=$(measure_time aws --profile $profile s3 cp ./temp-report-${size}k-${quantity} s3://$test_bucket_name/${size}k-${quantity}/$i/ --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 cp s3://$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --recursive)
+            time=$(measure_time aws --profile $profile s3 cp s3://$test_bucket_name/${size}k-${quantity}/$i/ ./$test_bucket_name-$size-$quantity-$i --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
             rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time aws --profile $profile s3 rm s3://$bucket_name-$client/${size}k-${quantity}/$i/ --recursive)
+            time=$(measure_time aws --profile $profile s3 rm s3://$test_bucket_name/${size}k-${quantity}/$i/ --recursive)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
         "rclone")
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone copy ./temp-report-${size}k-${quantity} $profile:$bucket_name-$client/${size}k-${quantity}/$i/ --transfers=$workers)
+            time=$(measure_time rclone copy ./temp-report-${size}k-${quantity} $profile:$test_bucket_name/${size}k-${quantity}/$i/ --transfers=$workers)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone copy $profile:$bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i --transfers=$workers)
+            time=$(measure_time rclone copy $profile:$test_bucket_name/${size}k-${quantity}/$i/ ./$test_bucket_name-$size-$quantity-$i --transfers=$workers)
             printf "%s," "$time" >> ./report/benchmark.csv
             rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time rclone delete $profile:$bucket_name-$client/${size}k-${quantity}/$i/)
+            time=$(measure_time rclone delete $profile:$test_bucket_name/${size}k-${quantity}/$i/)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
@@ -84,25 +86,25 @@ Describe 'Benchmark test:' category:"Bucket Management"
           printf "\n%s,%s,%s,upload,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           mgc workspace set "$profile" > /dev/null
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects upload-dir ./temp-report-${size}k-${quantity} $bucket_name-$client/${size}k-${quantity}/$i/ --workers $workers)
+            time=$(measure_time mgc object-storage objects upload-dir ./temp-report-${size}k-${quantity} $test_bucket_name/${size}k-${quantity}/$i/ --workers $workers)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           printf "\n%s,%s,%s,download,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects download-all $bucket_name-$client/${size}k-${quantity}/$i/ ./$bucket_name-$client-$size-$quantity-$i)
+            time=$(measure_time mgc object-storage objects download-all $test_bucket_name/${size}k-${quantity}/$i/ ./$test_bucket_name-$size-$quantity-$i)
             printf "%s," "$time" >> ./report/benchmark.csv
             rm -rf test-*
           done
           printf "\n%s,%s,%s,delete,%s,%s,%s,%s" "$date" "$profile" "$client" "$size" "$times" "$workers" "$quantity," >> ./report/benchmark.csv
           for i in $(seq 1 $times); do
-            time=$(measure_time mgc object-storage objects delete-all $bucket_name-$client/${size}k-${quantity}/$i/ --no-confirm)
+            time=$(measure_time mgc object-storage objects delete-all $test_bucket_name/${size}k-${quantity}/$i/ --no-confirm)
             printf "%s," "$time" >> ./report/benchmark.csv
           done
           ;;
       esac
       rm -rf temp-report*
     done
-    rclone purge $profile:$bucket_name-$client > /dev/null
+    rclone purge $profile:$test_bucket_name > /dev/null
     python3 ./bin/process_data.py
     python3 ./bin/benchmark.py
     aws s3 --profile br-se1 cp ./report/benchmark.csv s3://benchmark/data/${date}h.csv --acl public-read > /dev/null

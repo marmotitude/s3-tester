@@ -14,23 +14,25 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"097"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api create-bucket --bucket $bucket_name-$client
+      When run aws --profile $profile s3api create-bucket --bucket $test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 mb s3://$bucket_name-$client
+      When run aws --profile $profile s3 mb s3://$test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "rclone")
-      When run rclone mkdir $profile:$bucket_name-$client -v
+      When run rclone mkdir $profile:$test_bucket_name -v
       The stderr should include "Blocked account"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets create $bucket_name-$client --raw
+      When run mgc object-storage buckets create $test_bucket_name --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -50,6 +52,8 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"097"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -86,23 +90,25 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"097"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api list-objects-v2 --bucket $bucket_name-$client
+      When run aws --profile $profile s3api list-objects-v2 --bucket $test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 ls s3://$bucket_name-$client
+      When run aws --profile $profile s3 ls s3://$test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "rclone")
-      When run rclone lsd $profile:$bucket_name-$client -v
+      When run rclone lsd $profile:$test_bucket_name -v
       The stderr should include "Blocked account"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage objects list $bucket_name-$client --raw
+      When run mgc object-storage objects list $test_bucket_name --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -123,23 +129,25 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"097"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-object --bucket $bucket_name-$client --key $file1_name
+      When run aws --profile $profile s3api delete-object --bucket $test_bucket_name --key $file1_name
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 rm s3://$bucket_name-$client/$file1_name
+      When run aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name
       The stderr should include "Blocked account"
       ;;
     "rclone")
-      When run rclone delete $profile:$bucket_name-$client/$file1_name -v
+      When run rclone delete $profile:$test_bucket_name/$file1_name -v
       The stderr should include "Blocked account"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage objects delete --dst $bucket_name-$client/$file1_name --no-confirm --raw
+      When run mgc object-storage objects delete --dst $test_bucket_name/$file1_name --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac
@@ -159,23 +167,25 @@ Describe 'Takedown Delete bucket:' category:"Bucket Permission"
   Example "on profile $1 using client $2" id:"097"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
+    test_bucket_name="$bucket_name-$client-$profile"
+    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-bucket --bucket $bucket_name-$client
+      When run aws --profile $profile s3api delete-bucket --bucket $test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 rb s3://$bucket_name-$client
+      When run aws --profile $profile s3 rb s3://$test_bucket_name
       The stderr should include "Blocked account"
       ;;
     "rclone")
-      When run rclone purge $profile:$bucket_name-$client -v
+      When run rclone purge $profile:$test_bucket_name -v
       The stderr should include "Blocked account"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets delete $bucket_name-$client --no-confirm --raw
+      When run mgc object-storage buckets delete $test_bucket_name --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac
