@@ -37,3 +37,6 @@ shasum `which mgc` `which aws` `which rclone`
 
 # run the tests
 shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" --env SIZES="$sizes" --env QUANTITY="$quantity" --env TIMES="$times" --env WORKERS="$workers" --env DATE=$(date "+%Y-%m-%d.%H") -s bash $tag_args $args_after_double_dash
+
+# clean of buckets with list
+source "$SCRIPT_PATH/clear_buckets.sh" $profiles_to_clean

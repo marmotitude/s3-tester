@@ -14,6 +14,8 @@ set_description "Run tests on multiple S3 providers using multiple S3 clients.\n
 check_for_help $args_after_double_dash
 parse_args $args_before_double_dash
 
+profiles_to_clean=$profiles
+
 # convert comma separated lists to space separated
 clients="${clients//,/ }"
 profiles="${profiles//,/ }"
@@ -40,5 +42,5 @@ benchmark_envs='--env SIZES="$SIZES" --env QUANTITY="$QUANTITY" --env DATE="$DAT
 # run the tests
 shellspec -c "$SCRIPT_PATH/../spec" --env CLIENTS="$clients" --env PROFILES="$profiles" -s bash $tag_args $args_after_double_dash $benchmark_envs
 
-# clean of buckets list
-source "$SCRIPT_PATH/clear_buckets.sh" $profiles
+# clean of buckets with list
+source "$SCRIPT_PATH/clear_buckets.sh" $profiles_to_clean

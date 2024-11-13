@@ -15,7 +15,7 @@ bucket_list_file="report/buckets_to_delete.txt"
 
 # Certifique-se de que o arquivo de lista existe
 if [[ ! -f "$bucket_list_file" ]]; then
-    echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
+    # echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
     exit 1
 fi
 
@@ -24,7 +24,7 @@ IFS=',' read -r -a profiles <<< "$profile_list"
 
 # Certifique-se de que o arquivo de lista de buckets existe
 if [[ ! -f "$bucket_list_file" ]]; then
-    echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
+    # echo "Arquivo de lista de buckets não encontrado: $bucket_list_file"
     exit 1
 fi
 
@@ -33,12 +33,12 @@ excluir_bucket() {
     local bucket="$1"
     local profile="$2"
     
-    echo "Processando o bucket: $bucket com o profile $profile"
+    # echo "Processando o bucket: $bucket com o profile $profile"
 
-    rclone purge $profile:$bucket
+    rclone purge $profile:$bucket > /dev/null
     
     # Excluir todas as versões dos objetos no bucket
-    versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile")
+    versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile") > /dev/null
 
     while IFS= read -r line; do
         # Extrair a versão e a chave do objeto
@@ -46,21 +46,19 @@ excluir_bucket() {
         key=$(echo "$line" | awk '{print $2}')
 
         # Excluir a versão do objeto
-        aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile"
-        echo "  Excluindo versão: $version_id de $key"
+        aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile" > /dev/null
+        # echo "  Excluindo versão: $version_id de $key"
     done <<< "$versions"
 
     # Excluir os objetos não versionados (se houver)
     objects=$(aws s3api list-objects --bucket "$bucket" --query "Contents[].[Key]" --output text --profile "$profile")
 
     while IFS= read -r object; do
-        aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile"
-        echo "  Excluindo objeto: $object"
+        aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile" > /dev/null
     done <<< "$objects"
 
     # Remover o bucket vazio
-    echo "Removendo o bucket: $bucket"
-    aws s3 rb s3://"$bucket" --force --profile "$profile"
+    aws s3 rb s3://"$bucket" --force --profile "$profile" > /dev/null
 
     echo "Todos os objetos e versões excluídos do bucket: $bucket"
 }
@@ -76,10 +74,8 @@ while IFS= read -r bucket; do
     processed=false
 
     # Percorre os profiles e verifica se o nome do profile está no nome do bucket
-    echo $profiles
     for profile in "${profiles[@]}"; do
         if [[ "$bucket" == *"$profile"* ]]; then
-            echo $profile
             excluir_bucket "$bucket" "$profile"
             processed=true
             break
@@ -87,7 +83,7 @@ while IFS= read -r bucket; do
     done
 
     if [[ "$processed" == false ]]; then
-        echo "Nenhum profile encontrado para o bucket: $bucket"
+        echo "Nenhum profile encontrado para o bucket: $bucket" > /dev/null
     fi
 
 done < "$bucket_list_file"

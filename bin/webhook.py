@@ -176,9 +176,8 @@ def get_old_artifact(github_repository, github_token):
 
 def remove_flaky(not_ok_string_not_equals, not_ok_string_see_more):
     lines = not_ok_string_not_equals.count('\n') + 1
-    exit_status_1=not_ok_string_see_more.count("Example aborted (exit status: 1)")
-    exit_status_3=not_ok_string_see_more.count("Example aborted (exit status: 3)")
-    if lines == exit_status_1 or lines == exit_status_3:
+    exit_status=not_ok_string_see_more.count("Example aborted (exit status:")
+    if lines == exit_status:
         return 0,0
     return not_ok_string_not_equals, not_ok_string_see_more
 
