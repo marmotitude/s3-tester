@@ -17,6 +17,9 @@ set_description "Run tests on multiple S3 providers using multiple S3 clients.\n
 check_for_help $args_after_double_dash
 parse_args $args_before_double_dash
 
+
+profiles_to_clean=$profiles
+
 # convert comma separated lists to space separated
 clients="${clients//,/ }"
 profiles="${profiles//,/ }"
