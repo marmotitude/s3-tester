@@ -165,6 +165,18 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 087 | Cold Storage | Change the storage class of an object (copy to same bucket with same key, but different storage class) | |
 | 088 | Cold Storage | Upload object with storage class and metadata | |
 | 089 | Cold Storage | Upload object with storage class and ACL | |
+| 090 | Bucket Management | Unique bucket ||
+| 091 | Bucket Policy | A lot of scenarios with bucket policy ||
+| 092 | Bucket Tagging | A lot of scenarios with bucket tagging  ||
+| 093 | Bucket Management | Delete large bucket ||
+| 095 | Account | Limit of buckets ||
+| 096 | Account | Tests with read only ||
+| 097 | Account | Takedown user ||
+| 094 | Objects Management | Benchmark validate exists ||
+| 098 | Bucket Management | Invalid name validation ||
+| 099 | Object Management | Invalid Object keys ||
+| 100 | Bucket Management | Benchmark test CRUD ||
+| 102 | Object Management | Bucket Lock ||
 | 201 | Service Accounts | All SA tests| |
 | 202 | Service Accounts | Account with Limited Privileges | |
 | 203 | Service Accounts | Bucket policies | |
