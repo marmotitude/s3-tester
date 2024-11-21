@@ -38,6 +38,12 @@ while true; do
     continue
   fi
 
+  if echo "$output" | grep -q "Forbidden"; then
+    echo "Forbidden detected. retrying..."
+    sleep 1
+    continue
+  fi
+
   echo "Unexpected error: $output"
   exit 1
 done
