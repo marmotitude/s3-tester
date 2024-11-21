@@ -1,7 +1,7 @@
 #!/bin/bash
 
 command=$1
-timeout_duration=${2:-240} # Tempo máximo de execução em segundos (240 = 4 minutos)
+timeout_duration=${2:-20} # Tempo máximo de execução em segundos (240 = 4 minutos)
 
 end_time=$((SECONDS + timeout_duration))
 
@@ -34,6 +34,12 @@ while true; do
 
   if echo "$output" | grep -q "BucketNotEmpty"; then
     echo "BucketNotEmpty detected. retrying..."
+    sleep 1
+    continue
+  fi
+
+  if echo "$output" | grep -q "Forbidden"; then
+    echo "Forbidden detected. retrying..."
     sleep 1
     continue
   fi

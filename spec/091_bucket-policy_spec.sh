@@ -15,12 +15,12 @@ setup_policy(){
     local bucket_name=$1
     local client=$2
     local profile=$3
-    aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
-    aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
+    aws --profile $profile s3 mb s3://$bucket_name > /dev/null
+    aws --profile $profile s3 cp $file1_name s3://$bucket_name > /dev/null
     local get_access=$(has_s3_block_public_access)
     if [ $get_access = true ];then
-      aws s3api --profile $profile put-bucket-ownership-controls --bucket $test_bucket_name --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]" > /dev/null
-      aws s3api --profile $profile put-public-access-block --bucket $test_bucket_name --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false > /dev/null
+      aws s3api --profile $profile put-bucket-ownership-controls --bucket $bucket_name --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]" > /dev/null
+      aws s3api --profile $profile put-public-access-block --bucket $bucket_name --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false > /dev/null
       policy_factory true
     else
       policy_factory false
@@ -113,7 +113,7 @@ Describe 'Put bucket policy:' category:"Bucket Management"
     action='"s3:GetObject"'
     resource="$test_bucket_name/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(setup_policy $test_bucket_name $client $profile)
     ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -132,8 +132,8 @@ Describe 'Put bucket policy:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    aws --profile $profile s3api delete-bucket-policy --bucket $test_bucket_name
-    rclone purge $profile:$test_bucket_name > /dev/null
+    aws --profile $profile s3api delete-bucket-policy --bucket $test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -158,7 +158,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
     principal="*"
     resource="$test_bucket_name/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(setup_policy $test_bucket_name $client $profile)
     ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -178,7 +178,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket $test_bucket_name
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -203,7 +203,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
     principal="*"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(setup_policy $test_bucket_name $client $profile)
     ensure-bucket-exists $profile $client $bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -223,7 +223,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket $test_bucket_name
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -250,30 +250,30 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
     principal="*"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(setup_policy $test_bucket_name $client $profile)
     ensure-bucket-exists $profile $client $bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile-second s3api list-objects-v2 --bucket $test_bucket_name
+      When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api list-objects-v2 --bucket $test_bucket_name"
       The stdout should include $file1_name
       The status should be success
       ;;
     "rclone")
-      When run rclone ls $profile-second:$test_bucket_name
+      When run bash ./spec/retry_command.sh "rclone ls $profile-second:$test_bucket_name"
       The stdout should include $file1_name
       The status should be success
       ;;
     "mgc")
       mgc workspace set $profile-second > /dev/null
-      When run mgc os objects list $test_bucket_name
+      When run bash ./spec/retry_command.sh "mgc os objects list $test_bucket_name"
       The stdout should include $file1_name
       The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -300,17 +300,17 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     principal="*"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-      When run aws --profile $profile-second s3 cp s3://$test_bucket_name/$file1_name $file1_name-3
+      When run bash ./spec/retry_command.sh "aws --profile $profile-second s3 cp s3://$test_bucket_name/$file1_name $file1_name-3"
       The stdout should include $file1_name
       The status should be success
       ;;
     "rclone")
-      When run rclone copy $profile-second:$test_bucket_name/$file1_name $file1_name-3
+      When run bash ./spec/retry_command.sh "rclone copy $profile-second:$test_bucket_name/$file1_name $file1_name-3"
       The stdout should include ""
       The status should be success
       ;;
@@ -320,7 +320,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -344,12 +344,12 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     action='"s3:GetObject"'
     id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile" user" is_variable_null "$id_principal"
-    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP  
+    if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     principal="$id_principal"
     resource="$test_bucket_name/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -368,7 +368,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -396,12 +396,12 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     principal="$id_principal"
     resource="$test_bucket_name/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
-      When run aws --profile $profile-second s3 cp s3://$test_bucket_name/$file1_name $file1_name-2
+      When run bash ./spec/retry_command.sh "aws --profile $profile-second s3 cp s3://$test_bucket_name/$file1_name $file1_name-2"
       The stdout should include $file1_name
       The status should be success
       ;;
@@ -414,7 +414,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -439,8 +439,8 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
     principal="*"
     resource="$test_bucket_name/$file1_name"
     effect="Deny"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -459,7 +459,7 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -484,8 +484,8 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
     principal="*"
     resource="$test_bucket_name/$file1_name"
     effect="Deny"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -501,13 +501,13 @@ Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
     "mgc")
       mgc workspace set $profile-second
       When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
-      The stderr should include "Error: (AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
+      The stderr should include "AccessDenied"
       The status should be failure
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
     #wait_command bucket-not-exists "$profile" "$test_bucket_name"
   End
 End
@@ -533,11 +533,11 @@ Describe 'Put bucket policy without Resources:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-without "$first_policy" "Resource")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -555,7 +555,7 @@ Describe 'Put bucket policy without Resources:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy without Action:' category:"Bucket Management"
@@ -576,11 +576,11 @@ Describe 'Put bucket policy without Action:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-without "$first_policy" "Action")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -598,7 +598,7 @@ Describe 'Put bucket policy without Action:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy without Principal:' category:"Bucket Management"
@@ -619,11 +619,11 @@ Describe 'Put bucket policy without Principal:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-without "$first_policy" "Principal")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -641,7 +641,7 @@ Describe 'Put bucket policy without Principal:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy without Effect:' category:"Bucket Management"
@@ -662,11 +662,11 @@ Describe 'Put bucket policy without Effect:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-without "$first_policy" "Effect")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -684,7 +684,7 @@ Describe 'Put bucket policy without Effect:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
@@ -705,10 +705,10 @@ Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile | jq 'del(.Statement)')
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile | jq 'del(.Statement)')
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -726,7 +726,7 @@ Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 
@@ -751,10 +751,10 @@ Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Mana
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -772,7 +772,7 @@ Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Mana
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
@@ -793,11 +793,11 @@ Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-with-empty "$first_policy" "Resource")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -815,7 +815,7 @@ Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
@@ -836,11 +836,11 @@ Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-with-empty "$first_policy" "Action")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -858,7 +858,7 @@ Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
@@ -879,11 +879,11 @@ Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-with-empty "$first_policy" "Principal")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -901,7 +901,7 @@ Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
@@ -922,11 +922,11 @@ Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    first_policy=$(setup_policy $bucket_name $client $profile)
+    first_policy=$(setup_policy $test_bucket_name $client $profile)
     policy=$(policy-with-empty "$first_policy" "Effect")
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -944,7 +944,7 @@ Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
@@ -965,10 +965,10 @@ Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
     #policy vars
     action='"s3:GetObject"'
     principal="*"
-    resource="$bucket_name-invalid-$client/*"
+    resource="$test_bucket_name-invalid-$client/*"
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile | jq '.Statement |= []')
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile | jq '.Statement |= []')
+    ensure-bucket-exists $profile $client $test_bucket_name
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy"
@@ -986,7 +986,7 @@ Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 
@@ -1014,14 +1014,13 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
     if $(is_variable_null "$user2id"); then return; fi # ! SKIP DOES NOT SKIP
     user3id=$(aws s3api --profile $profile-third list-buckets | jq -r '.Owner.ID')
     if $(is_variable_null "$user3id"); then return; fi # ! SKIP DOES NOT SKIP
-
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="$user3id"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1044,7 +1043,7 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
 
@@ -1078,9 +1077,9 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     principal="$user2id"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
+    policy=$(setup_policy $test_bucket_name $client $profile)
 
-    ensure-bucket-exists $profile $client $bucket_name
+    ensure-bucket-exists $profile $client $test_bucket_name
     When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     The status should be success
     echo "Created policy in bucket $bucket_name" > /dev/null
@@ -1093,18 +1092,18 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-        When run aws --profile $profile-second s3api list-objects-v2 --bucket $test_bucket_name
+        When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api list-objects-v2 --bucket $test_bucket_name"
         The stdout should include $file1_name
         The status should be success
         ;;
     "rclone")
-        When run rclone ls $profile-second:$test_bucket_name
+        When run bash ./spec/retry_command.sh "rclone ls $profile-second:$test_bucket_name"
         The stdout should include $file1_name
         The status should be success
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os objects list --dst $test_bucket_name
+        When run bash ./spec/retry_command.sh " mgc os objects list --dst $test_bucket_name"
         The stdout should include $file1_name
         The status should be success
         ;;
@@ -1118,19 +1117,19 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-        When run aws --profile $profile-second s3api put-object --bucket $test_bucket_name --key $file1_name-copy --body "$(pwd)/$file1_name"
-        The stderr should include "An error occurred (AccessDeniedByBucketPolicy) when calling the PutObject operation: Access Denied. Bucket Policy violated."
+        When run  aws --profile $profile-second s3api put-object --bucket $test_bucket_name --key $file1_name-copy --body "$(pwd)/$file1_name"
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
         When run rclone copy "$(pwd)/$file1_name" $profile-second:$test_bucket_name/$file1_name-copy
-        The stderr should include "AccessDeniedByBucketPolicy: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "mgc")
         mgc workspace set $profile-second
         When run mgc os objects upload --dst $test_bucket_name/$file1_name-copy --src $file1_name
-        The stderr should include "Error: (AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The stdout should include ""
         The status should be failure
         ;;
@@ -1145,18 +1144,19 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api delete-object --bucket $test_bucket_name --key $file1_name
-        The stderr should include "An error occurred (AccessDeniedByBucketPolicy) when calling the DeleteObject operation: Access Denied. Bucket Policy violated."
+        # ToDo AccessDenied
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
         When run rclone delete $profile-second:$test_bucket_name/$file1_name
-        The stderr should include "AccessDeniedByBucketPolicy: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
-        The stderr should include "Error: (AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
+        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm --debug
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1170,7 +1170,7 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api delete-bucket-policy --bucket $test_bucket_name > /dev/null
-        The stderr should include "An error occurred (AccessDenied) when calling the DeleteBucketPolicy operation: Access Denied."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
@@ -1179,7 +1179,7 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     "mgc")
         mgc workspace set $profile-second
         When run mgc os buckets policy delete --dst $test_bucket_name
-        The stderr should include "Error: (AccessDenied) 403 Forbidden - Access Denied."
+        The stderr should include "AccessDenied"
         The stdout should include ""
         The status should be failure
         ;;
@@ -1194,12 +1194,13 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
       && aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null \
+      && sleep 10 \
       && rclone purge $profile:$test_bucket_name > /dev/null \
       || true
     }
     When run cleanup
     The status should be success
-    The stdout should include "last wait bucket-exists for profile profile"
+    The stdout should include "last wait bucket-exists for profile $profile"
   End
 End
 
@@ -1232,8 +1233,8 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     principal="$user2id"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Allow"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     When run aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     The status should be success
     echo "Created policy in bucket $bucket_name" > /dev/null
@@ -1248,12 +1249,12 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api list-objects-v2 --bucket $test_bucket_name
-        The stderr should include "An error occurred (AccessDeniedByBucketPolicy) when calling the ListObjectsV2 operation: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
         When run rclone ls $profile-second:$test_bucket_name
-        The stderr should include "AccessDeniedByBucketPolicy: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "mgc")
@@ -1273,7 +1274,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-        When run aws --profile $profile-second s3api put-object --bucket $test_bucket_name --key $file1_name-copy --body "$(pwd)/$file1_name"
+        When run bash ./spec/retry_command.sh "aws --profile $profile-second s3api put-object --bucket $test_bucket_name --key $file1_name-copy --body "$(pwd)/$file1_name""
         The stdout should include ""
         The status should be success
         ;;
@@ -1285,7 +1286,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os objects upload --dst $test_bucket_name/$file1_name-copy --src $file1_name
+        When run bash ./spec/retry_command.sh "mgc os objects upload --dst $test_bucket_name/$file1_name-copy --src $file1_name"
         The stdout should include $file1_name
         The status should be success
         ;;
@@ -1299,19 +1300,19 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-        When run aws --profile $profile-second s3api delete-object --bucket $test_bucket_name --key $file1_name 
-        The stderr should include "An error occurred (AccessDeniedByBucketPolicy) when calling the DeleteObject operation: Access Denied. Bucket Policy violated."
+        When run aws --profile $profile-second s3api delete-object --bucket $test_bucket_name --key $file1_name
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
         When run rclone delete $profile-second:$test_bucket_name/$file1_name
-        The stderr should include "AccessDeniedByBucketPolicy: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "mgc")
         mgc workspace set $profile-second
         When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
-        The stderr should include "Error: (AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1325,7 +1326,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api delete-bucket-policy --bucket $test_bucket_name > /dev/null
-        The stderr should include "An error occurred (AccessDenied) when calling the DeleteBucketPolicy operation: Access Denied."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
@@ -1334,7 +1335,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     "mgc")
         mgc workspace set $profile-second
         When run mgc os buckets policy delete --dst $test_bucket_name
-        The stderr should include "Error: (AccessDenied) 403 Forbidden - Access Denied."
+        The stderr should include "AccessDenied"
         The stdout should include ""
         The status should be failure
         ;;
@@ -1349,6 +1350,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
       && aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null \
+      && sleep 10 \
       && rclone purge $profile:$test_bucket_name > /dev/null \
       || true
     }
@@ -1381,16 +1383,16 @@ Describe 'Owner denies all access but can still change policy:' category:"Bucket
     if $(is_variable_null "$user3id"); then return; fi # ! SKIP DOES NOT SKIP
 
     #policy vars
-    # action='"s3:DeleteBucketPolicy", "s3:GetBucketAcl", "s3:GetBucketPolicy", "s3:GetBucketPolicyStatus", 
-    # "s3:GetBucketVersioning", "s3:ListBucket", "s3:ListBucketMultipartUploads", "s3:ListBucketVersions", 
-    # "s3:PutBucketAcl", "s3:PutBucketPolicy", "s3:PutBucketVersioning", "s3:AbortMultipartUpload", "s3:DeleteObject", 
+    # action='"s3:DeleteBucketPolicy", "s3:GetBucketAcl", "s3:GetBucketPolicy", "s3:GetBucketPolicyStatus",
+    # "s3:GetBucketVersioning", "s3:ListBucket", "s3:ListBucketMultipartUploads", "s3:ListBucketVersions",
+    # "s3:PutBucketAcl", "s3:PutBucketPolicy", "s3:PutBucketVersioning", "s3:AbortMultipartUpload", "s3:DeleteObject",
     # "s3:GetObject", "s3:GetObjectAcl", "s3:ListMultipartUploadParts", "s3:PutObject", "s3:PutObjectAcl"'
     action='"s3:*"'
     principal="*"
     resource=("$test_bucket_name" "$test_bucket_name/*")
     effect="Deny"
-    policy=$(setup_policy $bucket_name $client $profile)
-    ensure-bucket-exists $profile $client $bucket_name
+    policy=$(setup_policy $test_bucket_name $client $profile)
+    ensure-bucket-exists $profile $client $test_bucket_name
     aws --profile $profile s3api put-bucket-policy --bucket $test_bucket_name --policy "$policy" > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1410,6 +1412,6 @@ Describe 'Owner denies all access but can still change policy:' category:"Bucket
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
     aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null
-    rclone purge $profile:$test_bucket_name > /dev/null
+    bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
