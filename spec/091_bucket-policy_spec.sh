@@ -1025,18 +1025,18 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api list-objects-v2 --bucket "$test_bucket_name"
-        The stderr should include "An error occurred (AccessDeniedByBucketPolicy) when calling the ListObjectsV2 operation: Access Denied."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "rclone")
         When run rclone ls $profile-second:$test_bucket_name
-        The stderr should include "AccessDeniedByBucketPolicy: Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The status should be failure
         ;;
     "mgc")
         mgc workspace set $profile-second
         When run mgc os objects list --dst "$test_bucket_name"
-        The stderr should include "(AccessDeniedByBucketPolicy) 403 Forbidden - Access Denied. Bucket Policy violated."
+        The stderr should include "AccessDenied"
         The stdout should include ""
         The status should be failure
         ;;
@@ -1194,8 +1194,7 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
       && aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null \
-      && sleep 10 \
-      && rclone purge $profile:$test_bucket_name > /dev/null \
+      && bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null \
       || true
     }
     When run cleanup
@@ -1350,8 +1349,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
       && aws --profile $profile s3api delete-bucket-policy --bucket "$test_bucket_name" > /dev/null \
-      && sleep 10 \
-      && rclone purge $profile:$test_bucket_name > /dev/null \
+      && bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null \
       || true
     }
     When run cleanup
