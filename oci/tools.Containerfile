@@ -57,7 +57,7 @@ RUN curl -Lo mgc.tar.gz "https://github.com/MagaluCloud/mgccli/releases/download
 
 # bun (javascript runtime)
 ENV BUN_INSTALL="/tools/bun"
-RUN curl -fsSL https://bun.sh/install | bash && \
+RUN curl -fsSL https://raw.githubusercontent.com/oven-sh/bun/6b0c2383d508b5ed5235d68a0f0297327851c21b/src/cli/install.sh | bash && \
     ln -s /tools/bun/bin/bun /usr/local/bin/bun
 
 # OpenTofu
