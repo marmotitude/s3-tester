@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix-bun
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
