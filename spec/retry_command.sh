@@ -37,6 +37,12 @@ while true; do
     sleep 1
     continue
   fi
+  #test with retry on 403 status
+  if echo "$output" | grep -q "403"; then
+    echo "403 detected. retrying..."
+    sleep 1
+    continue
+  fi
 
   echo "Unexpected error: $output"
   exit 1
