@@ -1,7 +1,7 @@
 #!/bin/bash
 
 command=$1
-timeout_duration=${2:-600} # Tempo máximo de execução em segundos (600 = 10 minutos)
+timeout_duration=${2:-300} # Tempo máximo de execução em segundos (300 = 5 minutos)
 
 end_time=$((SECONDS + timeout_duration))
 
