@@ -7,7 +7,7 @@ measure_time() {
     echo "$runtime"
 }
 
-Describe 'Benchmark test:' category:"BucketManagement"
+Describe 'Benchmark test:' category:"Benchmark"
   setup() {
     bucket_name="test-100-$(date +%s)"
   }

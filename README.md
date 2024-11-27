@@ -175,8 +175,8 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 094 | Objects Management | Benchmark validate exists ||
 | 098 | Bucket Management | Invalid name validation ||
 | 099 | Object Management | Invalid Object keys ||
-| 100 | Bucket Management | Benchmark test CRUD ||
-| 102 | Object Management | Bucket Lock ||
+| 100 | Benchmark | Benchmark test CRUD ||
+| 102 | Object Locking | Bucket Lock ||
 | 201 | Service Accounts | All SA tests| |
 | 202 | Service Accounts | Account with Limited Privileges | |
 | 203 | Service Accounts | Bucket policies | |
