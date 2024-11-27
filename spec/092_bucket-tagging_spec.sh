@@ -4,7 +4,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Put bucket tagging:' category:"BucketManagement"
+Describe 'Put bucket tagging:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
@@ -44,7 +44,7 @@ Describe 'Put bucket tagging:' category:"BucketManagement"
   End
 End
 
-Describe 'Get bucket tagging:' category:"BucketManagement"
+Describe 'Get bucket tagging:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
@@ -85,7 +85,7 @@ Describe 'Get bucket tagging:' category:"BucketManagement"
   End
 End
 
-Describe 'Delete bucket tagging:' category:"BucketManagement"
+Describe 'Delete bucket tagging:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
@@ -125,7 +125,7 @@ Describe 'Delete bucket tagging:' category:"BucketManagement"
   End
 End
 
-Describe 'Put bucket tagging wrong json:' category:"BucketManagement"
+Describe 'Put bucket tagging wrong json:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
@@ -165,7 +165,7 @@ Describe 'Put bucket tagging wrong json:' category:"BucketManagement"
   End
 End
 
-Describe 'Put bucket tagging with wrong "value":' category:"BucketManagement"
+Describe 'Put bucket tagging with wrong "value":' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
@@ -205,7 +205,7 @@ Describe 'Put bucket tagging with wrong "value":' category:"BucketManagement"
   End
 End
 
-Describe 'Put bucket tagging with file:' category:"BucketManagement"
+Describe 'Put bucket tagging with file:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="tagging.json"
@@ -244,7 +244,7 @@ Describe 'Put bucket tagging with file:' category:"BucketManagement"
   End
 End
 
-Describe 'Put bucket tagging with wrong file:' category:"BucketManagement"
+Describe 'Put bucket tagging with wrong file:' category:"BucketTagging"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"
