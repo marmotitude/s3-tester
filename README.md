@@ -168,7 +168,7 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 090 | Bucket Management | Unique bucket ||
 | 091 | Bucket Policy | A lot of scenarios with bucket policy ||
 | 092 | Bucket Tagging | A lot of scenarios with bucket tagging  ||
-| 093 | Bucket Management | Delete large bucket ||
+| 093 | Big Buckets | Delete large bucket ||
 | 095 | Account | Limit of buckets ||
 | 096 | Account | Tests with read only ||
 | 097 | Account | Takedown user ||
