@@ -10,7 +10,7 @@ setup_lock(){
     aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
 }
 
-Describe 'Put bucket default lock:' category:"BucketManagement"
+Describe 'Put bucket default lock:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -45,7 +45,7 @@ Describe 'Put bucket default lock:' category:"BucketManagement"
   End
 End
 
-Describe 'Put bucket default lock in old bucket:' category:"BucketManagement"
+Describe 'Put bucket default lock in old bucket:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -82,7 +82,7 @@ Describe 'Put bucket default lock in old bucket:' category:"BucketManagement"
 End
 
 ## this test dont permit delete bucket until 1 day after
-# Describe 'Put object in bucket with default lock and validate:' category:"BucketManagement"
+# Describe 'Put object in bucket with default lock and validate:' category:"ObjectLocking"
 #   setup(){
 #     bucket_name="test-102-$(date +%s)"
 #     file1_name="LICENSE"
@@ -118,7 +118,7 @@ End
 #   End
 # End
 
-Describe 'Put object in bucket without default lock and validate date:' category:"BucketManagement"
+Describe 'Put object in bucket without default lock and validate date:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -157,7 +157,7 @@ Describe 'Put object in bucket without default lock and validate date:' category
   End
 End
 
-Describe 'Try delete locked object:' category:"BucketManagement"
+Describe 'Try delete locked object:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -194,7 +194,7 @@ Describe 'Try delete locked object:' category:"BucketManagement"
   End
 End
 
-Describe 'Remove object lock and try delete especified version old locked:' category:"BucketManagement"
+Describe 'Remove object lock and try delete especified version old locked:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -236,7 +236,7 @@ Describe 'Remove object lock and try delete especified version old locked:' cate
   End
 End
 
-Describe 'InvalidRequest Object locking not enabled:' category:"BucketManagement"
+Describe 'InvalidRequest Object locking not enabled:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -272,7 +272,7 @@ Describe 'InvalidRequest Object locking not enabled:' category:"BucketManagement
   End
 End
 
-Describe 'Remove default bucket lock:' category:"BucketManagement"
+Describe 'Remove default bucket lock:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -308,7 +308,7 @@ Describe 'Remove default bucket lock:' category:"BucketManagement"
   End
 End
 
-Describe 'Try enable object lock on not versioned bucket:' category:"BucketManagement"
+Describe 'Try enable object lock on not versioned bucket:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -343,7 +343,7 @@ Describe 'Try enable object lock on not versioned bucket:' category:"BucketManag
   End
 End
 
-Describe 'Put retention with past date:' category:"BucketManagement"
+Describe 'Put retention with past date:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -379,7 +379,7 @@ Describe 'Put retention with past date:' category:"BucketManagement"
   End
 End
 
-Describe 'Decrease date on retention:' category:"BucketManagement"
+Describe 'Decrease date on retention:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -418,7 +418,7 @@ Describe 'Decrease date on retention:' category:"BucketManagement"
   End
 End
 
-Describe 'Try disable:' category:"BucketManagement"
+Describe 'Try disable:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -454,7 +454,7 @@ Describe 'Try disable:' category:"BucketManagement"
   End
 End
 
-Describe 'Try put with wrong Mode:' category:"BucketManagement"
+Describe 'Try put with wrong Mode:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
@@ -490,7 +490,7 @@ Describe 'Try put with wrong Mode:' category:"BucketManagement"
   End
 End
 
-Describe 'Bucket without default lock, and get object retention:' category:"BucketManagement"
+Describe 'Bucket without default lock, and get object retention:' category:"ObjectLocking"
   setup(){
     bucket_name="test-102-$(date +%s)"
     file1_name="LICENSE"
