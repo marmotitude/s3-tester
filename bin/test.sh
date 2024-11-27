@@ -23,7 +23,7 @@ clients="${clients//,/ }"
 profiles="${profiles//,/ }"
 tests="${tests//,/ }"
 categories="${categories//,/ }"
-tags="${categories//,/ }"
+tags="${tags//,/ }"
 
 # convert test numbers to test "id" tags
 tag_args=""
@@ -37,7 +37,6 @@ done
 for tag in $tags; do
     tag_args+=" --tag ${tag}"
 done
-echo "$tag_args"
 
 # print the tools shasum
 shasum `which mgc` `which aws` `which rclone`
