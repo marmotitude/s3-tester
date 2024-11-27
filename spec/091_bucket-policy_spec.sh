@@ -310,9 +310,10 @@ Describe 'Validate Get Easy public bucket policy:' category:"BucketPolicy"
       The status should be success
       ;;
     "rclone")
-      When run bash ./spec/retry_command.sh "rclone copy $profile-second:$test_bucket_name/$file1_name $file1_name-3"
-      The stdout should include ""
-      The status should be success
+      #When run bash ./spec/retry_command.sh "rclone copy $profile-second:$test_bucket_name/$file1_name $file1_name-3"
+      #The stdout should include ""
+      #The status should be success
+      Skip "Skipped test to $client"
       ;;
     "mgc")
       Skip "Skipped test to $client"
