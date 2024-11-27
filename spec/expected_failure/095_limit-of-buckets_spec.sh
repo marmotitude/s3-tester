@@ -12,7 +12,7 @@ create_bucket() {
     done
 }
 
-Describe 'Create 100 buckets:' category:"Bucket Permission"
+Describe 'Create 100 buckets:' category:"BucketPermission"
   setup(){
     file1_name="LICENSE"
   }

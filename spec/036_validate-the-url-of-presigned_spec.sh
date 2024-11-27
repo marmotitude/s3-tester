@@ -1,4 +1,4 @@
-Describe 'get-presign:' category:"Bucket Sharing"
+Describe 'get-presign:' category:"BucketSharing"
   setup(){
     bucket_name="test-036-$(date +%s)"
     file1_name="LICENSE"
@@ -38,7 +38,7 @@ Describe 'get-presign:' category:"Bucket Sharing"
   End
 End
 
-Describe 'put-presign:' category:"Bucket Sharing"
+Describe 'put-presign:' category:"BucketSharing"
   setup(){
     bucket_name="test-036-$(date +%s)"
     file1_name="LICENSE"

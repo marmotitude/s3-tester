@@ -1,4 +1,4 @@
-Describe 'Copy URL for public buckets:' category:"Bucket Permission"
+Describe 'Copy URL for public buckets:' category:"BucketPermission"
   setup(){
     bucket_name="test-033-$(date +%s)"
     file1_name="LICENSE"

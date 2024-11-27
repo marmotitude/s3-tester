@@ -33,7 +33,7 @@ Include ./spec/054_utils.sh
 # constants
 % UNIQUE_SUFIX: $(date +%s)
 
-Describe 'Setup 54,55,56,58,59,60' category:"Object Management"
+Describe 'Setup 54,55,56,58,59,60' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
   End
@@ -49,7 +49,7 @@ End
 
 file_size="1"
 file_unit=${SIZE_UNIT:-"gb"}
-Describe "of size ${file_size}${file_unit}" category:"Object Management"
+Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -91,7 +91,7 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
       esac
     End
   End
-  Describe "Download Files" category:"Object Management"
+  Describe "Download Files" category:"ObjectManagement"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"058"
       create_file "$file_size" "$file_unit"
       profile=$1
@@ -132,7 +132,7 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
 End
 
 file_size="5"
-Describe "of size ${file_size}${file_unit}" category:"Object Management"
+Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
 
   Parameters:matrix
     $PROFILES
@@ -176,7 +176,7 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
       esac
     End
   End
-  Describe "Download Files" category:"Object Management"
+  Describe "Download Files" category:"ObjectManagement"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"059"
       create_file "$file_size" "$file_unit"
       profile=$1
@@ -216,7 +216,7 @@ Describe "of size ${file_size}${file_unit}" category:"Object Management"
   End
 End
 file_size="10"
-Describe "of size ${file_size}${file_unit}" category:"Object Management"
+Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
 
   Parameters:matrix
     $PROFILES
@@ -303,7 +303,7 @@ End
 teardown(){
   remove_test_bucket $profile
 }
-Describe 'Teardown 54,55,56,58,59,60' category:"Object Management"
+Describe 'Teardown 54,55,56,58,59,60' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
   End

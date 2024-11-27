@@ -1,4 +1,4 @@
-Describe 'Set a presigned URL for a private bucket:' category:"Bucket Sharing"
+Describe 'Set a presigned URL for a private bucket:' category:"BucketSharing"
   setup(){
     bucket_name="test-035-$(date +%s)"
     file1_name="LICENSE"

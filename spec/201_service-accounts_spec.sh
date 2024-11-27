@@ -9,7 +9,7 @@
 # import functions: check_missing_profile wait_for_policy_put and wait_for_policy_delete
 Include ./spec/201_utils.sh
 
-Describe "Service Accounts: " category:"Service Accounts"  id:"201"
+Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
   setup(){
     bucket_name="test-201-$(date +%s)"
     key_name="key_1"
@@ -19,7 +19,7 @@ Describe "Service Accounts: " category:"Service Accounts"  id:"201"
     $PROFILES
     $CLIENTS
   End
-  Describe "Should NOT be able to" category:"Service Accounts"  id:"202"
+  Describe "Should NOT be able to" category:"ServiceAccounts"  id:"202"
     Example "list buckets."
       profile=$1
       sa_profile=$profile-sa
@@ -79,7 +79,7 @@ Describe "Service Accounts: " category:"Service Accounts"  id:"201"
   End
 
 
-  Describe "Should be able, with bucket policy, to" category:"Service Accounts" id:"203"
+  Describe "Should be able, with bucket policy, to" category:"ServiceAccounts" id:"203"
 
     Describe "setup"
       Example "test bucket"

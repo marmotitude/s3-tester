@@ -1,7 +1,7 @@
 # import functions: wait_command
 Include ./spec/019_utils.sh
 
-Describe 'Create private bucket:' category:"Bucket Permission"
+Describe 'Create private bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-021-$(date +%s)"
     file1_name="LICENSE"

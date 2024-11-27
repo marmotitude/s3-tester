@@ -4,7 +4,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Unique bucket:' category:"Bucket Management"
+Describe 'Unique bucket:' category:"BucketManagement"
   setup(){
     bucket_name="test-090-$(date +%s)"
     file1_name="LICENSE"

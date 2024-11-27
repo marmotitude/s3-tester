@@ -2,7 +2,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Set a presigned URL for a private with ACL bucket:' category:"Bucket Sharing"
+Describe 'Set a presigned URL for a private with ACL bucket:' category:"BucketSharing"
   setup(){
     bucket_name="test-037-$(date +%s)"
     file1_name="LICENSE"

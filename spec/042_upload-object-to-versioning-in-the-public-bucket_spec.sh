@@ -1,4 +1,4 @@
-Describe 'Upload object to versioning in the public bucket:' category:"Object Versioning"
+Describe 'Upload object to versioning in the public bucket:' category:"ObjectVersioning"
   setup(){
     bucket_name="test-042-$(date +%s)"
     file1_name="LICENSE"

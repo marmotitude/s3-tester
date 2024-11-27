@@ -42,7 +42,7 @@ Describe 'Setup 84, 85, 86, 87, 88, 89'
   End
 End
 
-Describe 'Put object with storage class' category:"Cold Storage" id:"084" id:"085" id:"087"
+Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -149,7 +149,7 @@ include_cold_or_glacier() {
   value=${include_cold_or_glacier:?}
   [[ $value == *"GLACIER_IR"* ]] || [[ $value == *"COLD"* ]]
 }
-Describe 'List object with storage class' category:"Cold Storage" id:"085"
+Describe 'List object with storage class' category:"ColdStorage" id:"085"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -230,7 +230,7 @@ Describe 'List object with storage class' category:"Cold Storage" id:"085"
   End
 End
 
-Describe 'Object custom metadata with storage class' category:"Cold Storage" id:"088"
+Describe 'Object custom metadata with storage class' category:"ColdStorage" id:"088"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -287,7 +287,7 @@ Describe 'Object custom metadata with storage class' category:"Cold Storage" id:
   End
 End
 
-Describe 'Multipart upload' category:"Cold Storage" id:"086"
+Describe 'Multipart upload' category:"ColdStorage" id:"086"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -578,7 +578,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
   End
 End
 
-Describe 'Multipart upload' category:"Cold Storage" id:"086"
+Describe 'Multipart upload' category:"ColdStorage" id:"086"
   Parameters:matrix
     $PROFILES
     mgc
@@ -644,7 +644,7 @@ Describe 'Multipart upload' category:"Cold Storage" id:"086"
   End
 End
 
-Describe 'List multipart object with storage class' category:"Cold Storage" id:"086"
+Describe 'List multipart object with storage class' category:"ColdStorage" id:"086"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -724,7 +724,7 @@ Describe 'List multipart object with storage class' category:"Cold Storage" id:"
   End
 End
 
-Describe 'Change the storage class of an existing…' category:"Cold Storage" id:"087"
+Describe 'Change the storage class of an existing…' category:"ColdStorage" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -836,7 +836,7 @@ Describe 'Change the storage class of an existing…' category:"Cold Storage" id
   End
 End
 
-Describe 'List object with changed storage class' category:"Cold Storage" id:"087"
+Describe 'List object with changed storage class' category:"ColdStorage" id:"087"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -906,7 +906,7 @@ Describe 'List object with changed storage class' category:"Cold Storage" id:"08
   End
 End
 
-Describe 'Put object with ACL and storage class' category:"Cold Storage" id:"089"
+Describe 'Put object with ACL and storage class' category:"ColdStorage" id:"089"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -972,7 +972,7 @@ Describe 'Put object with ACL and storage class' category:"Cold Storage" id:"089
     esac
   End
 End
-Describe 'GET object ACL and storage class' category:"Cold Storage" id:"089"
+Describe 'GET object ACL and storage class' category:"ColdStorage" id:"089"
   Parameters:matrix
     $PROFILES
     $CLIENTS

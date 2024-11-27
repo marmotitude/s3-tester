@@ -8,7 +8,7 @@ delete_bucket() {
   wait_command bucket-not-exists $profile "$bucket_name" "$file1_name"
 }
 
-Describe 'List buckets' category:"Bucket Management" id:"011"
+Describe 'List buckets' category:"BucketManagement" id:"011"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -51,7 +51,7 @@ Describe 'List buckets' category:"Bucket Management" id:"011"
 End
 
 
-Describe 'Delete buckets' category:"Bucket Management"
+Describe 'Delete buckets' category:"BucketManagement"
   Parameters:matrix
     $PROFILES
     $CLIENTS

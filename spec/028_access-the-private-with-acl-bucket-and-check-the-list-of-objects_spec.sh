@@ -2,7 +2,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Access the Private with ACL bucket with and check the list of objects:' category:"Bucket Permission"
+Describe 'Access the Private with ACL bucket with and check the list of objects:' category:"BucketPermission"
   setup(){
     bucket_name="test-028-$(date +%s)"
     file1_name="LICENSE"
