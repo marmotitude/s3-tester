@@ -1,4 +1,4 @@
-Describe 'Validate the URL for public buckets:' category:"Bucket Sharing"
+Describe 'Validate the URL for public buckets:' category:"BucketSharing"
   setup(){
     bucket_name="test-034-$(date +%s)"
     file1_name="LICENSE"

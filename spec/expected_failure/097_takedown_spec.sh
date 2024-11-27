@@ -2,7 +2,7 @@ is_variable_null() {
   [[ $1 != *"-takedown"* ]]
 }
 
-Describe 'Takedown Create bucket:' category:"Bucket Permission"
+Describe 'Takedown Create bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
@@ -40,7 +40,7 @@ Describe 'Takedown Create bucket:' category:"Bucket Permission"
   End
 End
 
-Describe 'Takedown List buckets:' category:"Bucket Permission"
+Describe 'Takedown List buckets:' category:"BucketPermission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
@@ -78,7 +78,7 @@ Describe 'Takedown List buckets:' category:"Bucket Permission"
   End
 End
 
-Describe 'Takedown List objects:' category:"Bucket Permission"
+Describe 'Takedown List objects:' category:"BucketPermission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }
@@ -116,7 +116,7 @@ Describe 'Takedown List objects:' category:"Bucket Permission"
   End
 End
 
-Describe 'Takedown Delete object:' category:"Bucket Permission"
+Describe 'Takedown Delete object:' category:"BucketPermission"
   setup(){
     bucket_name="test-097-$(date +%s)"
     file1_name="LICENSE"
@@ -155,7 +155,7 @@ Describe 'Takedown Delete object:' category:"Bucket Permission"
   End
 End
 
-Describe 'Takedown Delete bucket:' category:"Bucket Permission"
+Describe 'Takedown Delete bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-097-$(date +%s)"
   }

@@ -1,4 +1,4 @@
-Describe 'Delete versions in batch:' category:"Object Versioning"
+Describe 'Delete versions in batch:' category:"ObjectVersioning"
   setup(){
     bucket_name="test-052-$(date +%s)"
     file1_name="LICENSE"

@@ -5,7 +5,7 @@ get_test_bucket_name(){
   echo "test-001-$profile-$client-$UNIQUE_SUFIX"
 }
 #001 is also used as setup for 015
-Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
+Describe 'Create bucket' category:"BucketManagement" id:"001" id:"015"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -43,7 +43,7 @@ Describe 'Create bucket' category:"Bucket Management" id:"001" id:"015"
 End
 
 #015 is also used as teardown of 001
-Describe 'Delete Buckets empty' category:"Bucket Management" id:"001" id:"015"
+Describe 'Delete Buckets empty' category:"BucketManagement" id:"001" id:"015"
   Parameters:matrix
     $PROFILES
     $CLIENTS

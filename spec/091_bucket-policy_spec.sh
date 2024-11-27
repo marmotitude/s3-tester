@@ -92,7 +92,7 @@ policy-with-empty() {
 }
 
 
-Describe 'Put bucket policy:' category:"Bucket Management"
+Describe 'Put bucket policy:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -138,7 +138,7 @@ Describe 'Put bucket policy:' category:"Bucket Management"
   End
 End
 
-Describe 'Delete bucket policy:' category:"Bucket Management"
+Describe 'Delete bucket policy:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -183,7 +183,7 @@ Describe 'Delete bucket policy:' category:"Bucket Management"
   End
 End
 
-Describe 'Easy public bucket policy:' category:"Bucket Management"
+Describe 'Easy public bucket policy:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -228,7 +228,7 @@ Describe 'Easy public bucket policy:' category:"Bucket Management"
   End
 End
 
-Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
+Describe 'Validate List Easy public bucket policy:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -278,7 +278,7 @@ Describe 'Validate List Easy public bucket policy:' category:"Bucket Management"
   End
 End
 
-Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
+Describe 'Validate Get Easy public bucket policy:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -325,7 +325,7 @@ Describe 'Validate Get Easy public bucket policy:' category:"Bucket Management"
   End
 End
 
-Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
+Describe 'Buckets exclusive to a specific team:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -373,7 +373,7 @@ Describe 'Buckets exclusive to a specific team:' category:"Bucket Management"
   End
 End
 
-Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Management"
+Describe 'Validate Buckets exclusive to a specific team:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -419,7 +419,7 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"Bucket Manag
   End
 End
 
-Describe 'Alternative to object-lock:' category:"Bucket Management"
+Describe 'Alternative to object-lock:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -464,7 +464,7 @@ Describe 'Alternative to object-lock:' category:"Bucket Management"
   End
 End
 
-Describe 'Validate Alternative to object-lock:' category:"Bucket Management"
+Describe 'Validate Alternative to object-lock:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -515,7 +515,7 @@ End
 ###
 # Malformed policy
 ###
-Describe 'Put bucket policy without Resources:' category:"Bucket Management"
+Describe 'Put bucket policy without Resources:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -558,7 +558,7 @@ Describe 'Put bucket policy without Resources:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy without Action:' category:"Bucket Management"
+Describe 'Put bucket policy without Action:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -601,7 +601,7 @@ Describe 'Put bucket policy without Action:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy without Principal:' category:"Bucket Management"
+Describe 'Put bucket policy without Principal:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -644,7 +644,7 @@ Describe 'Put bucket policy without Principal:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy without Effect:' category:"Bucket Management"
+Describe 'Put bucket policy without Effect:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -687,7 +687,7 @@ Describe 'Put bucket policy without Effect:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with no Statement:' category:"Bucket Management"
+Describe 'Put bucket policy with no Statement:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -733,7 +733,7 @@ End
 ###
 # Invalid fields
 ###
-Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Management"
+Describe 'Put bucket policy with Resource outside bucket:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -775,7 +775,7 @@ Describe 'Put bucket policy with Resource outside bucket:' category:"Bucket Mana
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
+Describe 'Put bucket policy with empty Resource:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -818,7 +818,7 @@ Describe 'Put bucket policy with empty Resource:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
+Describe 'Put bucket policy with empty Action:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -861,7 +861,7 @@ Describe 'Put bucket policy with empty Action:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
+Describe 'Put bucket policy with empty Principal:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -904,7 +904,7 @@ Describe 'Put bucket policy with empty Principal:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
+Describe 'Put bucket policy with empty Effect:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -947,7 +947,7 @@ Describe 'Put bucket policy with empty Effect:' category:"Bucket Management"
     bash ./spec/retry_command.sh "rclone purge $profile:$test_bucket_name" > /dev/null
   End
 End
-Describe 'Put bucket policy with empty Statement:' category:"Bucket Management"
+Describe 'Put bucket policy with empty Statement:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -993,7 +993,7 @@ End
 ###
 # Cross access
 ###
-Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is locked:' category:"Bucket Management"
+Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is locked:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -1047,7 +1047,7 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
   End
 End
 
-Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 cannot do other operations:' category:"Bucket Management"
+Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 cannot do other operations:' category:"BucketManagement"
   local ready=false
   setup(){
     bucket_name="test-091-$(date +%s)"
@@ -1203,7 +1203,7 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
   End
 End
 
-Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 cannot do other operations:' category:"Bucket Management"
+Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 cannot do other operations:' category:"BucketManagement"
   setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"
@@ -1358,7 +1358,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
   End
 End
 
-Describe 'Owner denies all access but can still change policy:' category:"Bucket Management"
+Describe 'Owner denies all access but can still change policy:' category:"BucketManagement"
     setup(){
     bucket_name="test-091-$(date +%s)"
     file1_name="LICENSE"

@@ -25,7 +25,7 @@ delete_buckets() {
 #   echo  "$k"
 # done
 
-Describe 'Object keys' category:"Object Management"
+Describe 'Object keys' category:"ObjectManagement"
   Parameters:dynamic
     for i in $PROFILES; do
       for k in $NAMES; do

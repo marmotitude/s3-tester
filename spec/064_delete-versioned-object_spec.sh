@@ -16,7 +16,7 @@ get_test_bucket_name(){
 get_uploaded_key(){
   echo "test--$profile--$client--$1--$UNIQUE_SUFIX"
 }
-Describe "setup 064" category:"Object Management" id:"064"
+Describe "setup 064" category:"ObjectManagement" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS
@@ -70,7 +70,7 @@ Describe "setup 064" category:"Object Management" id:"064"
   End
 End
 
-Describe "Delete versioned object" category:"Object Management" id:"064"
+Describe "Delete versioned object" category:"ObjectManagement" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS
@@ -131,7 +131,7 @@ Describe "Delete versioned object" category:"Object Management" id:"064"
   End
 End
 
-Describe "teardown 064" category:"Object Management" id:"064"
+Describe "teardown 064" category:"ObjectManagement" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS

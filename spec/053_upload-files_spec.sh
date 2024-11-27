@@ -35,7 +35,7 @@ Describe 'Setup 53,57,61,62,63'
   End
 End
 
-Describe 'Upload Files' category:"Object Management"
+Describe 'Upload Files' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -77,7 +77,7 @@ Describe 'Upload Files' category:"Object Management"
     # Assert that the file was uploaded by waiting for object-exists
     aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
   End
-  Describe 'Download Files' category:"Object Management" id:"057"
+  Describe 'Download Files' category:"ObjectManagement" id:"057"
     Example "from test bucket of profile $1, The file $3, using client $2"
       profile=$1
       client=$2
@@ -115,7 +115,7 @@ Describe 'Upload Files' category:"Object Management"
     End
   End
 End
-Describe 'List Objects' category:"Object Management" id:"061"
+Describe 'List Objects' category:"ObjectManagement" id:"061"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -166,7 +166,7 @@ End
 first_file="${FILES%% *}"
 remaining_files="${FILES#* }"
 
-Describe 'Delete' category:"Object Management"
+Describe 'Delete' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
     $CLIENTS

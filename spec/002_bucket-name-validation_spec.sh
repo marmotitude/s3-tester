@@ -22,7 +22,7 @@ check_length() {
     fi
 }
 
-Describe 'Create bucket' category:"Bucket Management"
+Describe 'Create bucket' category:"BucketManagement"
   Parameters:matrix
     $PROFILES
     $CLIENTS

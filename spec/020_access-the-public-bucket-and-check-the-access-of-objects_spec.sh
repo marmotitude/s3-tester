@@ -1,4 +1,4 @@
-Describe 'Access the public bucket and check the access of objects:' category:"Bucket Permission"
+Describe 'Access the public bucket and check the access of objects:' category:"BucketPermission"
   setup(){
     bucket_name="test-020-$(date +%s)"
     file1_name="LICENSE"

@@ -2,7 +2,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Delete private with ACL bucket:' category:"Bucket Permission"
+Describe 'Delete private with ACL bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-032-$(date +%s)"
     file1_name="LICENSE"

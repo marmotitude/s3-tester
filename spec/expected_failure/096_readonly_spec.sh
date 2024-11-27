@@ -2,7 +2,7 @@ is_variable_null() {
   [[ $1 != *"-readonly"* ]]
 }
 
-Describe 'Read-only Create bucket:' category:"Bucket Permission"
+Describe 'Read-only Create bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -40,7 +40,7 @@ Describe 'Read-only Create bucket:' category:"Bucket Permission"
   End
 End
 
-Describe 'Read-only List buckets:' category:"Bucket Permission"
+Describe 'Read-only List buckets:' category:"BucketPermission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -78,7 +78,7 @@ Describe 'Read-only List buckets:' category:"Bucket Permission"
   End
 End
 
-Describe 'Read-only List objects:' category:"Bucket Permission"
+Describe 'Read-only List objects:' category:"BucketPermission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -114,7 +114,7 @@ Describe 'Read-only List objects:' category:"Bucket Permission"
   End
 End
 
-Describe 'Read-only Delete object:' category:"Bucket Permission"
+Describe 'Read-only Delete object:' category:"BucketPermission"
   setup(){
     bucket_name="test-096-$(date +%s)"
     file1_name="LICENSE"
@@ -156,7 +156,7 @@ Describe 'Read-only Delete object:' category:"Bucket Permission"
   End
 End
 
-Describe 'Read-only Delete bucket:' category:"Bucket Permission"
+Describe 'Read-only Delete bucket:' category:"BucketPermission"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
