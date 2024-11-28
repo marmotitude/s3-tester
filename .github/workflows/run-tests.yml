@@ -1,0 +1,60 @@
+# Run Tests Workflow
+#
+# This reusable workflow is designed to execute S3 compatibility tests across 
+# multiple categories, regions, and clients. It is intended to be invoked 
+# by other workflows
+
+name: Run Tests
+on:
+  workflow_call:
+    inputs:
+      category: { required: true, type: string }
+      region: { required: true, type: string }
+      client: { required: true, type: string }
+      number_of_waits: { required: true, type: string }
+      skip_known_issues: { required: true, type: string }
+    secrets:
+      PROFILES: { required: true }
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/marmotitude/s3-tester:tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        env:
+          PROFILES: ${{ secrets.PROFILES }}
+        run: |
+          echo "==> Test parameters:"
+          echo "Category: ${{ inputs.category }}"
+          echo "Region: ${{ inputs.region }}"
+          echo "Client: ${{ inputs.client }}"
+          echo "Number of Waits: ${{ inputs.number_of_waits }}"
+          echo "Skip Known Issues: ${{ inputs.skip_known_issues }}"
+          echo copying branch files to the container workspace...
+          cp $GITHUB_WORKSPACE/spec/*.sh /app/spec/.
+          cp $GITHUB_WORKSPACE/oci/tests.entrypoint.sh /app/entrypoint.sh
+          cp $GITHUB_WORKSPACE/bin/test.sh /app/bin/test.sh
+          cd /app
+          mgc --version
+          sha256sum "$(which mgc)"
+          ./entrypoint.sh test.sh \
+            --profiles "${{ inputs.region }}" \
+            --clients "${{ inputs.client }}" \
+            --categories "${{ inputs.category }}" \
+            -- \
+            --reportdir "report/${{ inputs.region }}/${{ inputs.client }}/${{ inputs.category }}" \
+            --env SKIP_KNOWN_ISSUES="${{ inputs.skip_known_issues }}" \
+            --env NUMBER_OF_WAITS="${{ inputs.number_of_waits }}" \
+            --color
+
+      - name: Cleanup
+        if: always()
+        continue-on-error: true
+        run: |
+          cp $GITHUB_WORKSPACE/bin/clear_buckets.sh /app/bin/clear_buckets.sh
+          cd /app
+          ./bin/clear_buckets.sh "${{ inputs.region }}"
