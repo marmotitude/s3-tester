@@ -24,6 +24,8 @@ jobs:
           mgc --version
           sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_1 }}" --tests "${{ vars.CRON_TESTS_1 }}" --clients "${{ vars.CRON_CLIENTS_1 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./bin/clear_buckets.sh "${{ vars.CRON_PROFILES_1 }}"
+
       - name: "Profiles: ${{ vars.CRON_PROFILES_2 }}; Clients: ${{ vars.CRON_CLIENTS_2}}; Tests: ${{ vars.CRON_TESTS_2 }};"
         if: github.event.schedule == '35 * * * *'
         run: |
@@ -33,6 +35,7 @@ jobs:
           mgc --version
           sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_2 }}" --tests "${{ vars.CRON_TESTS_2 }}" --clients "${{ vars.CRON_CLIENTS_2 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./bin/clear_buckets.sh "${{ vars.CRON_PROFILES_2 }}"
       - name: "Profiles: ${{ vars.CRON_PROFILES_3 }}; Clients: ${{ vars.CRON_CLIENTS_3}}; Tests: ${{ vars.CRON_TESTS_3 }};"
         if: github.event.schedule == '0 */8 * * *'
         run: |
@@ -42,6 +45,7 @@ jobs:
           mgc --version
           sha256sum `which mgc`
           ./entrypoint.sh test.sh --profiles "${{ vars.CRON_PROFILES_3 }}" --tests "${{ vars.CRON_TESTS_3 }}" --clients "${{ vars.CRON_CLIENTS_3 }}" -- --env NUMBER_OF_WAITS=${{ vars.NUMBER_OF_WAITS }} --env SKIP_KNOWN_ISSUES=${{ vars.SKIP_KNOWN_ISSUES }} --color
+          ./bin/clear_buckets.sh "${{ vars.CRON_PROFILES_3 }}"
       - name: webhook send
         if: always()
         run: |
