@@ -1,4 +1,13 @@
-# Running tests from Github workers
+# Periodic Automatic Test Runs on GitHub Workers
+
+This project includes a schedule of test runs defined in the 
+[scheduled-by-category](./scheduled-by-category.yml) file.
+
+These periodic tests aim to cover all available test categories at least once a day. 
+Longer-running test categories are executed less frequently, while quicker and more critical tests 
+are run more often to ensure timely feedback.
+
+# Running tests manually from Github workers
 
 The shellspec tests from s3-tester `spec` folder can be triggered to run online using Github's
 Actions web interface or using Github API's workflows endpoint.
