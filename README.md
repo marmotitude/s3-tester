@@ -21,6 +21,15 @@ The tests assumes that you have configured all cli tools (aws-cli, rclone and mg
 profile names. And tests like the ACL ones that needs 2 profiles uses a convention of the second
 one being named `<name-of-one-profile>-second`.
 
+#### Run sets of tests (modules/categories)
+
+Tests are classified in groups by functionality, you can test selected groups by using the
+`--categories` option of the test.sh script:
+
+```
+./bin/test.sh --profiles br-ne1 --clients aws --categories BucketSharing,ColdStorage
+```
+
 ### Bun Test (aws-sdk-js)
 
 ```
