@@ -64,7 +64,8 @@ Describe 'put-presign:' category:"BucketSharing"
       ;;
     "mgc")
     mgc workspace set $profile > /dev/null
-    presign_url=$(mgc object-storage objects presign --dst $test_bucket_name/$file1_name --expires-in "5m" --method PUT)
+    presign_url=$(mgc object-storage objects presign --dst $test_bucket_name/$file1_name --expires-in "5m" --method PUT); presign_url="https${presign_url#*https}"
+    echo "$presign_url"
     When run curl -X PUT -T $file1_name $presign_url
     The error should include Current
       ;;
