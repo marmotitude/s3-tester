@@ -1,7 +1,7 @@
 # Periodic Tests by Category
 # 
-# This workflow runs on a schedule with 3 main frequencies, hourly, six-hourly and daily
-# and for each of those periodicies different sets of test category tags.
+# This workflow runs on a schedule with 4 main frequencies, hourly, six-hourly and two daily
+# (midnight and noon) and for each of those periodicies different sets of test category tags.
 
 name: Periodic Tests by Category
 
@@ -9,7 +9,8 @@ on:
   schedule:
     - cron: '0 * * * *'    # Hourly tests
     - cron: '0 */6 * * *'  # Six-hourly tests
-    - cron: '0 0 * * *'    # Daily tests
+    - cron: '0 0 * * *'    # Daily tests (midnight)
+    - cron: '0 12 * * *'   # Daily tests (noon)
   push:
     branches:
       - schedule-all # for debugging purposes, a branch name can be used here
@@ -72,8 +73,32 @@ jobs:
     secrets:
       PROFILES: ${{ secrets.PROFILES }}
 
-  daily-tests:
-    if: github.event.schedule == '0 0 * * *' # Daily schedule
+  daily-tests-noon:
+    if: github.event.schedule == '0 12 * * *' # Daily schedule (noon)
+    strategy:
+      matrix:
+        category:
+          - BigObjects
+        region:
+          - br-ne1
+          - br-se1
+        client:
+          - aws
+          - mgc
+          - rclone
+    name: 1d ${{ matrix.category }} ${{ matrix.region }} ${{ matrix.client }}
+    uses: ./.github/workflows/run-tests.yml
+    with:
+      category: ${{ matrix.category }}
+      region: ${{ matrix.region }}
+      client: ${{ matrix.client }}
+      number_of_waits: ${{ vars.NUMBER_OF_WAITS }}
+      skip_known_issues: ${{ vars.SKIP_KNOWN_ISSUES }}
+    secrets:
+      PROFILES: ${{ secrets.PROFILES }}
+
+  daily-tests-midnight:
+    if: github.event.schedule == '0 0 * * *' # Daily schedule (midnight)
     strategy:
       matrix:
         category:

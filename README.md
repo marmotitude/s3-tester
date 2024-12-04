@@ -134,13 +134,13 @@ make it easy to reference specific human-readable descriptions to a test number.
 | 052 | Object Versioning|Delete versions in batch| |
 |||||
 | 053 | Object Management|Upload Files| aws-s3api, aws-s3, rclone, mgc |
-| 054 | Object Management|Upload Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
-| 055 | Object Management|Upload Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
-| 056 | Object Management|Upload Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
+| 054 | Big Objects|Upload Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
+| 055 | Big Objects|Upload Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
+| 056 | Big Objects|Upload Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
 | 057 | Object Management|Download Files| aws-s3api, aws-s3, rclone, mgc |
-| 058 | Object Management|Download Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
-| 059 | Object Management|Download Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
-| 060 | Object Management|Download Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
+| 058 | Big Objects|Download Files of 1GB| aws-s3api, aws-s3, rclone, mgc |
+| 059 | Big Objects|Download Files of 5GB| aws-s3api, aws-s3, rclone, mgc |
+| 060 | Big Objects|Download Files of 10GB| aws-s3api, aws-s3, rclone, mgc |
 | 061 | Object Management|List Objects| aws-s3api, aws-s3, rclone, mgc |
 | 062 | Object Management|Delete Objects| aws-s3api, aws-s3, rclone, mgc |
 | 063 | Object Management|Delete objects in batch| aws-s3api, aws-s3, rclone, mgc |

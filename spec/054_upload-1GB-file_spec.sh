@@ -33,7 +33,7 @@ Include ./spec/054_utils.sh
 # constants
 % UNIQUE_SUFIX: $(date +%s)
 
-Describe 'Setup 54,55,56,58,59,60' category:"ObjectManagement"
+Describe 'Setup 54,55,56,58,59,60' category:"BigObjects"
   Parameters:matrix
     $PROFILES
   End
@@ -49,7 +49,7 @@ End
 
 file_size="1"
 file_unit=${SIZE_UNIT:-"gb"}
-Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
+Describe "of size ${file_size}${file_unit}" category:"BigObjects"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -94,7 +94,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
       aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
     End
   End
-  Describe "Download Files" category:"ObjectManagement"
+  Describe "Download Files" category:"BigObjects"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"058"
       profile=$1
       client=$2
@@ -135,7 +135,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
 End
 
 file_size="5"
-Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
+Describe "of size ${file_size}${file_unit}" category:"BigObjects"
 
   Parameters:matrix
     $PROFILES
@@ -182,7 +182,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
       aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
     End
   End
-  Describe "Download Files" category:"ObjectManagement"
+  Describe "Download Files" category:"BigObjects"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"059"
       profile=$1
       client=$2
@@ -222,7 +222,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
   End
 End
 file_size="10"
-Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
+Describe "of size ${file_size}${file_unit}" category:"BigObjects"
 
   Parameters:matrix
     $PROFILES
@@ -312,7 +312,7 @@ End
 teardown(){
   remove_test_bucket $profile
 }
-Describe 'Teardown 54,55,56,58,59,60' category:"ObjectManagement"
+Describe 'Teardown 54,55,56,58,59,60' category:"BigObjects"
   Parameters:matrix
     $PROFILES
   End
