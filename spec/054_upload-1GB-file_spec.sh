@@ -90,6 +90,8 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         ;;
       esac
       rm $local_file
+      # Assert that the file was uploaded by waiting for object-exists
+      aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
     End
   End
   Describe "Download Files" category:"ObjectManagement"
@@ -176,6 +178,8 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         ;;
       esac
       rm $local_file
+      # Assert that the file was uploaded by waiting for object-exists
+      aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
     End
   End
   Describe "Download Files" category:"ObjectManagement"
@@ -261,6 +265,8 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         ;;
       esac
       rm $local_file
+      # Assert that the file was uploaded by waiting for object-exists
+      aws s3api --profile $profile wait object-exists --bucket $BUCKET_NAME --key $key
     End
   End
   Describe "Download Files"
