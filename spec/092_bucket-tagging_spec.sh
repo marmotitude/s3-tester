@@ -32,8 +32,7 @@ Describe 'Put bucket tagging:' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag
+      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
       The stdout should include ""
       The status should be success
       ;;
@@ -73,8 +72,7 @@ Describe 'Get bucket tagging:' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets get-bucket-label --bucket $test_bucket_name"
-      # When run mgc object-storage buckets get-bucket-label --bucket $test_bucket_name
+      When run mgc object-storage buckets label get --bucket $test_bucket_name
       The stdout should include "organization"
       The status should be success
       ;;
@@ -113,8 +111,7 @@ Describe 'Delete bucket tagging:' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets delete-bucket-label --bucket $test_bucket_name"
-      # When run mgc object-storage buckets delete-bucket-label --bucket $test_bucket_name
+      When run mgc object-storage buckets label delete --bucket $test_bucket_name --label $tag
       The stdout should include ""
       The status should be success
       ;;
@@ -153,8 +150,7 @@ Describe 'Put bucket tagging wrong json:' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag
+      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
       The stdout should include "Error parsing parameter '--tagging'"
       The status should be failure
       ;;
@@ -193,8 +189,7 @@ Describe 'Put bucket tagging with wrong "value":' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag
+      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
       The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
       The status should be failure
       ;;
@@ -232,8 +227,7 @@ Describe 'Put bucket tagging with file:' category:"BucketTagging"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag
+      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $file1_name
       The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
       The status should be failure
       ;;
@@ -264,15 +258,14 @@ Describe 'Put bucket tagging with wrong file:' category:"BucketTagging"
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3api put-bucket-tagging --bucket $test_bucket_name --tagging file://$file1_name
       The stderr should include ""
-      The status should be success
+      The status should be failure
       ;;
     "rclone")
       Skip "Skipped test to $client"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag"
-      # When run mgc object-storage buckets put-bucket-label --bucket $test_bucket_name --labelling $tag
+      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $file1_name
       The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
       The status should be failure
       ;;
