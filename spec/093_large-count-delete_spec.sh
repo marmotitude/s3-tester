@@ -42,7 +42,7 @@ Describe 'Delete large bucket with 100 objects:' category:"BigBuckets"
       The status should be success
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
       When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
@@ -97,7 +97,7 @@ Describe 'Delete large bucket with 1000 objects:' category:"BigBuckets"
       The status should be success
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
       When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
@@ -152,7 +152,7 @@ Describe 'Delete large bucket with 10000 objects:' category:"BigBuckets"
       The status should be success
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
       When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
@@ -207,7 +207,7 @@ Describe 'Delete large bucket with 50000 objects:' category:"BigBuckets"
       The status should be success
       ;;
     "mgc")
-      mgc profile set $profile > /dev/null
+      mgc workspace set $profile > /dev/null
       start_time=$(date +%s) > /dev/null
       When run mgc object-storage buckets delete --recursive --bucket $test_bucket_name
       end_time=$(date +%s) > /dev/null
