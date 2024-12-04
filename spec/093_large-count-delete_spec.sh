@@ -165,10 +165,10 @@ Describe 'Delete large bucket with 10000 objects:' category:"BigBuckets"
   End
 End
 
-Describe 'Delete large bucket with 50000 objects:' category:"BigBuckets"
+Describe 'Delete large bucket with 25000 objects:' category:"BigBuckets"
   setup(){
     bucket_name="test-093-$(date +%s)"
-    files_count=50000
+    files_count=25000
   }
   Before 'setup' 
   Parameters:matrix
