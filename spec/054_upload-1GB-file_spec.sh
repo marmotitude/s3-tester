@@ -89,11 +89,11 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$BUCKET_NAME/$key"
         ;;
       esac
+      rm $local_file
     End
   End
   Describe "Download Files" category:"ObjectManagement"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"058"
-      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
       BUCKET_NAME=$(get_test_bucket_name)
@@ -127,6 +127,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$out_file"
         ;;
       esac
+      rm $out_file
     End
   End
 End
@@ -174,11 +175,11 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$BUCKET_NAME/$key"
         ;;
       esac
+      rm $local_file
     End
   End
   Describe "Download Files" category:"ObjectManagement"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"059"
-      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
       BUCKET_NAME=$(get_test_bucket_name)
@@ -212,6 +213,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$out_file"
         ;;
       esac
+      rm $out_file
     End
   End
 End
@@ -258,11 +260,11 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$BUCKET_NAME/$key"
         ;;
       esac
+      rm $local_file
     End
   End
   Describe "Download Files"
     Example "on profile $1, using client $2, download $file_size$file_unit from bucket $BUCKET_NAME" id:"060"
-      create_file "$file_size" "$file_unit"
       profile=$1
       client=$2
       BUCKET_NAME=$(get_test_bucket_name)
@@ -296,6 +298,7 @@ Describe "of size ${file_size}${file_unit}" category:"ObjectManagement"
         The output should include "$out_file"
         ;;
       esac
+      rm $out_file
     End
   End
 End

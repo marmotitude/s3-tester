@@ -29,7 +29,6 @@ Describe 'Setup 53,57,61,62,63' category:"ObjectManagement"
   Example "create test bucket using rclone" id:"053" id:"057" id:"061" id:"062" id:"063"
     profile=$1
     bucket_name=$(get_test_bucket_name)
-    echo "SETUUUUP"
     # rclone wont exit 1 even if the bucket exists, which makes this action indepotent
     When run rclone mkdir "$profile:$bucket_name"
     The status should be success
@@ -49,7 +48,6 @@ Describe 'Upload Files' category:"ObjectManagement"
     BUCKET_NAME=$(get_test_bucket_name)
     key=$(get_uploaded_key "$local_file")
 
-    echo "TESTEEEE 1"
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile $profile s3api put-object --bucket $BUCKET_NAME --body $local_file --key $key
