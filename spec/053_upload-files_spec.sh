@@ -22,7 +22,7 @@ Include ./spec/053_utils.sh
 % UNIQUE_SUFIX: $(date +%s)
 % FILES: "LICENSE README.md profiles.example.yaml"
 
-Describe 'Setup 53,57,61,62,63'
+Describe 'Setup 53,57,61,62,63' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
   End
@@ -281,7 +281,7 @@ End
 teardown(){
   remove_test_bucket $profile $UNIQUE_SUFIX
 }
-Describe 'Teardown 53,57,61,62,63'
+Describe 'Teardown 53,57,61,62,63' category:"ObjectManagement"
   Parameters:matrix
     $PROFILES
   End
