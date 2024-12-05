@@ -212,7 +212,7 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         "aws-s3api" | "aws" | "aws-s3")
           When run aws s3api put-object --profile $sa_profile --bucket $test_bucket_name --key $key_name --body $file
           The status should be failure
-          The stderr should include "AccessDeniedByBucketPolicy"
+          The stderr should include "AccessDenied"
           ;;
         "rclone")
           ;;
