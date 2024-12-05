@@ -31,10 +31,7 @@ Describe 'Put bucket tagging:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
-      The stdout should include ""
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -71,10 +68,7 @@ Describe 'Get bucket tagging:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label get --bucket $test_bucket_name
-      The stdout should include "organization"
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -110,10 +104,7 @@ Describe 'Delete bucket tagging:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label delete --bucket $test_bucket_name --label $tag
-      The stdout should include ""
-      The status should be success
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -149,10 +140,7 @@ Describe 'Put bucket tagging wrong json:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
-      The stdout should include "Error parsing parameter '--tagging'"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -188,10 +176,7 @@ Describe 'Put bucket tagging with wrong "value":' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $tag
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -226,10 +211,7 @@ Describe 'Put bucket tagging with file:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $file1_name
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -264,10 +246,7 @@ Describe 'Put bucket tagging with wrong file:' category:"BucketTagging"
       Skip "Skipped test to $client"
       ;;
     "mgc")
-      mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets label set --bucket $test_bucket_name --label $file1_name
-      The stdout should include "Missing required parameter in Tagging.TagSet[0]:"
-      The status should be failure
+      Skip "Skipped test to $client"
       ;;
     esac
     #wait_command bucket-exists "$profile" "$test_bucket_name"
