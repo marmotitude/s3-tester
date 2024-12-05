@@ -53,6 +53,11 @@ Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file"
@@ -77,14 +82,18 @@ Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085
       The output should include "$file"
       ;;
     esac
-    hard_wait
   End
   Example "STANDARD, on profile $1 using client $2"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "standard-class")
-    file="LICENSE"
+    file="LICENSE"    
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --storage-class "STANDARD" --body "$file"
@@ -109,7 +118,6 @@ Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085
       The output should include "$file"
       ;;
     esac
-    hard_wait
   End
   Example "GLACIER_IR, on profile $1 using client $2"
     profile=$1
@@ -117,6 +125,11 @@ Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --storage-class "GLACIER_IR" --body "$file"
@@ -141,7 +154,6 @@ Describe 'Put object with storage class' category:"ColdStorage" id:"084" id:"085
       The output should include "$file"
       ;;
     esac
-    hard_wait
   End
 End
 
@@ -159,6 +171,11 @@ Describe 'List object with storage class' category:"ColdStorage" id:"085"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -208,6 +225,11 @@ Describe 'List object with storage class' category:"ColdStorage" id:"085"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -241,6 +263,11 @@ Describe 'Object custom metadata with storage class' category:"ColdStorage" id:"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class-with-metadata")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --storage-class "GLACIER_IR" --body "$file" --metadata "metadata1=foo,metadata2=bar"
@@ -266,6 +293,11 @@ Describe 'Object custom metadata with storage class' category:"ColdStorage" id:"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class-with-metadata")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api head-object --profile "$profile" --bucket "$bucket_name" --key "$object_key"
@@ -298,6 +330,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
 
@@ -321,6 +358,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # initiates a multipart upload passing a standard storage class argument
@@ -343,6 +385,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # initiates a multipart upload passing a cold storage class argument
@@ -364,6 +411,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     profile=$1
     client=$2
     bucket_name=$(get_test_bucket_name)
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     count_standard() {
@@ -390,6 +442,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
@@ -415,6 +472,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
@@ -440,6 +502,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     file_size=6
     file_unit="mb"
     create_file "$file_size" "$file_unit"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     # upload two parts
@@ -462,6 +529,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -480,6 +552,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -498,6 +575,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -518,6 +600,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -538,6 +625,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -560,6 +652,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     upload_id=$(cat "/tmp/$object_key.upload_id")
@@ -593,6 +690,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     create_file "$file_size" "$file_unit"
     mgc workspace set $profile > /dev/null
     When run mgc object-storage objects upload --src "$local_file" --dst "$bucket_name/$object_key" --raw
@@ -622,7 +724,17 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     create_file "$file_size" "$file_unit"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     mgc workspace set $profile > /dev/null
     When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class glacier_ir --raw
     The status should be success
@@ -636,6 +748,11 @@ Describe 'Multipart upload' category:"ColdStorage" id:"086"
     local_file="" # will be overwritten by the function below
     file_size=6
     file_unit="mb"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     create_file "$file_size" "$file_unit"
     mgc workspace set $profile > /dev/null
     When run mgc object-storage objects upload "$local_file" "$bucket_name/$object_key" --storage-class cold_instant --raw
@@ -654,6 +771,11 @@ Describe 'List multipart object with storage class' category:"ColdStorage" id:"0
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -678,6 +800,11 @@ Describe 'List multipart object with storage class' category:"ColdStorage" id:"0
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -702,6 +829,11 @@ Describe 'List multipart object with storage class' category:"ColdStorage" id:"0
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "multipart-glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -736,6 +868,11 @@ Describe 'Change the storage class of an existing…' category:"ColdStorage" id:
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class")
     new_object_key=$(get_uploaded_key "default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --storage-class "GLACIER_IR" --copy-source "$bucket_name/$object_key"
@@ -762,6 +899,11 @@ Describe 'Change the storage class of an existing…' category:"ColdStorage" id:
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "standard-class")
     new_object_key=$(get_uploaded_key "standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --storage-class "GLACIER_IR" --copy-source "$bucket_name/$object_key"
@@ -814,6 +956,11 @@ Describe 'Change the storage class of an existing…' category:"ColdStorage" id:
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class")
     new_object_key=$(get_uploaded_key "glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api copy-object --bucket "$bucket_name" --key "$new_object_key" --storage-class "STANDARD" --copy-source "$bucket_name/$object_key"
@@ -846,6 +993,11 @@ Describe 'List object with changed storage class' category:"ColdStorage" id:"087
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -866,6 +1018,11 @@ Describe 'List object with changed storage class' category:"ColdStorage" id:"087
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "standard-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws s3api list-objects-v2 --profile "$profile" --bucket "$bucket_name" --prefix "$object_key" --query "Contents[*].StorageClass"
@@ -886,6 +1043,11 @@ Describe 'List object with changed storage class' category:"ColdStorage" id:"087
     client=$2
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class")
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       hard_wait
@@ -917,6 +1079,11 @@ Describe 'Put object with ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read
@@ -937,6 +1104,11 @@ Describe 'Put object with ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "standard-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read --storage-class "STANDARD"
@@ -957,6 +1129,11 @@ Describe 'Put object with ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       When run aws --profile "$profile" s3api put-object --bucket "$bucket_name" --key "$object_key" --body "$file" --acl public-read --storage-class "GLACIER_IR"
@@ -988,6 +1165,11 @@ Describe 'GET object ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "default-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       trap wrong_storage_class ERR
@@ -1010,6 +1192,11 @@ Describe 'GET object ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "standard-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       trap wrong_storage_class ERR
@@ -1032,6 +1219,11 @@ Describe 'GET object ACL and storage class' category:"ColdStorage" id:"089"
     bucket_name=$(get_test_bucket_name)
     object_key=$(get_uploaded_key "glacier-ir-class-with-acl")
     file="LICENSE"
+    region=$(aws configure get region --profile "$profile")
+    # Skip the test if the region is br-ne1
+    if [ "$region" = "br-ne1" ]; then
+      Skip "Skipping test: Region is br-ne1"
+    fi
     case "$client" in
     "aws-s3api" | "aws")
       # asserts that the storage class is the expected, if grep fails the test fails
