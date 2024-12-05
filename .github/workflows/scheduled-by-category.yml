@@ -25,6 +25,7 @@ jobs:
           - BucketPermissions
           - BucketSharing
           - BucketTagging
+          - BucketLabelling
           - ColdStorage
           - ServiceAccounts
         region:
