@@ -29,7 +29,7 @@ hard_wait() {
     aws s3api --profile $profile wait object-exists --bucket $bucket_name --key $object_key
     echo hard wait, $object_key exists on bucket $bucket_name and profile $profile
 }
-Describe 'Setup 84, 85, 86, 87, 88, 89'
+Describe 'Setup 84, 85, 86, 87, 88, 89' category:"ColdStorage"
   Parameters:matrix
     $PROFILES
   End
