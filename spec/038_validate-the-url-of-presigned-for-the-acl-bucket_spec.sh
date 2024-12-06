@@ -36,7 +36,7 @@ Describe 'Validate the URL of presigned for the ACL bucket:' category:"BucketSha
     "mgc")
     mgc workspace set $profile > /dev/null
     presign_url=$(mgc object-storage objects presign --dst $test_bucket_name/$file1_name --expires-in "5m")
-    When run curl $presign_url
+    When run curl "$presign_url"
     The output should include Copyright
     The error should include Current
       ;;
