@@ -30,11 +30,10 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     ;;
     "mgc")
       mgc workspace set $profile-second > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $test_bucket_name/$file1_name --dst . --raw"
-      #When run mgc object-storage objects download --src $test_bucket_name/$file1_name --dst . --raw
+      #When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $test_bucket_name/$file1_name --dst . --raw"
+      When run mgc object-storage objects download --src $test_bucket_name/$file1_name --dst . --raw
       The status should be failure
-      The output should include "403 Forbidden"
-      #The stderr should include "403 Forbidden"
+      The stderr should include "403 Forbidden"
       ;;
     esac
     rclone purge --log-file /dev/null "$profile:$test_bucket_name" > /dev/null
