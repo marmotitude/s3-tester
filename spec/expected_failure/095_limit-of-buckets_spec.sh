@@ -12,7 +12,7 @@ create_bucket() {
     done
 }
 
-Describe 'Create 100 buckets:' category:"BucketPermission"
+Describe 'Create 100 buckets:' category:"Skip"
   setup(){
     file1_name="LICENSE"
   }

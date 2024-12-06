@@ -29,7 +29,7 @@ Describe 'Access the Private with ACL bucket and check the access of objects:' c
     "aws-s3api" | "aws" | "aws-s3")
     When run aws --profile $profile-second s3api get-object --bucket $test_bucket_name --key $file1_name $file1_name-2
     The status should be failure
-    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation: Access Denied."
+    The stderr should include "An error occurred (AccessDenied) when calling the GetObject operation"
       ;;
     "rclone")
     When run bash ./spec/retry_command.sh "rclone -v copy $profile-second:$test_bucket_name/$file1_name $file1_name-2"

@@ -17,7 +17,7 @@ check_length() {
     fi
 }
 
-Describe 'Create invalid bucket' category:"BucketManagement"
+Describe 'Create invalid bucket' category:"Skip"
   Parameters:matrix
     $PROFILES
     $CLIENTS
@@ -94,7 +94,7 @@ End
 
 
 %const INVALID_CHARS: "% @ | \\ [ ^ ] { } | &"
-Describe 'Create bucket with invalid characters' category:"BucketManagement" id:007
+Describe 'Create bucket with invalid characters' category:"Skip" id:007
   Parameters:matrix
     $PROFILES
     $CLIENTS

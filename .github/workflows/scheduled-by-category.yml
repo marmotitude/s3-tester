@@ -23,9 +23,9 @@ jobs:
       matrix:
         category:
           - BucketManagement
-          - BucketPermissions
+          - BucketPermission
           - BucketSharing
-          - BucketTagging
+          - BucketLabelling
           - ColdStorage
           - ServiceAccounts
         region:
