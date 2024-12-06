@@ -4,7 +4,7 @@ is_variable_null() {
   [ -z "$1" ]
 }
 
-Describe 'Put bucket tagging:' category:"BucketTagging"
+Describe 'Put bucket tagging:' category:"BucketLabelling"
   setup(){
     bucket_name="test-092-$(date +%s)"
     file1_name="LICENSE"

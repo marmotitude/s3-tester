@@ -24,7 +24,6 @@ jobs:
           - BucketManagement
           - BucketPermission
           - BucketSharing
-          - BucketTagging
           - BucketLabelling
           - ColdStorage
           - ServiceAccounts
