@@ -111,6 +111,7 @@ Describe 'Read-only List objects:' category:"BucketPermission"
       The stdout should include FILES
       ;;
     esac
+    rclone purge --log-file /dev/null "$1:$test_bucket_name" > /dev/null
     The status should be success
   End
 End
