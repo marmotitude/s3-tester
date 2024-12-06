@@ -93,20 +93,21 @@ Describe 'Read-only List objects:' category:"BucketPermission"
     test_bucket_name="$bucket_name-$client-$profile"
     printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
+    aws --profile $1 s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api list-objects-v2 --bucket test-test #$test_bucket_name
+      When run aws --profile $profile s3api list-objects-v2 --bucket $test_bucket_name
       The stdout should include RequestCharged
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 ls s3://test-test #$test_bucket_name
+      When run aws --profile $profile s3 ls s3://$test_bucket_name
       ;;
     "rclone")
-      When run rclone lsd $profile:test-test -v #$test_bucket_name -v
+      When run rclone lsd $profile:$test_bucket_name -v
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage objects list test-test --raw #$test_bucket_name
+      When run mgc object-storage objects list $test_bucket_name --raw
       The stdout should include FILES
       ;;
     esac
