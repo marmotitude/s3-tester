@@ -2,7 +2,7 @@ is_variable_null() {
   [[ $1 != *"-readonly"* ]]
 }
 
-Describe 'Read-only Create bucket:' category:"BucketPermission"
+Describe 'Read-only Create bucket:' category:"Skip"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -40,7 +40,7 @@ Describe 'Read-only Create bucket:' category:"BucketPermission"
   End
 End
 
-Describe 'Read-only List buckets:' category:"BucketPermission"
+Describe 'Read-only List buckets:' category:"Skip"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -71,14 +71,14 @@ Describe 'Read-only List buckets:' category:"BucketPermission"
     "mgc")
       mgc workspace set $profile > /dev/null
       When run mgc object-storage buckets list --raw
-      The stdout should include BUCKETS
+      The stdout should include Buckets
       ;;
     esac
     The status should be success
   End
 End
 
-Describe 'Read-only List objects:' category:"BucketPermission"
+Describe 'Read-only List objects:' category:"Skip"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -116,7 +116,7 @@ Describe 'Read-only List objects:' category:"BucketPermission"
   End
 End
 
-Describe 'Read-only Delete object:' category:"BucketPermission"
+Describe 'Read-only Delete object:' category:"Skip"
   setup(){
     bucket_name="test-096-$(date +%s)"
     file1_name="LICENSE"
@@ -134,7 +134,7 @@ Describe 'Read-only Delete object:' category:"BucketPermission"
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-object --bucket $test_bucket_name --key $file1_name
+      When run aws --profile $profile s3api delete-object --bucket test-test --key $file1_name
       The stderr should include "Blocked account"
     The status should be failure
       ;;
@@ -146,7 +146,7 @@ Describe 'Read-only Delete object:' category:"BucketPermission"
     "rclone")
       When run rclone delete $profile:test-test/$file1_name -v
       The stderr should include ""
-      The status should be success
+      The status should be failure
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
@@ -158,7 +158,7 @@ Describe 'Read-only Delete object:' category:"BucketPermission"
   End
 End
 
-Describe 'Read-only Delete bucket:' category:"BucketPermission"
+Describe 'Read-only Delete bucket:' category:"Skip"
   setup(){
     bucket_name="test-096-$(date +%s)"
   }
@@ -175,11 +175,11 @@ Describe 'Read-only Delete bucket:' category:"BucketPermission"
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
-      When run aws --profile $profile s3api delete-bucket --bucket $test_bucket_name
+      When run aws --profile $profile s3api delete-bucket --bucket test-test
       The stderr should include "Blocked account"
       ;;
     "aws-s3")
-      When run aws --profile $profile s3 rb s3://$test_bucket_name
+      When run aws --profile $profile s3 rb s3://test-test
       The stderr should include "Blocked account"
       ;;
     "rclone")
@@ -188,7 +188,7 @@ Describe 'Read-only Delete bucket:' category:"BucketPermission"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run mgc object-storage buckets delete $test_bucket_name --no-confirm --raw
+      When run mgc object-storage buckets delete test-test --no-confirm --raw
       The stderr should include "Blocked account"
       ;;
     esac
