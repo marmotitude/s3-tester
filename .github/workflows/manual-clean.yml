@@ -26,33 +26,7 @@ jobs:
           cd /app
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
-          for profile in ${{ inputs.profiles }}; do
-            aws s3 ls --profile $profile | grep "test-" | awk '{print $3}' | while read -r bucket; do
-              echo "Processando o bucket: $bucket com o profile $profile"
-              # Remover a política do bucket (se houver)
-              echo "Removendo a política do bucket: $bucket"
-              aws s3api delete-bucket-policy --bucket "$bucket" --profile "$profile" > /dev/null 2>&1
-              sleep 3
-              # Excluir todos os objetos e versões no bucket
-              versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile")
-              
-              # Excluir versões dos objetos (se existirem)
-              while IFS= read -r line; do
-                  version_id=$(echo "$line" | awk '{print $1}')
-                  key=$(echo "$line" | awk '{print $2}')
-                  aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile" > /dev/null
-              done <<< "$versions"
-
-              # Excluir os objetos não versionados (se houver)
-              objects=$(aws s3api list-objects --bucket "$bucket" --query "Contents[].[Key]" --output text --profile "$profile")
-              while IFS= read -r object; do
-                  aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile" > /dev/null
-              done <<< "$objects"
-              # Remover o bucket vazio
-              aws s3 rb s3://"$bucket" --force --profile "$profile" > /dev/null
-              echo "Todos os objetos, versões e a política excluídos do bucket: $bucket"
-            done
-          done
+          ./bin/clear_buckets.sh ${{ inputs.profiles }}
 
 
           
