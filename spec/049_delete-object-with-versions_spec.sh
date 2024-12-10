@@ -19,11 +19,11 @@ Describe 'Delete object with versions:' category:"ObjectVersioning"
     aws --profile $profile s3 cp $file1_name  s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
-    When run aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name
+    When run bash ./spec/retry_command.sh "aws --profile $profile s3 rm s3://$test_bucket_name/$file1_name"
     The output should include "delete"
       ;;
     "rclone")
-    When run rclone delete $profile:$test_bucket_name/$file1_name
+    When run bash ./spec/retry_command.sh "rclone delete $profile:$test_bucket_name/$file1_name"
     The output should include ""
       ;;
     "mgc")
