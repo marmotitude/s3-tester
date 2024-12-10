@@ -24,7 +24,7 @@ create_bucket_success_output(){
   "rclone")
     echo "" ;;
   "mgc")
-    echo "Created bucket $bucket_name" ;;
+    echo "$bucket_name" ;;
   esac
 }
 enable_versioning(){
@@ -53,7 +53,7 @@ enable_versioning_success_output(){
   "rclone")
     echo "Enabled" ;;
   "mgc")
-    echo "Enabled versioning for $bucket_name" ;;
+    echo "$bucket_name" ;;
   esac
 }
 put_object(){
@@ -87,7 +87,7 @@ put_object_success_output(){
   "rclone")
     echo "" ;;
   "mgc")
-    echo "Uploaded file $local_file to $bucket_name/$key"
+    echo "$bucket_name/$key"
   esac
 }
 list_object_versions(){
@@ -101,7 +101,7 @@ list_object_versions(){
     rclone --s3-versions ls $profile:$bucket_name ;;
   "mgc")
     mgc workspace set $profile > /dev/null
-    mgc object-storage objects versions --dst="$bucket_name" --cli.output json;;
+    mgc object-storage objects versions --dst="$bucket_name" --output json;;
   esac
 }
 list_object_versions_success_output(){
@@ -115,6 +115,6 @@ list_object_versions_success_output(){
   "rclone")
     echo "$key-v";;
   "mgc")
-    echo "\"Key\": \"$key\",";;
+    echo "$key";;
   esac
 }
