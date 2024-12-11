@@ -19,7 +19,10 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
     test_bucket_name="$bucket_name-$client-$profile"
     printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if [ "$id" = "" ]; then
+      Skip "No such a "$profile-second" user"
+      return 0
+    fi
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name > /dev/null
     aws s3api --profile $profile put-bucket-acl --bucket $test_bucket_name --grant-write id=$id --grant-read id=$id > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $test_bucket_name --versioning-configuration Status=Enabled > /dev/null
@@ -40,11 +43,9 @@ Describe 'Download object to versioning in the private ACL bucket:' category:"Ob
       ;;
     "mgc")
     mgc workspace set $profile-second > /dev/null
-    When run bash ./spec/retry_command.sh "mgc object-storage objects download --src $test_bucket_name/$file1_name --obj-version $version --dst ./$file1_name-2 --raw"
-    # When run mgc object-storage objects download --src $test_bucket_name/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
+    When run mgc object-storage objects download --src $test_bucket_name/$file1_name --obj-version $version --dst ./$file1_name-2 --raw
     The status should be failure
-    #The stderr should include "403"
-    The output should include "403"
+    The stderr should include "403"
       ;;
     esac
     aws --profile $profile s3api delete-objects --bucket $test_bucket_name --delete "$(aws --profile $profile s3api list-object-versions --bucket $test_bucket_name| jq '{Objects: [.Versions[] | {Key:.Key, VersionId : .VersionId}], Quiet: false}')"  > /dev/null

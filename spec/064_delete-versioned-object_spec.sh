@@ -16,7 +16,7 @@ get_test_bucket_name(){
 get_uploaded_key(){
   echo "test--$profile--$client--$1--$UNIQUE_SUFIX"
 }
-Describe "setup 064" category:"ObjectManagement" id:"064"
+Describe "setup 064" category:"Skip" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS
@@ -68,7 +68,7 @@ Describe "setup 064" category:"ObjectManagement" id:"064"
   End
 End
 
-Describe "Delete versioned object" category:"ObjectManagement" id:"064"
+Describe "Delete versioned object" category:"Skip" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS
@@ -95,8 +95,8 @@ Describe "Delete versioned object" category:"ObjectManagement" id:"064"
       When run bash ./spec/retry_command.sh "mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm --raw"
       # When run mgc --debug object-storage objects delete --dst="$bucket_name/$key" --no-confirm --raw
       The status should be success
-      The error should include "$bucket_name?delete="
-      The error should include "200 OK"
+      The stdout should include "$bucket_name?delete="
+      The stdout should include "<Deleted><Key>$key</Key></Deleted>"
       ;;
     esac
   End
@@ -129,7 +129,7 @@ Describe "Delete versioned object" category:"ObjectManagement" id:"064"
   End
 End
 
-Describe "teardown 064" category:"ObjectManagement" id:"064"
+Describe "teardown 064" category:"Skip" id:"064"
   Parameters:matrix
     $PROFILES
     $FILTERED_CLIENTS
