@@ -36,24 +36,24 @@ for PROFILE in "$@"; do
 
         sleep 3
         # Excluir todos os objetos e versões no bucket
-        versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile")
+        versions=$(aws s3api list-object-versions --bucket "$BUCKET" --query "Versions[].[VersionId, Key]" --output text --profile "$PROFILE")
 
         # Excluir versões dos objetos (se existirem)
         while IFS= read -r line; do
             version_id=$(echo "$line" | awk '{print $1}')
             key=$(echo "$line" | awk '{print $2}')
-            aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile" > /dev/null
+            aws s3api delete-object --bucket "$BUCKET" --key "$key" --version-id "$version_id" --profile "$PROFILE" > /dev/null
         done <<< "$versions"
 
         # Excluir os objetos não versionados (se houver)
-        objects=$(aws s3api list-objects --bucket "$bucket" --query "Contents[].[Key]" --output text --profile "$profile")
+        objects=$(aws s3api list-objects --bucket "$BUCKET" --query "Contents[].[Key]" --output text --profile "$PROFILE")
         while IFS= read -r object; do
-            aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile" > /dev/null
+            aws s3api delete-object --bucket "$BUCKET" --key "$object" --profile "$PROFILE" > /dev/null
         done <<< "$objects"
         
         # Remover o bucket vazio
-        aws s3 rb s3://"$bucket" --force --profile "$profile" > /dev/null
-        echo "Todos os objetos, versões e a política excluídos do bucket: $bucket"
+        aws s3 rb s3://"$BUCKET" --force --profile "$PROFILE" > /dev/null
+        echo "Todos os objetos, versões e a política excluídos do bucket: $BUCKET"
 
         sleep 3
         
