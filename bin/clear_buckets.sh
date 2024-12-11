@@ -34,8 +34,28 @@ for PROFILE in "$@"; do
         # Deletar a bucket policy
         aws s3api delete-bucket-policy --bucket "$BUCKET" --profile "$PROFILE"
 
-        # Esvaziar o bucket
-        aws s3 rm s3://"$BUCKET" --recursive --profile "$PROFILE"
+        sleep 3
+        # Excluir todos os objetos e versões no bucket
+        versions=$(aws s3api list-object-versions --bucket "$bucket" --query "Versions[].[VersionId, Key]" --output text --profile "$profile")
+
+        # Excluir versões dos objetos (se existirem)
+        while IFS= read -r line; do
+            version_id=$(echo "$line" | awk '{print $1}')
+            key=$(echo "$line" | awk '{print $2}')
+            aws s3api delete-object --bucket "$bucket" --key "$key" --version-id "$version_id" --profile "$profile" > /dev/null
+        done <<< "$versions"
+
+        # Excluir os objetos não versionados (se houver)
+        objects=$(aws s3api list-objects --bucket "$bucket" --query "Contents[].[Key]" --output text --profile "$profile")
+        while IFS= read -r object; do
+            aws s3api delete-object --bucket "$bucket" --key "$object" --profile "$profile" > /dev/null
+        done <<< "$objects"
+        
+        # Remover o bucket vazio
+        aws s3 rb s3://"$bucket" --force --profile "$profile" > /dev/null
+        echo "Todos os objetos, versões e a política excluídos do bucket: $bucket"
+
+        sleep 3
         
         # Deletar o bucket
         aws s3api delete-bucket --bucket "$BUCKET" --profile "$PROFILE"
