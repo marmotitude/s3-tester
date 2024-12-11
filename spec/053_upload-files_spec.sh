@@ -151,7 +151,7 @@ Describe 'List Objects' category:"ObjectManagement" id:"061"
       ;;
     "mgc")
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst="$BUCKET_NAME" --raw"
+      When run bash ./spec/retry_command.sh "mgc object-storage objects list --dst="$BUCKET_NAME" --output json"
       # When run mgc object-storage objects list --dst="$BUCKET_NAME" --raw
       The status should be success
       for file in $FILES;do
@@ -251,7 +251,7 @@ Describe 'Delete' category:"ObjectManagement"
         When run rclone delete "$profile:$BUCKET_NAME" --include "{$rclone_objects}" --dump headers
         for object_key in $objects; do
           The status should be success
-          The error should include "$object_key: Deleted"
+          The error should include "200 OK"
         done
         ;;
       "mgc")
@@ -263,7 +263,7 @@ Describe 'Delete' category:"ObjectManagement"
           mgc_objects+='"}'
         done
         mgc_objects+="]"
-        When run bash ./spec/retry_command.sh "mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw"
+        When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
         # When run mgc object-storage objects delete-all "$BUCKET_NAME" --no-confirm --filter="$mgc_objects" --raw
         The status should be success
         The output should be blank

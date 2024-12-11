@@ -18,7 +18,11 @@ Describe 'Upload object to versioning in the private acl bucket:' category:"Obje
     test_bucket_name="$bucket_name-$client-$profile"
     printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
-    Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    #Skip if "No such a "$profile-second" user" is_variable_null "$id"
+    if [ "$id" = "" ]; then
+      Skip "No such a "$profile-second" user"
+      return 0
+    fi
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     aws s3api --profile $profile put-bucket-acl --bucket $test_bucket_name --grant-write id=$id --grant-read id=$id > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $test_bucket_name --versioning-configuration Status=Enabled > /dev/null
