@@ -26,16 +26,19 @@ for PROFILE in "$@"; do
         echo "Nenhum bucket com prefixo 'test-' e mais de 24 horas encontrado para o perfil: $PROFILE"
         continue
     fi
+
+    # Remover a política de todos os buckets antes de continuar o processo de exclusão
+    for BUCKET in $OLD_BUCKETS; do
+        echo "Removendo a política do bucket: $BUCKET"
+        aws s3api delete-bucket-policy --bucket "$BUCKET" --profile "$PROFILE" > /dev/null 2>&1
+        sleep 3  # Aguardar um pouco para garantir que a política foi removida antes das próximas ações
+    done
     
-    # Loop para deletar cada bucket
+    # Loop para excluir as versões dos objetos e objetos não versionados
     for BUCKET in $OLD_BUCKETS; do
         echo "Processando bucket: $BUCKET no perfil: $PROFILE"
-        
-        # Deletar a bucket policy
-        aws s3api delete-bucket-policy --bucket "$BUCKET" --profile "$PROFILE"
 
-        sleep 3
-        # Excluir todos os objetos e versões no bucket
+        # Excluir todas as versões dos objetos no bucket
         versions=$(aws s3api list-object-versions --bucket "$BUCKET" --query "Versions[].[VersionId, Key]" --output text --profile "$PROFILE")
 
         # Excluir versões dos objetos (se existirem)
@@ -46,20 +49,16 @@ for PROFILE in "$@"; do
         done <<< "$versions"
 
         # Excluir os objetos não versionados (se houver)
-        objects=$(aws s3api list-objects --bucket "$BUCKET" --query "Contents[].[Key]" --output text --profile "$PROFILE")
-        while IFS= read -r object; do
-            aws s3api delete-object --bucket "$BUCKET" --key "$object" --profile "$PROFILE" > /dev/null
-        done <<< "$objects"
+        rclone purge "$PROFILE":"$BUCKET"
         
-        # Remover o bucket vazio
-        aws s3 rb s3://"$BUCKET" --force --profile "$PROFILE" > /dev/null
         echo "Todos os objetos, versões e a política excluídos do bucket: $BUCKET"
-
         sleep 3
-        
-        # Deletar o bucket
+    done
+    
+    # Agora que todos os objetos e versões foram excluídos, remover os buckets
+    for BUCKET in $OLD_BUCKETS; do
+        echo "Deletando o bucket vazio: $BUCKET"
         aws s3api delete-bucket --bucket "$BUCKET" --profile "$PROFILE"
-        
         echo "Bucket $BUCKET deletado no perfil: $PROFILE"
     done
 done
