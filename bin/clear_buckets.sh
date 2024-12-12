@@ -49,10 +49,7 @@ for PROFILE in "$@"; do
         done <<< "$versions"
 
         # Excluir os objetos não versionados (se houver)
-        objects=$(aws s3api list-objects --bucket "$BUCKET" --query "Contents[].[Key]" --output text --profile "$PROFILE")
-        while IFS= read -r object; do
-            aws s3api delete-object --bucket "$BUCKET" --key "$object" --profile "$PROFILE" > /dev/null
-        done <<< "$objects"
+        rclone purge "$PROFILE":"$BUCKET"
         
         echo "Todos os objetos, versões e a política excluídos do bucket: $BUCKET"
         sleep 3
