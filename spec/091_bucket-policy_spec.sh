@@ -1310,7 +1310,7 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
         mgc workspace set $profile-second
         # TODO: mgc does POST deletes instead of DELETE, our implementation response
         # is returning NoSuchBucket instead of AccessDenied
-        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
+        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm --debug
         # Uncomment when we fix our implementation
         # The stderr should include "AccessDenied"
         The stderr should include "NoSuchBucket"
