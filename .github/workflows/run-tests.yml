@@ -51,10 +51,10 @@ jobs:
             --env NUMBER_OF_WAITS="${{ inputs.number_of_waits }}" \
             --color
 
-      - name: Cleanup
-        if: always()
-        continue-on-error: true
-        run: |
-          cp $GITHUB_WORKSPACE/bin/clear_buckets.sh /app/bin/clear_buckets.sh
-          cd /app
-          ./bin/clear_buckets.sh "${{ inputs.region }}"
+      # - name: Cleanup
+      #   if: always()
+      #   continue-on-error: true
+      #   run: |
+      #     cp $GITHUB_WORKSPACE/bin/clear_buckets.sh /app/bin/clear_buckets.sh
+      #     cd /app
+      #     ./bin/clear_buckets.sh "${{ inputs.region }}"
