@@ -494,9 +494,9 @@ Describe 'Validate Alternative to object-lock:' category:"BucketPolicy"
       # is returning NoSuchBucket instead of AccessDenied
       When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
       # Uncomment when we fix our implementation
-      # The stderr should include "AccessDenied"
-      The stderr should include "NoSuchBucket"
-      The status should be failure
+      The stderr should include "AccessDenied"
+      #The stderr should include "NoSuchBucket"
+      The status should be success
       ;;
     esac
     wait_command bucket-exists "$profile" "$test_bucket_name"
@@ -1153,9 +1153,9 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
         # is returning NoSuchBucket instead of AccessDenied
         When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
         # Uncomment when we fix our implementation
-        # The stderr should include "AccessDenied"
-        The stderr should include "NoSuchBucket"
-        The status should be failure
+        The stderr should include "AccessDenied"
+        #The stderr should include "NoSuchBucket"
+        The status should be success
         ;;
     esac
   End
