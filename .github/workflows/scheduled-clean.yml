@@ -24,4 +24,4 @@ jobs:
           cd /app
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
-          python3 ./bin/clean_buckets.py br-se1 br-ne1
+          poetry run ./bin/clean_buckets.py br-se1 br-ne1
