@@ -12,7 +12,7 @@ jobs:
   hourly-clean:
     if: github.event.schedule == '0 * * * *'
     runs-on: ubuntu-latest
-    container: ghcr.io/marmotitude/s3-tester:tests
+    container: ghcr.io/marmotitude/s3-tester:tools
     steps:
       - name: Clean buckets
         continue-on-error: true
