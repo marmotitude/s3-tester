@@ -12,8 +12,10 @@ jobs:
   hourly-clean:
     if: github.event.schedule == '0 * * * *'
     runs-on: ubuntu-latest
-    container: ghcr.io/marmotitude/s3-tester:tools
+    container: ghcr.io/marmotitude/s3-tester:tests
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Clean buckets
         continue-on-error: true
         env:
@@ -23,6 +25,3 @@ jobs:
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
           python3 ./bin/clean_buckets.py br-se1 br-ne1
-
-
-          
