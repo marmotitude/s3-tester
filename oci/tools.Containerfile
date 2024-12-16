@@ -91,7 +91,7 @@ RUN apt update && apt install -y \
 RUN python3 -m venv /opt/venv
 
 # Activate venv and install plotly and pandas
-RUN /opt/venv/bin/pip install --no-cache-dir plotly pandas
+RUN /opt/venv/bin/pip install --no-cache-dir plotly pandas boto3
 
 # Add the virtual environment to PATH
 ENV PATH="/opt/venv/bin:$PATH"
