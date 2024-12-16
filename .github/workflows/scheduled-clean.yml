@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: '0 * * * *'    # Hourly clean
 
+
 env:
   PROFILES: ${{ secrets.profiles }}
 
@@ -16,6 +17,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+      - name: Install Poetry Dependences
+        run: |
+          poetry install --quiet
       - name: Clean buckets
         continue-on-error: true
         env:
@@ -24,4 +28,4 @@ jobs:
           cd /app
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
-          poetry run ./bin/clean_buckets.py br-se1 br-ne1
+          poetry run python ./bin/clean_buckets.py br-se1 br-ne1
