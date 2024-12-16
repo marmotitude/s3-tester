@@ -1,20 +1,16 @@
-name: "Manually-triggered clean"
+name: "Automatic clean"
 
 on:
-  workflow_dispatch:
-    inputs:
-      profiles:
-        description: "List of profiles from $PROFILES secret env var"
-        type: string
-        required: false
-        default: "br-se1"
+  schedule:
+    - cron: '0 * * * *'    # Hourly clean
 
 env:
   PROFILES: ${{ secrets.profiles }}
 
 
 jobs:
-  run_tests:
+  hourly-clean:
+    if: github.event.schedule == '0 * * * *'
     runs-on: ubuntu-latest
     container: ghcr.io/marmotitude/s3-tester:tests
     steps:
@@ -26,7 +22,7 @@ jobs:
           cd /app
           echo "$PROFILES" > profiles.yaml
           ./bin/replace_configs.sh
-          ./bin/clear_buckets.sh ${{ inputs.profiles }}
+          python3 ./bin/clean_buckets.py br-se1 br-ne1
 
 
           
