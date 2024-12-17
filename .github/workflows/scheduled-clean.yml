@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Install Poetry Dependences
-        run: |
-          poetry install --quiet
       - name: Clean buckets
         continue-on-error: true
         env:
