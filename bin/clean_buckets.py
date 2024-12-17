@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import boto3
 import concurrent.futures
 from datetime import datetime, timezone
