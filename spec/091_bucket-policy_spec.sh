@@ -97,7 +97,6 @@ Describe 'Put bucket policy:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     principal=$(echo $3 | tr -d \")
     #policy vars
     action='"s3:GetObject"'
@@ -142,7 +141,6 @@ Describe 'Delete bucket policy:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -187,7 +185,6 @@ Describe 'Easy public bucket policy:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:ListBucket","s3:GetObject"'
     principal="*"
@@ -232,7 +229,6 @@ Describe 'Validate List Easy public bucket policy:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
     # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
     #policy vars
@@ -282,7 +278,6 @@ Describe 'Validate Get Easy public bucket policy:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     id=$(aws s3api --profile $profile list-buckets | jq -r '.Owner.ID')
     # if $(is_variable_null "$id_principal"); then return; fi # ! SKIP DOES NOT SKIP
@@ -330,7 +325,6 @@ Describe 'Buckets exclusive to a specific team:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
@@ -378,7 +372,6 @@ Describe 'Validate Buckets exclusive to a specific team:' category:"BucketPolicy
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     id_principal=$(aws --profile $profile-second s3api list-buckets | jq -r '.Owner.ID')
@@ -424,7 +417,6 @@ Describe 'Alternative to object-lock:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:DeleteObject"'
     principal="*"
@@ -468,7 +460,6 @@ Describe 'Validate Alternative to object-lock:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:DeleteObject"'
     principal="*"
@@ -490,12 +481,8 @@ Describe 'Validate Alternative to object-lock:' category:"BucketPolicy"
       ;;
     "mgc")
       mgc workspace set $profile-second
-      # TODO: mgc does POST deletes instead of DELETE, our implementation response
-      # is returning NoSuchBucket instead of AccessDenied
-      When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
-      # Uncomment when we fix our implementation
-      # The stderr should include "AccessDenied"
-      The stderr should include "NoSuchBucket"
+      When run bash ./spec/retry_command.sh "mgc os objects delete $test_bucket_name/$file1_name --no-confirm" "AccessDenied"
+      The stdout should include "AccessDenied"
       The status should be failure
       ;;
     esac
@@ -523,7 +510,6 @@ Describe 'Put bucket policy without Resources:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -566,7 +552,6 @@ Describe 'Put bucket policy without Action:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -609,7 +594,6 @@ Describe 'Put bucket policy without Principal:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -652,7 +636,6 @@ Describe 'Put bucket policy without Effect:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -695,7 +678,6 @@ Describe 'Put bucket policy with no Statement:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -741,7 +723,6 @@ Describe 'Put bucket policy with Resource outside bucket:' category:"BucketPolic
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -783,7 +764,6 @@ Describe 'Put bucket policy with empty Resource:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -826,7 +806,6 @@ Describe 'Put bucket policy with empty Action:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -869,7 +848,6 @@ Describe 'Put bucket policy with empty Principal:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -912,7 +890,6 @@ Describe 'Put bucket policy with empty Effect:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -955,7 +932,6 @@ Describe 'Put bucket policy with empty Statement:' category:"BucketPolicy"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     #policy vars
     action='"s3:GetObject"'
     principal="*"
@@ -1001,7 +977,6 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
     # Check if other profiles exist, we need 3 for this test to work
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
@@ -1029,9 +1004,8 @@ Describe 'Access other buckets - User 1 gives access to user 3 and user 2 is loc
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os objects list --dst "$test_bucket_name"
-        The stderr should include "AccessDenied"
-        The stdout should include ""
+        When run bash ./spec/retry_command.sh "mgc os objects list --dst "$test_bucket_name"" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1056,7 +1030,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
     # Check if other profiles exist
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
@@ -1082,7 +1055,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1107,7 +1079,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1122,9 +1093,8 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os objects upload --dst $test_bucket_name/$file1_name-copy --src $file1_name
-        The stderr should include "AccessDenied"
-        The stdout should include ""
+        When run bash ./spec/retry_command.sh "mgc os objects upload --dst $test_bucket_name/$file1_name-copy --src $file1_name" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1133,12 +1103,10 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
         When run aws --profile $profile-second s3api delete-object --bucket $test_bucket_name --key $file1_name
-        # ToDo AccessDenied
         The stderr should include "AccessDenied"
         The status should be failure
         ;;
@@ -1149,12 +1117,8 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
         ;;
     "mgc")
         mgc workspace set $profile-second
-        # TODO: mgc does POST deletes instead of DELETE, our implementation response
-        # is returning NoSuchBucket instead of AccessDenied
-        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm
-        # Uncomment when we fix our implementation
-        #The stderr should include "AccessDenied"
-        The stderr should include "NoSuchBucket"
+        When run bash ./spec/retry_command.sh "mgc os objects delete $test_bucket_name/$file1_name --no-confirm" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1163,7 +1127,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1176,9 +1139,8 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os buckets policy delete --dst $test_bucket_name
-        The stderr should include "AccessDenied"
-        The stdout should include ""
+        When run bash ./spec/retry_command.sh "mgc os buckets policy delete --dst $test_bucket_name" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1187,7 +1149,6 @@ Describe 'Access other buckets - User 1 gives read access to user 2 and user 2 c
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     [ ! $ready ] && Skip "Test was not correctly setup" && return
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
@@ -1215,7 +1176,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
     # Check if other profiles exist
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
@@ -1241,7 +1201,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1267,7 +1226,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1293,7 +1251,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1308,12 +1265,8 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
         ;;
     "mgc")
         mgc workspace set $profile-second
-        # TODO: mgc does POST deletes instead of DELETE, our implementation response
-        # is returning NoSuchBucket instead of AccessDenied
-        When run mgc os objects delete $test_bucket_name/$file1_name --no-confirm --debug
-        # Uncomment when we fix our implementation
-        # The stderr should include "AccessDenied"
-        The stderr should include "NoSuchBucket"
+        When run bash ./spec/retry_command.sh "mgc os objects delete $test_bucket_name/$file1_name --no-confirm --debug" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1322,7 +1275,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -1335,9 +1287,8 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
         ;;
     "mgc")
         mgc workspace set $profile-second
-        When run mgc os buckets policy delete --dst $test_bucket_name
-        The stderr should include "AccessDenied"
-        The stdout should include ""
+        When run bash ./spec/retry_command.sh "mgc os buckets policy delete --dst $test_bucket_name" "AccessDenied"
+        The stdout should include "AccessDenied"
         The status should be failure
         ;;
     esac
@@ -1346,7 +1297,6 @@ Describe 'Access other buckets - User 1 gives write access to user 2 and user 2 
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     # [ ! $ready ] && Skip "Test was not correctly setup" && return
     cleanup() {
     wait_command bucket-exists $profile "$test_bucket_name" \
@@ -1374,7 +1324,6 @@ Describe 'Owner denies all access but can still change policy:' category:"Bucket
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
     # Check if other profiles exist, we need 3 for this test to work
     user2id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')

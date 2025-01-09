@@ -20,6 +20,12 @@ while true; do
     exit 0
   fi
 
+  if [ -n "$expected" ] && echo "$output" | grep -q "$expected"; then
+    echo "Expected: $expected, include: $output, retrying..."
+    sleep 1
+    continue
+  fi
+
   if echo "$output" | grep -q "connection reset by peer"; then
     echo "Connection reset by peer detected, retrying..."
     sleep 1

@@ -16,7 +16,6 @@ Describe 'Access the Private with ACL bucket with and check the list of objects:
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     Skip if "No such a "$profile-second" user" is_variable_null "$id"
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null

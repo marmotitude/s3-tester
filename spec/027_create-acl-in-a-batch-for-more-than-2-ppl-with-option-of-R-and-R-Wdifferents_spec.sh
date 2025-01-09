@@ -17,7 +17,6 @@ Describe 'Create ACL in a batch for more than 2 ppl with option of R and R/W dif
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     id2=$id
     Skip if "No such a "$profile-second" user" is_variable_null "$id"

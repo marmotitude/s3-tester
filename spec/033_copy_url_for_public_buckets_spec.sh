@@ -12,7 +12,6 @@ Describe 'Copy URL for public buckets:' category:"BucketPermission"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws" | "aws-s3")
     Skip "Skipped test to $client"

@@ -2,7 +2,6 @@ create_bucket() {
     while true; do
         bucket_name="test-095-setup-$(date +%s)"
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         aws --profile "$profile" s3 mb "s3://$bucket_name" > /dev/null 2>&1
 
@@ -27,7 +26,6 @@ Describe 'Create 100 buckets:' category:"Skip"
     create_bucket || true
     bucket_name="test-095-$(date +%s)"
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
       When run aws --profile $profile s3 mb s3://$test_bucket_name

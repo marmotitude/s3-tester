@@ -14,7 +14,6 @@ Describe 'Delete large bucket with 100 objects:' category:"BigBuckets"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
@@ -69,7 +68,6 @@ Describe 'Delete large bucket with 1000 objects:' category:"BigBuckets"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
@@ -124,7 +122,6 @@ Describe 'Delete large bucket with 10000 objects:' category:"BigBuckets"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt
@@ -179,7 +176,6 @@ Describe 'Delete large bucket with 25000 objects:' category:"BigBuckets"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     for i in $(seq 1 $files_count); do
       touch ./report/arquivo_$i.txt

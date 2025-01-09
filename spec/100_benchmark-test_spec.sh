@@ -27,7 +27,6 @@ Describe 'Benchmark test:' category:"Benchmark"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     sizes=$3 #param
     quantity=$4 #param
     times=$5 #param

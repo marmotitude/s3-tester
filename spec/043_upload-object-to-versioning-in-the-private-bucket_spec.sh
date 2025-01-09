@@ -12,7 +12,6 @@ Describe 'Upload object to versioning in the private bucket:' category:"ObjectVe
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name  > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $test_bucket_name --versioning-configuration Status=Enabled > /dev/null
     case "$client" in

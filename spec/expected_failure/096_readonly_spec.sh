@@ -15,7 +15,6 @@ Describe 'Read-only Create bucket:' category:"Skip"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -53,7 +52,6 @@ Describe 'Read-only List buckets:' category:"Skip"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -91,7 +89,6 @@ Describe 'Read-only List objects:' category:"Skip"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     aws --profile $1 s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
     case "$client" in
@@ -130,7 +127,6 @@ Describe 'Read-only Delete object:' category:"Skip"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -171,7 +167,6 @@ Describe 'Read-only Delete bucket:' category:"Skip"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-readonly")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-readonly" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
