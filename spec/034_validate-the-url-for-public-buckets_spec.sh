@@ -12,7 +12,6 @@ Describe 'Validate the URL for public buckets:' category:"BucketSharing"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     endpoint_url=$(aws configure get $profile.endpoint_url)
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read  > /dev/null
     case "$client" in

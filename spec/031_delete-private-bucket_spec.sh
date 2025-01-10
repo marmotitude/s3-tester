@@ -13,7 +13,6 @@ Describe 'Delete private bucket:' category:"BucketPermission"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name > /dev/null
     aws --profile $profile s3api wait bucket-exists --bucket $test_bucket_name
     case "$client" in

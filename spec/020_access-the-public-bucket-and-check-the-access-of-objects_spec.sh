@@ -12,7 +12,6 @@ Describe 'Access the public bucket and check the access of objects:' category:"B
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read  > /dev/null
     aws --profile $profile s3api wait bucket-exists --bucket $test_bucket_name
     aws --profile $profile-second s3api wait bucket-exists --bucket $test_bucket_name

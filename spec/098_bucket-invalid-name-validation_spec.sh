@@ -41,7 +41,7 @@ Describe 'Create invalid bucket' category:"Skip"
         ;;
       "mgc")
         mgc workspace set $profile > /dev/null
-        When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
+        When run bash ./spec/retry_command.sh "mgc object-storage buckets create '"$bucket_name"' --raw"
         #When run mgc object-storage buckets create "$bucket_name" --raw
         The  stdout should include "InvalidBucketName"
         ;;
@@ -107,7 +107,6 @@ Describe 'Create bucket with invalid characters' category:"Skip" id:007
     client=$2
     char=$3
     bucket_name="test-foo${char}bar"
-    Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
 
     case "$client" in
     "aws-s3api" | "aws")
@@ -119,9 +118,8 @@ Describe 'Create bucket with invalid characters' category:"Skip" id:007
       The error should include "Bucket name must match the regex"
       ;;
     "mgc")
-      Skip if "GL issue #897" skip_known_issues "897" $profile $client $char
       mgc workspace set $profile > /dev/null
-      When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw"
+      When run bash ./spec/retry_command.sh "mgc object-storage buckets create "$bucket_name" --raw" "InvalidBucketName"
       # When run mgc object-storage buckets create "$bucket_name" --raw
       The  stdout should include "InvalidBucketName"
       ;;

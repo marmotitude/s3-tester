@@ -87,7 +87,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         sa_profile=$profile-sa
         client=$2
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -102,7 +101,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         client=$2
         file="LICENSE"
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -119,7 +117,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         sa_profile=$profile-sa
         client=$2
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -180,7 +177,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         client=$2
         local_file="/tmp/downloaded_key_1"
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -203,7 +199,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         client=$2
         file="LICENSE"
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -228,7 +223,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         sa_profile=$profile-sa
         client=$2
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP
@@ -250,7 +244,6 @@ Describe "Service Accounts: " category:"ServiceAccounts"  id:"201"
         sa_profile=$profile-sa
         client=$2
         test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 
         Skip if "Profile "$sa_profile" is missing" check_missing_profile "$sa_profile"
         if $(check_missing_profile "$profile"); then return; fi # ! SKIP DOES NOT SKIP

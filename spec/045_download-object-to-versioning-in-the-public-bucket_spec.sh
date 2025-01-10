@@ -18,7 +18,6 @@ Describe 'Download object to versioning in the public bucket:' category:"ObjectV
       Skip "No such a "$profile-second" user"
       return 0
     fi
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name  --acl public-read > /dev/null
     aws s3api --profile $profile put-bucket-versioning --bucket $test_bucket_name --versioning-configuration Status=Enabled > /dev/null
     aws --profile $profile s3 cp $file1_name  s3://$test_bucket_name > /dev/null

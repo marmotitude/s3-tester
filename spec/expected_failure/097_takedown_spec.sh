@@ -15,7 +15,6 @@ Describe 'Takedown Create bucket:' category:"BucketPermission"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -53,7 +52,6 @@ Describe 'Takedown List buckets:' category:"BucketPermission"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -91,7 +89,6 @@ Describe 'Takedown List objects:' category:"BucketPermission"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -130,7 +127,6 @@ Describe 'Takedown Delete object:' category:"BucketPermission"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")
@@ -168,7 +164,6 @@ Describe 'Takedown Delete bucket:' category:"BucketPermission"
     client=$2
     profile=$(aws configure list-profiles | grep "$1-takedown")
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     Skip if "No such a "$1-takedown" user" is_variable_null "$profile"
     case "$client" in
     "aws-s3api" | "aws")

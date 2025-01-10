@@ -17,7 +17,6 @@ Describe 'Set bucket label:' category:"BucketLabelling"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     label='marketing'
     mgc workspace set $profile > /dev/null
     mgc object-storage buckets create $test_bucket_name > /dev/null
@@ -52,7 +51,6 @@ Describe 'Get bucket label:' category:"BucketLabelling"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     label='marketing'
     mgc workspace set $profile > /dev/null
     mgc object-storage buckets create $test_bucket_name > /dev/null
@@ -88,7 +86,6 @@ Describe 'Delete bucket label:' category:"BucketLabelling"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     label_delete='to-delete'
     labels="marketing,${label_delete}"
     mgc workspace set $profile > /dev/null

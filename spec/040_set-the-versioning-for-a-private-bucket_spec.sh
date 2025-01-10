@@ -12,7 +12,6 @@ Describe 'Set the versioning for a private bucket:' category:"ObjectVersioning"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")

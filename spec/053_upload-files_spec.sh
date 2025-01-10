@@ -198,10 +198,7 @@ Describe 'Delete' category:"ObjectManagement"
       When run bash ./spec/retry_command.sh "mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw"
       # When run mgc --debug object-storage objects delete --dst="$BUCKET_NAME/$object_key" --no-confirm --raw
       The status should be success
-      #The error should include "$BUCKET_NAME?delete="
-      #The error should include "200 OK"
-      The output should include "$BUCKET_NAME?delete="
-      The output should include "200 OK"
+      The output should include "204 No Content"
       ;;
     esac
     # Assert that the file have finished deleting by waiting for the object-not-exists

@@ -31,7 +31,6 @@ Describe 'Verificar a existência do bucket'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
@@ -60,7 +59,6 @@ Describe 'Verificar a existência do objeto'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     case "$client" in
@@ -90,7 +88,6 @@ Describe 'Verificar a existência do bucket publico'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
@@ -119,7 +116,6 @@ Describe 'Verificar a existência do objeto publico'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3" | "rclone" | "mgc")
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
@@ -151,7 +147,6 @@ Describe 'Verificar a inexistência do bucket vazio após deletar'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
@@ -197,7 +192,6 @@ Describe 'Verificar a inexistência do objeto deletado'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     wait_command object-exists "$profile" "$test_bucket_name" "$file1_name"
@@ -243,7 +237,6 @@ Describe 'Verificar a inexistência do bucket publico deletado'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name --acl public-read > /dev/null
@@ -293,7 +286,6 @@ Describe 'Verificar a inexistência do objeto publico deletado'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$test_bucket_name --acl public-read > /dev/null
     wait_command object-exists "$profile-second" "$test_bucket_name" "$file1_name"
@@ -342,7 +334,6 @@ Describe 'Tempo para upload 1gb'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     fallocate -l 1gb 1gb    
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -400,7 +391,6 @@ Describe 'Tempo para upload 2gb'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     fallocate -l 2gb 2gb
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -458,7 +448,6 @@ Describe 'Tempo para download 1gb'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
@@ -518,7 +507,6 @@ Describe 'Tempo para download 2gb'
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null

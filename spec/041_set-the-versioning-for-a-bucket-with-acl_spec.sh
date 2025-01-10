@@ -16,7 +16,6 @@ Describe 'Set the versioning for a bucket with ACL:' category:"ObjectVersioning"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     id=$(aws s3api --profile $profile-second list-buckets | jq -r '.Owner.ID')
     #Skip if "No such a "$profile-second" user" is_variable_null "$id"
     if [ "$id" = "" ]; then

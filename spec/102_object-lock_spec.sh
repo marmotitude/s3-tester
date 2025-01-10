@@ -24,7 +24,6 @@ Describe 'Put bucket default lock:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -59,7 +58,6 @@ Describe 'Put bucket default lock in old bucket:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name > /dev/null
     aws --profile $profile s3api put-bucket-versioning --bucket $test_bucket_name --versioning-configuration Status=Enabled > /dev/null
     case "$client" in
@@ -96,7 +94,6 @@ End
 #     profile=$1
 #     client=$2
 #     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
 #     setup_lock $bucket_name $client $profile
 #     date_plus_day=$(date -u -d "1 day" +"%Y-%m-%dT%H:%M:%SZ")
 #     case "$client" in
@@ -132,7 +129,6 @@ Describe 'Put object in bucket without default lock and validate date:' category
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "1 minute" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -171,7 +167,6 @@ Describe 'Try delete locked object:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "1 minute" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -208,7 +203,6 @@ Describe 'Remove object lock and try delete especified version old locked:' cate
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "2 minute" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -250,7 +244,6 @@ Describe 'InvalidRequest Object locking not enabled:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3 mb s3://$test_bucket_name > /dev/null
     aws --profile $profile s3 cp $file1_name s3://$test_bucket_name > /dev/null
     case "$client" in
@@ -286,7 +279,6 @@ Describe 'Remove default bucket lock:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -322,7 +314,6 @@ Describe 'Try enable object lock on not versioned bucket:' category:"ObjectLocki
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     aws --profile $profile s3api create-bucket --bucket $test_bucket_name > /dev/null
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
@@ -357,7 +348,6 @@ Describe 'Put retention with past date:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_decrease_minute=$(date -u -d "10 minutes ago" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -393,7 +383,6 @@ Describe 'Decrease date on retention:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "1 minute" +"%Y-%m-%dT%H:%M:%SZ")
     date_plus_2minutes=$(date -u -d "2 minute" +"%Y-%m-%dT%H:%M:%SZ")
@@ -432,7 +421,6 @@ Describe 'Try disable:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "1 minute" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -468,7 +456,6 @@ Describe 'Try put with wrong Mode:' category:"ObjectLocking"
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     date_plus_minute=$(date -u -d "1 minute" +"%Y-%m-%dT%H:%M:%SZ")
     case "$client" in
@@ -504,7 +491,6 @@ Describe 'Bucket without default lock, and get object retention:' category:"Obje
     profile=$1
     client=$2
     test_bucket_name="$bucket_name-$client-$profile"
-    printf "\n$test_bucket_name" >> ./report/buckets_to_delete.txt
     setup_lock $bucket_name $client $profile
     case "$client" in
     "aws-s3api" | "aws" | "aws-s3")
