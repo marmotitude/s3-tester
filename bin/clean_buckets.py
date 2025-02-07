@@ -92,7 +92,7 @@ def process_profile(profile):
     for bucket in response['Buckets']:
         name = bucket['Name']
         creation_date = bucket['CreationDate']
-        if name.startswith('test-') and (datetime.now(timezone.utc) - creation_date).total_seconds() > 86400:
+        if name.startswith('test-') and (datetime.now(timezone.utc) - creation_date).total_seconds() > 43200: # 12 hours verification
             old_buckets.append(name)
     
     if not old_buckets:
